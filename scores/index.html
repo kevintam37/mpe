@@ -40,7 +40,7 @@ tr:last-child td{border-bottom:0}
 </div>
 <script src="../mpe-track.js"></script>
 <script>
-var KIDS=MPE.kids.concat(['Everyone']);
+var KIDS=MPE.kids.concat(['Elaine','Kevin','Everyone']);
 var cur=null;try{cur=localStorage.getItem('mpe_child')}catch(e){}
 if(KIDS.indexOf(cur)<0)cur=KIDS[0];
 function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}

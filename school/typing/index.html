@@ -63,7 +63,7 @@ const rnd=n=>Math.floor(Math.random()*n),pick=a=>a[rnd(a.length)];
 const stars=n=>'★'.repeat(n)+'☆'.repeat(3-n);
 
 /* ---------- saved progress (one profile per child) ---------- */
-const NAMES=['Winston','Evelyn','Levin'];
+const NAMES=['Winston','Evelyn','Levin','Haylen','Elaine','Kevin'];
 let DB={cur:'Winston',sound:true,kb:true,p:{}};
 try{const j=JSON.parse(localStorage.getItem('ty_v1')||'null');if(j&&typeof j==='object')DB=Object.assign(DB,j)}catch(e){}
 DB.p=DB.p||{};NAMES.forEach(n=>{DB.p[n]=Object.assign({stars:{},best:{},unlock:false},DB.p[n]||{})});if(!NAMES.includes(DB.cur))DB.cur=NAMES[0];
