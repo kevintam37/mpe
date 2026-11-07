@@ -260,13 +260,13 @@ app.addEventListener('click',e=>{
   case 'spark':{const s=pick(SPARKS);d.spark=s;save();$('#spark').textContent='💡 '+s+'. Now find ONE small moment inside that idea.';break}
   case 'listen':try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(storyText());u.rate=.9;speechSynthesis.speak(u)}catch(x){}break;
   case 'stoplisten':try{speechSynthesis.cancel()}catch(x){}break;
-  case 'saveStory':{const t=storyText();{const dd=D(),a=analyze([dd.db,dd.dm,dd.de].join(' ')),sk=[a.trans.length>=1,a.dlg>=1,Object.keys(a.senses).length>=1,a.words>=50].filter(Boolean).length;MPE.ask(['Winston','Evelyn'],c=>MPE.finish({child:c,useSession:true,test:'Story Studio',section:'Story: '+(d.title||'My Story')+' ('+a.words+' words)',score:sk,total:4}))}P().stories.unshift({title:d.title,text:t,words:words(t),date:new Date().toLocaleDateString()});save();$('#why').textContent='Saved! Find it in My stories.';break}
+  case 'saveStory':{const t=storyText();{const dd=D(),a=analyze([dd.db,dd.dm,dd.de].join(' ')),sk=[a.trans.length>=1,a.dlg>=1,Object.keys(a.senses).length>=1,a.words>=50].filter(Boolean).length;MPE.ask(null,c=>MPE.finish({child:c,useSession:true,test:'Story Studio',section:'Story: '+(d.title||'My Story')+' ('+a.words+' words)',score:sk,total:4}))}P().stories.unshift({title:d.title,text:t,words:words(t),date:new Date().toLocaleDateString()});save();$('#why').textContent='Saved! Find it in My stories.';break}
   case 'print':window.print();break;
   case 'copy':try{navigator.clipboard.writeText(storyText());$('#why').textContent='Copied.'}catch(x){$('#why').textContent='Select the story text and copy it.'}break;
   case 'newStory':if(confirm('Start a new story? Save this one first if you want to keep it.')){P().draft=blank();save();render();window.scrollTo(0,0)}break;
   case 'delStory':if(confirm('Delete this story?')){P().stories.splice(+v,1);save();render()}break;
   case 'gym':{const g=v==='mix'?{id:'mix',name:'Mixed round',gen:null}:GYM.find(x=>x.id===v);
-   MPE.begin({kids:['Winston','Evelyn']});const qs=v==='mix'?GYM.flatMap(x=>x.gen(1)):g.gen(6);G={id:g.id,name:g.name,qs:shuffle(qs),i:0,score:0,pick:[],done:false};vGym();break}
+   MPE.begin({});const qs=v==='mix'?GYM.flatMap(x=>x.gen(1)):g.gen(6);G={id:g.id,name:g.name,qs:shuffle(qs),i:0,score:0,pick:[],done:false};vGym();break}
   case 'gymhome':G=null;vGym();break;
   case 'ans':{if(G.done)return;const q=G.qs[G.i],j=+v;document.querySelectorAll('.opt').forEach((o,k)=>{o.disabled=true;if(k===q.a)o.classList.add('ok');else if(k===j)o.classList.add('no')});gymFeedback(j===q.a,q.exp);break}
   case 'pick':{if(G.done)return;const q=G.qs[G.i];G.pick.push(+v);if(G.pick.length<q.items.length){vGym();break}

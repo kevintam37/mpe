@@ -113,7 +113,7 @@ function home(){lesson=null;$('up').style.display='';
  h+=`<p class="note">These are original practice questions made from Haylen's fall reading screening, which showed she needs more practice with letter sounds and sounding out 3-letter words. Tap 🔊 to hear any question read aloud. A few questions a day is plenty. Do the flashcard and build-a-word activities together with a grown-up.</p>`;
  $('st').innerHTML=h;}
 function newSet(){let s=newSeed();while(s===seed)s=newSeed();seed=s;ls('seed',String(seed));LES=buildSets(seed);home();window.scrollTo(0,0)}
-function start(k){MPE.begin({fixed:'Haylen'});lesson=k;i=0;answered={};pending=null;lastGiven='';selMC=null;picked.clear();$('up').style.display='none';show();window.scrollTo(0,0)}
+function start(k){MPE.begin({});lesson=k;i=0;answered={};pending=null;lastGiven='';selMC=null;picked.clear();$('up').style.display='none';show();window.scrollTo(0,0)}
 function goTo(k){if(lesson===null)return;i=k;show()}
 function contFromReview(){const Q=LES[lesson].qs;i=Math.min(i+1,Q.length);show()}
 function navBar(Q){let b='';for(let k=0;k<Q.length;k++){const a=answered[k];let cls='navbox';if(k===i)cls+=' cur';if(a)cls+=' done '+(a.ok?'ok':'no');b+=`<button class="${cls}" onclick="goTo(${k})">${k+1}</button>`}return `<div class="navwrap">${b}</div>`}

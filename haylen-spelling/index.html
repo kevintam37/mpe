@@ -297,7 +297,7 @@ function start(kind){
     return step();
   }
   if(kind==="testday"){
-    MPE.begin({fixed:'Haylen'});G={kind:"testday",items:shuffle(WORDS).map(function(o){return{o:o}}),i:0,right:0,missed:[],answers:[]};
+    MPE.begin({});G={kind:"testday",items:shuffle(WORDS).map(function(o){return{o:o}}),i:0,right:0,missed:[],answers:[]};
     return step();
   }
   var items=kind==="thenthan"?shuffle(TT).map(function(t){return{t:t}}):shuffle(WORDS).map(function(o){return{o:o}});
