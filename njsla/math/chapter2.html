@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Chapter 2 Number &amp; Operations in Base Ten</title>
+<style>
+:root{--bg:#FBF7EC;--ink:#26304A;--card:#fff;--line:#E4DCC9;--indigo:#2B3A67;--coral:#FF6B4A;--teal:#2A9D8F;padding-top:env(safe-area-inset-top,0);padding-bottom:env(safe-area-inset-bottom,0)}
+@media(prefers-color-scheme:dark){:root{--bg:#1D2233;--ink:#F1ECDD;--card:#262B40;--line:#3A4159;--indigo:#F4C95D}}
+*{box-sizing:border-box}html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.wrap{max-width:640px;margin:0 auto;padding:20px 16px 40px}
+h1{font-size:21px;margin:0 0 2px;color:var(--indigo);line-height:1.25}.sub{font-size:14px;opacity:.7;margin:0 0 14px}
+.row{display:flex;gap:8px;margin-bottom:10px}
+button{font:inherit;cursor:pointer}
+.pill{flex:1;padding:12px;border-radius:999px;border:2px solid var(--line);background:var(--card);color:var(--ink);font-weight:600}
+.list{display:flex;flex-direction:column;gap:10px}
+.les{display:flex;flex-direction:column;align-items:flex-start;gap:2px;text-align:left;padding:14px 16px;border-radius:14px;border:2px solid var(--line);background:var(--card);color:var(--ink);font-size:16px;font-weight:600}
+.les small{font-weight:400;opacity:.65;font-size:13px}
+.les:active{transform:scale(.99)}
+.back{background:none;border:none;color:var(--indigo);font-weight:600;font-size:14px;padding:0 0 10px;cursor:pointer}
+.stage{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px;margin-top:12px}
+.track{height:8px;border-radius:9px;background:var(--line);overflow:hidden;margin-bottom:14px}
+.fill{height:100%;background:var(--teal);transition:width .3s}
+.qn{font-size:12px;font-weight:700;color:var(--coral);margin-bottom:6px}
+.qt{font-size:17px;font-weight:600;line-height:1.45;margin:0 0 12px;white-space:pre-line}
+.pics{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 12px}
+.pic{padding:8px 10px;border:1px solid var(--line);border-radius:12px;background:var(--bg);font-size:20px;line-height:1.3}
+.pic b{display:block;font-size:13px;font-family:system-ui;margin-bottom:2px}
+.opts{display:flex;flex-direction:column;gap:9px}
+.opt{display:flex;align-items:center;gap:10px;text-align:left;padding:12px 14px;border-radius:12px;border:2px solid var(--line);background:var(--card);color:var(--ink);font-size:16px}
+.lt{font-size:18px;min-width:26px;white-space:nowrap}
+.opt.sel{border-color:var(--indigo);background:rgba(128,128,128,.14)}
+.opt.ok{border-color:var(--teal);background:rgba(42,157,143,.16)}.opt.no{border-color:var(--coral);background:rgba(255,107,74,.16)}
+input[type=text],select{font:inherit;font-size:16px;padding:10px 12px;border-radius:10px;border:2px solid var(--line);background:var(--bg);color:var(--ink)}
+input[type=text]{width:140px}textarea{font:inherit;font-size:15px;width:100%;min-height:90px;padding:10px;border-radius:10px;border:2px solid var(--line);background:var(--bg);color:var(--ink)}
+.f{display:flex;align-items:center;gap:10px;margin:9px 0;flex-wrap:wrap;font-size:16px}
+table{border-collapse:collapse;width:100%;font-size:14px}td,th{border:1px solid var(--line);padding:8px 6px;text-align:center}
+.nb{margin-top:14px;width:100%;padding:13px;border:none;border-radius:12px;background:var(--indigo);color:#fff;font-weight:700;font-size:15px}
+@media(prefers-color-scheme:dark){.nb{color:#1D2233}}
+.nb.alt{background:var(--teal);color:#fff}.nb:disabled{opacity:.4}
+.nb.ghost{background:transparent;border:2px solid var(--line);color:var(--ink)}
+.fb{margin-top:12px;font-weight:600;font-size:14.5px;line-height:1.45}.good{color:var(--teal)}.bad{color:var(--coral)}
+.model{margin-top:10px;padding:10px 12px;border-radius:10px;background:var(--bg);border:1px dashed var(--line);font-size:14.5px;line-height:1.5}
+.navwrap{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:12px}.navbox{width:28px;height:28px;border-radius:7px;border:2px solid var(--line);background:var(--card);color:var(--ink);font-size:11px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0}.navbox.cur{border-color:var(--indigo);box-shadow:0 0 0 2px var(--indigo) inset}.navbox.done{background:var(--line);color:var(--ink);opacity:.75}.navbox.done.ok{background:rgba(42,157,143,.28);border-color:var(--teal);opacity:1}.navbox.done.no{background:rgba(255,107,74,.28);border-color:var(--coral);opacity:1}.opt.miss{border-color:var(--teal);border-style:dashed}
+.revh{margin:22px 0 8px;font-size:16px;color:var(--indigo)}.rev{text-align:left}.ri{border:1px solid var(--line);border-left:6px solid var(--teal);border-radius:10px;padding:10px 12px;margin-bottom:8px;font-size:14px;line-height:1.45}.ri.nor{border-left-color:var(--coral)}.rh{font-weight:700}.mk{font-size:18px;font-weight:800}.okr .mk{color:var(--teal)}.nor .mk{color:var(--coral)}.rq{opacity:.7;margin:2px 0 4px}.rc{color:var(--teal)}
+.score{font-size:46px;font-weight:800;color:var(--indigo);text-align:center}.c{text-align:center}.small{font-size:13px;opacity:.7}
+</style></head><body><div class="wrap">
+<h1>Chapter 2 Number &amp; Operations in Base Ten</h1><p class="sub" id="sub">Pick a lesson to practice</p>
+<div class="stage" id="st"></div>
+</div>
+<script>
+const mc=(q,opts,a,exp,pics)=>({t:'mc',q,opts,a,exp,pics});
+
+const STACKOPT=(n)=>{let b='';for(let i=0;i<n;i++){b+=`<div style="width:46px;height:20px;border:2px solid var(--ink);background:var(--indigo);opacity:.75"></div>`}return `<span style="display:inline-flex;flex-direction:column;gap:4px;align-items:flex-start">${b}</span>`};
+const TABLE=(headers,rows)=>{const th=headers.map(h=>`<th>${h}</th>`).join('');const trs=rows.map(r=>`<tr>${r.map(c=>`<td>${c}</td>`).join('')}</tr>`).join('');return `<div class="pics"><div class="pic" style="padding:6px"><table style="font-size:12px"><tr>${th}</tr>${trs}</table></div></div>`};
+const TALLYGROUP=()=>`<svg width="26" height="22" viewBox="0 0 26 22" style="margin-right:6px"><line x1="2" y1="2" x2="2" y2="20" stroke="var(--ink)" stroke-width="2"/><line x1="8" y1="2" x2="8" y2="20" stroke="var(--ink)" stroke-width="2"/><line x1="14" y1="2" x2="14" y2="20" stroke="var(--ink)" stroke-width="2"/><line x1="20" y1="2" x2="20" y2="20" stroke="var(--ink)" stroke-width="2"/><line x1="0" y1="19" x2="22" y2="2" stroke="var(--ink)" stroke-width="2"/></svg>`;
+const TALLYSINGLE=()=>`<svg width="10" height="22" viewBox="0 0 10 22" style="margin-right:4px"><line x1="5" y1="2" x2="5" y2="20" stroke="var(--ink)" stroke-width="2"/></svg>`;
+const TALLYMARK=(n)=>{const groups=Math.floor(n/5),rem=n%5;let out='<span style="display:inline-flex;align-items:center">';for(let g=0;g<groups;g++){out+=TALLYGROUP();}for(let r=0;r<rem;r++){out+=TALLYSINGLE();}return out+'</span>'||'—'};
+const TALLYTABLE=(rows)=>{const trs=rows.map(r=>`<tr><td style="text-align:left;padding-right:10px">${r[0]}</td><td style="font-family:monospace;letter-spacing:2px">${TALLYMARK(r[1])}</td><td>(${r[1]})</td></tr>`).join('');return `<div class="pics"><div class="pic" style="padding:8px"><table style="font-size:13px"><tr><th>Category</th><th>Tally</th><th>Count</th></tr>${trs}</table></div></div>`};
+const CUPDIAG=()=>`<div class="pics"><div class="pic" style="padding:8px"><svg width="90" height="130" viewBox="0 0 90 130"><path d="M15,10 L20,120 L70,120 L75,10" fill="none" stroke="var(--ink)" stroke-width="2"/><line x1="15" y1="10" x2="75" y2="10" stroke="var(--ink)" stroke-width="2"/>${[['2 CUP',22],['3/4',38],['1/2',54],['1/4',70],['1 CUP',86],['3/4',96],['1/2',106],['1/4',116]].map(([t,y])=>`<line x1="20" y1="${y}" x2="30" y2="${y}" stroke="var(--ink)"/><text x="34" y="${y+3}" font-size="8">${t}</text>`).join('')}</svg></div></div>`;
+const TOOLROW=()=>`<div class="pics"><div class="pic" style="display:flex;gap:16px;padding:8px;align-items:flex-end"><div style="text-align:center"><svg width="70" height="24" viewBox="0 0 70 24"><rect x="2" y="4" width="66" height="14" fill="none" stroke="var(--ink)" stroke-width="1.5"/>${[10,20,30,40,50,60].map(x=>`<line x1="${x}" y1="4" x2="${x}" y2="10" stroke="var(--ink)"/>`).join('')}</svg><div class="small">Ruler</div></div><div style="text-align:center"><svg width="60" height="30" viewBox="0 0 60 30"><ellipse cx="15" cy="15" rx="12" ry="8" fill="none" stroke="var(--ink)" stroke-width="1.5"/><line x1="27" y1="15" x2="55" y2="15" stroke="var(--ink)" stroke-width="1.5"/></svg><div class="small">1 teaspoon</div></div><div style="text-align:center"><svg width="50" height="55" viewBox="0 0 50 55"><path d="M8,5 L8,45 L42,45 L42,5" fill="none" stroke="var(--ink)" stroke-width="1.5"/><rect x="8" y="25" width="34" height="20" fill="var(--indigo)" opacity=".3"/><line x1="8" y1="15" x2="14" y2="15" stroke="var(--ink)"/><line x1="8" y1="25" x2="14" y2="25" stroke="var(--ink)"/><line x1="8" y1="35" x2="14" y2="35" stroke="var(--ink)"/></svg><div class="small">Beaker</div></div></div></div>`;
+const VENN=(leftOnly,both,rightOnly,leftLabel,rightLabel)=>`<div class="pics"><div class="pic" style="padding:8px"><svg width="220" height="120" viewBox="0 0 220 120"><circle cx="85" cy="60" r="50" fill="none" stroke="var(--ink)" stroke-width="2"/><circle cx="135" cy="60" r="50" fill="none" stroke="var(--ink)" stroke-width="2"/><text x="55" y="30" font-size="11" font-weight="bold">${leftLabel}</text><text x="150" y="30" font-size="11" font-weight="bold">${rightLabel}</text><text x="55" y="65" font-size="11">${leftOnly.join('<tspan x=\"55\" dy=\"13\">')}</tspan></text><text x="105" y="65" font-size="11">${both.join('<tspan x=\"105\" dy=\"13\">')}</tspan></text><text x="160" y="65" font-size="11">${rightOnly.join('<tspan x=\"160\" dy=\"13\">')}</tspan></text></svg></div></div>`;
+const BARFIG=(n,sh)=>{let b='';for(let i=0;i<n;i++){b+=`<div style="width:26px;height:36px;border:1px solid var(--ink);background:${i<sh?'var(--indigo)':'transparent'}"></div>`}return `<div class="pics"><div class="pic" style="display:flex;gap:2px;padding:8px">${b}</div></div>`};
+const G=(r,c,s)=>`<div class="pics"><div class="pic" style="display:grid;grid-template-columns:repeat(${c},auto);gap:2px 6px;justify-content:start">${Array(r*c).fill(`<span>${s}</span>`).join('')}</div></div>`;
+const RECT=(n,sh)=>{let b='';for(let i=0;i<n;i++){b+=`<div style="width:26px;height:40px;border:1px solid var(--ink);background:${i<sh?'var(--indigo)':'transparent'}"></div>`}return `<div class="pics"><div class="pic" style="display:flex;gap:2px;padding:8px">${b}</div></div>`};
+const CIRC=(n,sh)=>{const pct=(sh/n*100).toFixed(2);return `<div class="pics"><div class="pic" style="padding:8px"><div style="width:76px;height:76px;border-radius:50%;background:conic-gradient(var(--indigo) 0% ${pct}%, transparent ${pct}% 100%);border:2px solid var(--ink)"></div></div></div>`};
+const STACK=(n)=>{let b='';for(let i=0;i<n;i++){b+=`<div style="width:60px;height:16px;border:1px solid var(--ink);background:var(--indigo);margin-bottom:2px;color:#fff;font-size:10px;display:flex;align-items:center;justify-content:center">10</div>`}return `<div class="pics"><div class="pic" style="padding:6px">${b}</div></div>`};
+const NL=(n,k)=>{let ticks='';for(let t=0;t<=n;t++){ticks+=`<div style="position:absolute;left:calc(10px + (100% - 20px) * ${t} / ${n});top:22px;bottom:8px;width:1px;background:var(--ink);opacity:.5"></div>`}return `<div class="pics"><div class="pic" style="position:relative;height:46px;width:260px"><div style="position:absolute;left:10px;right:10px;top:26px;height:2px;background:var(--ink)"></div>${ticks}<div style="position:absolute;left:calc(10px + (100% - 20px) * ${k} / ${n});top:20px;width:12px;height:12px;border-radius:50%;background:var(--coral);transform:translateX(-6px)"></div><span style="position:absolute;left:6px;top:30px;font-size:11px">0</span><span style="position:absolute;right:6px;top:30px;font-size:11px">1</span></div></div>`};
+
+const CLOCK=(h,m)=>{const hAngle=(h%12)*30+m*0.5,mAngle=m*6;const hx=50+22*Math.sin(hAngle*Math.PI/180),hy=50-22*Math.cos(hAngle*Math.PI/180);const mx=50+34*Math.sin(mAngle*Math.PI/180),my=50-34*Math.cos(mAngle*Math.PI/180);let ticks='';for(let i=0;i<12;i++){const a=i*30*Math.PI/180,x1=50+38*Math.sin(a),y1=50-38*Math.cos(a),x2=50+44*Math.sin(a),y2=50-44*Math.cos(a);ticks+=`<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="var(--ink)" stroke-width="1.5"/>`}let nums='';for(let i=1;i<=12;i++){const a=i*30*Math.PI/180,nx=50+33*Math.sin(a),ny=50-33*Math.cos(a);nums+=`<text x="${nx}" y="${ny}" font-size="9" font-weight="700" fill="var(--ink)" text-anchor="middle" dominant-baseline="central">${i}</text>`}return `<div class="pics"><div class="pic" style="padding:8px"><svg width="120" height="120" viewBox="0 0 100 100"><circle cx="50" cy="50" r="46" fill="none" stroke="var(--ink)" stroke-width="2"/>${ticks}${nums}<line x1="50" y1="50" x2="${hx}" y2="${hy}" stroke="var(--ink)" stroke-width="4" stroke-linecap="round"/><line x1="50" y1="50" x2="${mx}" y2="${my}" stroke="var(--coral)" stroke-width="3" stroke-linecap="round"/><circle cx="50" cy="50" r="3" fill="var(--ink)"/></svg></div></div>`};
+const GRID2=(rows,cols,shaded)=>{const set=new Set(shaded);let cells='';for(let r=0;r<rows;r++)for(let c=0;c<cols;c++){const idx=r*cols+c;cells+=`<div style="width:24px;height:24px;border:1px solid var(--ink);background:${set.has(idx)?'var(--indigo)':'transparent'}"></div>`}return `<div class="pics"><div class="pic" style="display:grid;grid-template-columns:repeat(${cols},24px);padding:8px">${cells}</div></div>`};
+const BARS=(labels,values,maxV)=>{const w=46;const bars=values.map((v,i)=>`<div style="display:flex;flex-direction:column;align-items:center;gap:3px;width:${w}px"><div style="font-size:10px">${v}</div><div style="width:${w-14}px;height:${Math.round(v/maxV*100)}px;background:var(--indigo)"></div><div style="font-size:9px;text-align:center;line-height:1.1">${labels[i]}</div></div>`).join('');return `<div class="pics"><div class="pic" style="display:flex;align-items:flex-end;gap:6px;padding:8px 8px 4px">${bars}</div></div>`};
+const RULER=(value,maxV)=>{let ticks='';for(let i=0;i<=maxV;i++){ticks+=`<div style="position:absolute;left:${i/maxV*100}%;top:14px;bottom:0;width:1px;background:var(--ink)"></div><div style="position:absolute;left:${i/maxV*100}%;top:24px;font-size:9px;transform:translateX(-3px)">${i}</div>`}return `<div class="pics"><div class="pic" style="padding:8px"><div style="position:relative;width:260px;height:38px"><div style="position:absolute;left:0;top:0;width:${value/maxV*100}%;height:10px;background:var(--coral);opacity:.8"></div><div style="position:absolute;left:0;right:0;top:14px;height:2px;background:var(--ink)"></div>${ticks}</div></div></div>`};
+const LPLOT=(labels,counts)=>{const maxC=Math.max(...counts);const cols=counts.map((c,i)=>{let xs='';for(let k=0;k<c;k++){xs+=`<div style="font-size:12px;line-height:1.1">✕</div>`}return `<div style="display:flex;flex-direction:column-reverse;align-items:center;gap:1px;width:34px"><div style="font-size:9px;margin-top:2px">${labels[i]}</div>${xs}</div>`}).join('');return `<div class="pics"><div class="pic" style="display:flex;align-items:flex-end;gap:2px;padding:8px;border-bottom:2px solid var(--ink)">${cols}</div></div>`};
+const PICT=(labels,counts,per)=>{const rows=labels.map((l,i)=>`<div class="f"><b style="width:90px;display:inline-block">${l}</b>${'●'.repeat(counts[i])}</div>`).join('');return `<div class="pics"><div class="pic" style="padding:8px;text-align:left">${rows}<div class="small" style="margin-top:6px">Key: ● = ${per}</div></div></div>`};
+const RHOMBUS=(side)=>`<div class="pics"><div class="pic" style="padding:14px"><div style="width:60px;height:60px;background:var(--indigo);transform:rotate(45deg);margin:10px"></div><div class="small" style="text-align:center">side = ${side}</div></div></div>`;
+const TRI=(shadedFrac)=>`<div class="pics"><div class="pic" style="padding:8px"><svg width="140" height="100" viewBox="0 0 140 100"><polygon points="70,5 5,95 70,95" fill="${shadedFrac>=1?'var(--indigo)':shadedFrac>0?'var(--indigo)':'transparent'}" stroke="var(--ink)" stroke-width="2"/><polygon points="70,5 135,95 70,95" fill="${shadedFrac>=2?'var(--indigo)':'transparent'}" stroke="var(--ink)" stroke-width="2"/><line x1="70" y1="5" x2="70" y2="95" stroke="var(--ink)" stroke-width="1.5" stroke-dasharray="4,3"/></svg></div></div>`;
+const SQPART=(shaded,total,cols)=>{const rows=Math.ceil(total/cols);let cells='';for(let i=0;i<total;i++){cells+=`<div style="border:1px dashed var(--ink);background:${i<shaded?'var(--indigo)':'transparent'}"></div>`}return `<div class="pics"><div class="pic" style="display:grid;grid-template-columns:repeat(${cols},32px);grid-template-rows:repeat(${rows},32px);padding:8px">${cells}</div></div>`};
+const CIRCPART=(shadedList,total)=>{const step=360/total;const grad=Array.from({length:total},(_,i)=>`${shadedList.includes(i)?'var(--indigo)':'transparent'} ${i*step}deg ${(i+1)*step}deg`).join(',');return `<div class="pics"><div class="pic" style="padding:8px"><div style="width:80px;height:80px;border-radius:50%;background:conic-gradient(${grad});border:2px solid var(--ink)"></div></div></div>`};
+const L1=[
+mc("What is the value of the 9 in 11,291?",['9 ones','9 hundreds','9 thousands','9 tens'],3,'11,291 — the 9 is in the tens place.'),
+mc("What is the value of the digit 6 in 36,801?",['Six thousand','Sixty','Sixty thousand','Six hundred'],0,'36,801 — the 6 is in the thousands place: six thousand.'),
+mc("Which of these numbers has a 9 in the thousands place?",['690,099','900','209,866','90,786'],2,'209,866 — the thousands digit is 9.'),
+mc("Round 2,564 to the nearest hundred.",['2,000','2,500','2,600','2,700'],2,'The tens digit is 6, so round up to 2,600.'),
+mc("Round 1,043 to the nearest hundred.",['1,000','1,100','1,040','1,200'],0,'The tens digit is 4, so round down to 1,000.'),
+mc("Round 537 to the nearest ten.",['500','540','550','530'],1,'The ones digit is 7, so round up to 540.'),
+mc("Round 957 to the nearest ten.",['960','950','900','1,000'],0,'The ones digit is 7, so round up to 960.'),
+mc("Maya is buying pencils for the school. Maya needs to buy enough pencils for 388 students. What is this number rounded to the nearest hundred?",['390','380','400','500'],2,'The tens digit is 8, so round up to 400.'),
+mc("Ninety-seven chairs are needed for an audience. What is this number rounded to the nearest ten?",['90','100','80','110'],1,'The ones digit is 7, so round up to 100.'),
+mc("Which of the following numbers does not round to 1,000 when rounding to the nearest hundred?",['955','1,005','1,051','951'],2,'1,051 rounds to 1,100, since its tens digit is 5 — the others all round to 1,000.'),
+mc("How many whole numbers, when rounded to the nearest ten, give 100 as the result?",['8','9','10','11'],2,'The numbers 95 through 104 all round to 100 — that is 10 numbers.'),
+mc("Fill in the blank.\n795 rounds to 800 when rounded to the nearest ______.",['ten','hundred','ten or hundred','thousand'],2,'795 rounds to 800 by the nearest ten (795→800) and also by the nearest hundred (795→800).'),
+mc("Fill in the blank.\n1,090 rounds to 1,100 when rounded to the nearest ______.",['ten','hundred','ten or hundred','thousand'],1,'1,090 is already a multiple of ten, so it stays 1,090 to the nearest ten. To the nearest hundred, it rounds up to 1,100.'),
+mc("The attendance at a local baseball game is announced to be 4,328. What is this number rounded to the nearest ten?",['4,300','4,330','4,320','4,400'],1,'The ones digit is 8, so round up to 4,330.'),
+mc("The number of plants in a garden, when rounded to the nearest hundred, rounds to 800. Which of the following could not be the number of plants in the garden?",['850','800','750','849'],0,'850 rounds to 900 (tens digit 5 rounds up), not 800 — the others all round to 800.'),
+{t:'multi',q:"Which numbers represent the number 617 when rounded to the nearest ten or hundred? Select ALL correct answers.",opts:['620','600','700','630'],a:[0,1],exp:'617 rounds to 620 by the nearest ten, and to 600 by the nearest hundred.'},
+{t:'txt',q:"Round 489 to the nearest hundred. Write the correct answer.",f:[{l:'Answer',a:['500']}],show:'The tens digit is 8, so round up to 500.'},
+{t:'txt',q:"Complete the table in the format given in the example.",pics:TABLE(['Number','Nearest ten','Nearest hundred'],[["2,349","2,350","2,300"],["4,092","?","?"],["8,396","?","?"]]),f:[{l:'4,092 → nearest ten',a:['4090']},{l:'4,092 → nearest hundred',a:['4100']},{l:'8,396 → nearest ten',a:['8400']},{l:'8,396 → nearest hundred',a:['8400']}],show:'4,092 → 4,090 (ten), 4,100 (hundred). 8,396 → 8,400 (ten), 8,400 (hundred).'}
+];
+const L2=[
+mc("What is the standard form of 70,000 + 6,000 + 800 + 60 + 2?",['706,862','76,862','7,682','782'],1,'Adding the place values gives 76,862.'),
+mc("Two numbers have a difference of 29. The two numbers could be ______.",['11 and 18','23 and 42','40 and 11','50 and 39'],2,'40 − 11 = 29.'),
+mc("Two numbers add up to 756. One number is 356. What is the other number?",['356','300','400','456'],2,'756 − 356 = 400.'),
+mc("Which of these expressions has the same difference as 94 − 50?",['70 − 34','80 − 46','60 − 16','90 − 54'],2,'94 − 50 = 44, and 60 − 16 = 44 as well.'),
+mc("Which of these number sentences is not true?",['88 + 12 = 90 + 10','82 + 18 = 88 + 12','56 + 45 = 54 + 56','46 + 15 = 56 + 5'],2,'56 + 45 = 101, but 54 + 56 = 110 — these are not equal.'),
+mc("Jim has 640 baseball cards and 280 basketball cards. How many sports cards does Jim have in all?",['820 cards','360 cards','8,120 cards','920 cards'],3,'640 + 280 = 920.'),
+mc("Find the difference.\n860 − 659",['219','319','201','19'],2,'860 − 659 = 201.'),
+mc("The students made 565 book covers for their math books. They used up 422 of the book covers. How many book covers are left?",['242 book covers','163 book covers','987 book covers','143 book covers'],3,'565 − 422 = 143.'),
+mc("What is the difference of 32 and 5?",['33','27','160','37'],1,'32 − 5 = 27.'),
+mc("Jenny plans to sell 50 boxes of cookies to help her scout troop raise funds. She sold 20 boxes to her neighbors. Her dad sold 15 boxes at his work office. How many more boxes does she need to sell to meet her goal?",['15 boxes','10 boxes','5 boxes','25 boxes'],0,'20 + 15 = 35 sold; 50 − 35 = 15 more needed.'),
+mc("Sara had 124 stickers. She gave away 62 stickers and bought 73 more stickers. How many stickers does Sara have now?",['135 stickers','62 stickers','120 stickers','11 stickers'],0,'124 − 62 = 62, then 62 + 73 = 135.'),
+mc("Which of these addition expressions would require regrouping of hundreds and tens?",['923 + 37','456 + 443','235 + 234','576 + 442'],3,'576 + 442: the tens (7+4=11) and hundreds (5+4+1=10) both need regrouping.'),
+mc("There were 605 people sitting in an auditorium at the start of a show. Thirty-five people left during the intermission. How many people remained in the auditorium after the intermission?",['630 people','580 people','570 people','595 people'],2,'605 − 35 = 570.'),
+mc("If 3 tens are subtracted from 401, what is the difference?",['471','371','398','381'],1,'401 − 30 = 371.'),
+mc("Find the sum of 37 + 93 + 200.",['330','663','320','300'],0,'37 + 93 + 200 = 330.'),
+{t:'sel',q:"Select the correct sum for each addition expression.",opts:['899','467','558'],rows:[['422 + 136  []','558'],['608 + 291  []','899'],['157 + 310  []','467']],show:'422+136=558, 608+291=899, 157+310=467.'},
+{t:'txt',q:"Hannah received a score of 604 on the exam. Ben received a score of 719. What was the difference between the two scores?",f:[{l:'Answer',a:['115']}],show:'719 − 604 = 115.'},
+{t:'txt',q:"Type in the correct numbers to make the sum true.\n  Hundreds Tens Ones\n    2   ?   5\n+   ?   3   ?\n----------------\n    8   4   9",f:[{l:'Top number, tens digit',a:['1']},{l:'Bottom number, hundreds digit',a:['6']},{l:'Bottom number, ones digit',a:['4']}],show:'215 + 634 = 849, so the missing digits are 1, 6, and 4.'},
+{t:'self',q:"Karen has 805 milliliters of milk. After he drinks some milk, 538 milliliters are left. How much milk did Karen drink? Show the steps by which you arrive at the answer.",model:'805 − 538 = 267. Karen drank 267 milliliters of milk.'}
+];
+const L3=[
+mc("Multiply:\n6 × 10 = ___",['66','60','61','16'],1,'6 × 10 = 60.'),
+mc("What is the product of 10 and 10?",['20','50','100','1,000'],2,'10 × 10 = 100.'),
+mc("Find the product.\n5 × 40 = ___",['100','90','200','240'],2,'5 × 40 = 200.'),
+mc("Multiply:\n___ = 6 × 60",['120','180','320','360'],3,'6 × 60 = 360.'),
+mc("Find the product of 70 and 7.",['77','140','420','490'],3,'70 × 7 = 490.'),
+mc("Multiply:\n___ = 30 × 7",['210','240','180','100'],0,'30 × 7 = 210.'),
+mc("Find the product.\n90 × 9 = ___",['800','810','900','1,800'],1,'90 × 9 = 810.'),
+mc("Multiply:\n8 × 80 = ___",['160','620','640','660'],2,'8 × 80 = 640.'),
+mc("Find the product.\n2 × 70 = ___",['140','120','90','160'],0,'2 × 70 = 140.'),
+mc("Multiply:\n90 × 3 = ___",['120','180','270','290'],2,'90 × 3 = 270.'),
+mc("Multiply:\n2 × 10 = ___",['2','5','10','20'],3,'2 × 10 = 20.'),
+mc("Multiply:\n50 × 1 = ___",['1','25','49','50'],3,'50 × 1 = 50.'),
+mc("Multiply:\n10 × 3 = ___",['10','30','100','300'],1,'10 × 3 = 30.'),
+mc("Find the product of 30 and 9.",['270','39','3','100'],0,'30 × 9 = 270.'),
+mc("Multiply:\n10 × 7 = ___",['70','10','100','7'],0,'10 × 7 = 70.'),
+{t:'multi',q:"Select the math sentences that can be used to find the product of 70 and 5. Select ALL the relevant math sentences.",opts:['7 × 5 = 35','35 × 10 = 350','70 × 50 = 3,500','70 × 5 = 350'],a:[0,1,3],exp:'7 × 5 = 35, then 35 × 10 = 350 — the multiples-of-ten strategy. 70 × 5 = 350 directly. 70 × 50 = 3,500 is not relevant.'},
+mc("Circle the picture that shows the product of 20 and 2. Instruction: one box = 10.",[STACKOPT(4),STACKOPT(1),STACKOPT(6)],0,'20 × 2 = 40, and 4 boxes of 10 make 40, which is picture A.'),
+{t:'txt',q:"Find the product of 30 x 8. Write your answer in the box below.",f:[{l:'Answer',a:['240']}],show:'30 × 8 = 240.'},
+{t:'txt',q:"Complete the following table:",pics:TABLE(['Equation','Product'],[["6 × 50","?"],["8 × 60","?"],["70 × 8","?"],["80 × 9","?"]]),f:[{l:'6 × 50',a:['300']},{l:'8 × 60',a:['480']},{l:'70 × 8',a:['560']},{l:'80 × 9',a:['720']}],show:'6×50=300, 8×60=480, 70×8=560, 80×9=720.'},
+{t:'sel',q:"Match the multiplication expression with the correct product.",opts:['630','320','540','450'],rows:[['9 × 60 =  []','540'],['4 × 80 =  []','320'],['90 × 5 =  []','450'],['90 × 7 =  []','630']],show:'9×60=540, 4×80=320, 90×5=450, 90×7=630.'}
+];
+const LES=[
+{name:'Lesson 1: Rounding Numbers',qs:L1},
+{name:'Lesson 2: Addition &amp; Subtraction',qs:L2},
+{name:'Lesson 3: Multiplying Multiples of 10',qs:L3}
+];
+const LT=['Ⓐ','Ⓑ','Ⓒ','Ⓓ'];
+let timerInt=null;
+function stopTimer(){if(timerInt){clearInterval(timerInt);timerInt=null}}
+function startTimer(){stopTimer();let t=300;const tick=()=>{const node=$('timer');if(!node){stopTimer();return}const m=Math.floor(t/60),sec=t%60;node.textContent=m+':'+(sec<10?'0':'')+sec;node.style.color=t<=60?'var(--coral)':'var(--indigo)';if(t<=0){stopTimer();return}t--};tick();timerInt=setInterval(tick,1000)}
+let lesson=null,i=0,answered={},pending=null,lastGiven='';
+const picked=new Set();
+const $=id=>document.getElementById(id);
+const esc=t=>String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+const correctText=q=>q.t==='mc'?LT[q.a]+' '+q.opts[q.a]:q.t==='multi'?q.a.map(j=>LT[j]+' '+q.opts[j]).join('; '):q.t==='self'?q.model:(q.show||'');
+const norm=s=>s.toLowerCase().replace(/\s+/g,'').replace(/[×*]/g,'x');
+function home(){stopTimer();lesson=null;$('sub').textContent='Pick a lesson to practice';
+ $('st').innerHTML=`<div class="list">${LES.map((l,k)=>`<button class="les" onclick="start(${k})"><span>${l.name}</span><small>${l.qs.length} questions</small></button>`).join('')}</div>`}
+function start(k){lesson=k;i=0;answered={};pending=null;lastGiven='';picked.clear();show()}
+function goTo(k){if(lesson===null)return;i=k;show()}
+function contFromReview(){const Q=LES[lesson].qs;i=Math.min(i+1,Q.length);show()}
+function navBar(Q){let b='';for(let k=0;k<Q.length;k++){const a=answered[k];let cls='navbox';if(k===i)cls+=' cur';if(a)cls+=' done '+(a.ok?'ok':'no');b+=`<button class="${cls}" onclick="goTo(${k})">${k+1}</button>`}return `<div class="navwrap">${b}</div>`}
+function next(ok){answered[i]=Object.assign({ok,given:lastGiven},pending||{});lastGiven='';pending=null;i++;show()}
+function show(){
+ if(lesson===null){home();return}
+ const L=LES[lesson],Q=L.qs,s=$('st');
+ $('sub').innerHTML=L.name;
+ if(i>=Q.length){
+  stopTimer();
+  let score=0;const missArr=[];
+  for(let k=0;k<Q.length;k++){const a=answered[k];if(a&&a.ok)score++;else missArr.push(k+1);}
+  const pct=Math.round(score/Q.length*100);
+  const rows=Q.map((q,k)=>{const r=answered[k]||{ok:false,given:'(no answer)'};return `<div class="ri ${r.ok?'okr':'nor'}"><div class="rh"><span class="mk">${r.ok?'✓':'✗'}</span> Question ${k+1}</div><div class="rq">${esc(q.q.replace(/\n/g,' ').slice(0,110))}${q.q.length>110?'…':''}</div><div class="ra"><b>Your answer:</b> ${esc(r.given||'(no answer)')}</div>${r.ok?'':`<div class="rc"><b>Correct answer:</b> ${esc(correctText(q))}</div>`}</div>`}).join('');
+  s.innerHTML=`<div class="c"><div class="score">${score}/${Q.length}</div><p><b>Test score: ${pct}%</b><br>${score} correct · ${Q.length-score} wrong</p><p class="small">${L.name}</p><button class="nb" onclick="start(lesson)">Try again</button>${lesson<LES.length-1?`<button class="nb alt" onclick="start(${lesson+1})">Next lesson →</button>`:''}<button class="nb ghost" onclick="home()">All lessons</button></div><h3 class="revh">Review of your answers</h3><div class="rev">${rows}</div>`;return}
+ const q=Q[i];
+ const locked=answered[i];
+ let h=`<button class="back" onclick="home()">← All lessons</button>${navBar(Q)}<div class="track"><div class="fill" style="width:${i/Q.length*100}%"></div></div><div class="qn">QUESTION ${i+1} OF ${Q.length}${locked?'':'<span class="timer" id="timer" style="float:right;font-weight:700;color:var(--indigo)">5:00</span>'}</div><p class="qt">${q.q}</p>${q.pics||''}`;
+ if(q.t==='mc')h+=`<div class="opts">${q.opts.map((o,j)=>`<button class="opt" id="m${j}" onclick="selectMC(${j})"><b class="lt" id="lt${j}">${LT[j]}</b><span>${o}</span></button>`).join('')}</div><button class="nb" id="chk" onclick="confirmMC()" disabled>OK</button>`;
+ if(q.t==='multi')h+=`<div class="opts">${q.opts.map((o,j)=>`<button class="opt" id="m${j}" onclick="tog(${j})"><b class="lt" id="lt${j}">☐ ${LT[j]}</b><span>${o}</span></button>`).join('')}</div><button class="nb" id="chk" onclick="chkMulti()">Check</button>`;
+ if(q.t==='txt')h+=q.f.map((f,j)=>`<div class="f">${f.l.startsWith('<')?f.l:`<b>${f.l}:</b>`}<input type="text" id="in${j}" autocomplete="off"></div>`).join('')+`<button class="nb" id="chk" onclick="chkTxt()">Check</button>`;
+ if(q.t==='sel')h+=q.rows.map((r,j)=>`<div class="f">${r[0].replace('[]',`<select id="s${j}"><option value="">?</option>${q.opts.map(o=>`<option>${o}</option>`).join('')}</select>`)}</div>`).join('')+`<button class="nb" id="chk" onclick="chkSel()">Check</button>`;
+ if(q.t==='grid')h+=`<table><tr><th></th>${q.cols.map(c=>`<th>${c}</th>`).join('')}</tr>${q.rows.map((r,k)=>`<tr><td style="text-align:left">${r[0]}</td>${q.cols.map((c,j)=>`<td><input type="checkbox" id="g${k}_${j}"></td>`).join('')}</tr>`).join('')}</table><button class="nb" id="chk" onclick="chkGrid()">Check</button>`;
+ if(q.t==='self')h+=`<textarea id="ta" placeholder="Write your answer here..."></textarea><button class="nb" id="chk" onclick="showModel()">Show model answer</button>`;
+ s.innerHTML=h+'<div id="fb"></div>';
+ if(locked){applyLock(q,locked)}else{startTimer()}
+}
+function fin(ok,msg){$('fb').innerHTML=`<div class="fb ${ok?'good':'bad'}">${ok?'Nice work! ':'Not quite — '}${msg}</div><button class="nb alt" onclick="next(${ok})">Next</button>`;const c=$('chk');if(c)c.disabled=true}
+function applyLock(q,a){
+ stopTimer();
+ if(q.t==='mc'){document.querySelectorAll('.opts .opt').forEach((o,k)=>{o.disabled=true;if(k===q.a)o.classList.add('ok');else if(k===a.sel)o.classList.add('no')})}
+ else if(q.t==='multi'){document.querySelectorAll('.opts .opt').forEach((o,k)=>{o.disabled=true;const picked=(a.sel||[]).includes(k),correct=q.a.includes(k);if(picked&&correct)o.classList.add('ok');else if(picked&&!correct)o.classList.add('no');else if(!picked&&correct)o.classList.add('miss');$('lt'+k).textContent=(picked?'☑ ':'☐ ')+LT[k]})}
+ else if(q.t==='txt'){q.f.forEach((f,j)=>{const el=$('in'+j);if(el){el.value=(a.vals&&a.vals[j])||'';el.disabled=true}})}
+ else if(q.t==='sel'){q.rows.forEach((r,j)=>{const el=$('s'+j);if(el){el.value=(a.vals&&a.vals[j])||'';el.disabled=true}})}
+ else if(q.t==='grid'){q.rows.forEach((r,k)=>q.cols.forEach((c,j)=>{const el=$('g'+k+'_'+j);if(el){el.checked=!!(a.grid&&a.grid[k]&&a.grid[k][j]);el.disabled=true}}))}
+ else if(q.t==='self'){const el=$('ta');if(el){el.value=a.written||'';el.disabled=true}}
+ const chkBtn=$('chk');if(chkBtn)chkBtn.style.display='none';
+ const msg=q.t==='self'?q.model:(q.exp||q.show||'');
+ $('fb').innerHTML=`<div class="fb ${a.ok?'good':'bad'}">${a.ok?'✓ You answered this correctly. ':'✗ Not quite. '}${msg}</div><div class="row" style="margin-top:10px"><button class="nb alt" onclick="contFromReview()">Continue →</button></div>`;
+}
+const cur=()=>LES[lesson].qs[i];
+let selMC=null;
+function selectMC(j){selMC=j;document.querySelectorAll('.opts .opt').forEach((o,k)=>o.classList.toggle('sel',k===j));$('chk').disabled=false}
+function confirmMC(){if(selMC===null)return;const q=cur(),j=selMC;lastGiven=LT[j]+' '+q.opts[j];pending={sel:j};document.querySelectorAll('.opts .opt').forEach((o,k)=>{o.disabled=true;o.classList.remove('sel');if(k===q.a)o.classList.add('ok');else if(k===j)o.classList.add('no')});selMC=null;fin(j===q.a,q.exp)}
+function tog(j){const b=$('m'+j);if(picked.has(j)){picked.delete(j);b.classList.remove('sel')}else{picked.add(j);b.classList.add('sel')}$('lt'+j).textContent=(picked.has(j)?'☑ ':'☐ ')+LT[j]}
+function chkMulti(){const q=cur();const selArr=[...picked];const ok=selArr.length===q.a.length&&q.a.every(x=>picked.has(x));lastGiven=selArr.sort((a,b)=>a-b).map(j=>LT[j]+' '+q.opts[j]).join('; ')||'(none selected)';pending={sel:selArr};picked.clear();fin(ok,q.exp)}
+function chkTxt(){const q=cur();const vals=q.f.map((f,j)=>$('in'+j).value);lastGiven=q.f.map((f,j)=>{const v=(vals[j]||'').trim()||'—';return q.f.length>1?(f.l.startsWith('<')?'('+(j+1)+') ':f.l.replace(/<[^>]*>/g,'')+': ')+v:v}).join('; ');pending={vals};fin(q.f.every((f,j)=>{const v=norm(vals[j]);return f.a.includes(v)||(f.has&&v.includes(f.has))}),q.show)}
+function chkSel(){const q=cur();const vals=q.rows.map((r,j)=>$('s'+j).value);lastGiven=q.rows.map((r,j)=>(j+1)+') '+(vals[j]||'—')).join('; ');pending={vals};fin(q.rows.every((r,j)=>vals[j]===r[1]),q.show)}
+function chkGrid(){const q=cur();const grid=q.rows.map((r,k)=>q.cols.map((c,j)=>$('g'+k+'_'+j).checked));lastGiven=q.rows.map((r,k)=>(k+1)+') '+(q.cols.filter((c,j)=>grid[k][j]).join(', ')||'—')).join('; ');pending={grid};const ok=q.rows.every((r,k)=>q.cols.every((c,j)=>grid[k][j]===r[1].includes(j)));fin(ok,q.show)}
+function showModel(){const q=cur();const written=($('ta').value||'').trim();lastGiven=written||'(nothing written)';pending={written};$('fb').innerHTML=`<div class="model"><b>Model answer:</b> ${q.model}</div><p class="small">Did your answer match?</p><div class="row"><button class="pill" onclick="next(true)">I got it ✅</button><button class="pill" onclick="next(false)">Not yet</button></div>`;$('chk').disabled=true}
+home();
+
+</script><script src="../njsla-shared/sling.js"></script>
+<script>Sling.attach();</script>
+</body></html>

@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Chapter 1 Reading Literature</title>
+<style>
+:root{--bg:#FBF7EC;--ink:#26304A;--card:#fff;--line:#E4DCC9;--indigo:#2B3A67;--coral:#FF6B4A;--teal:#2A9D8F}
+@media(prefers-color-scheme:dark){:root{--bg:#1D2233;--ink:#F1ECDD;--card:#262B40;--line:#3A4159;--indigo:#F4C95D}}
+*{box-sizing:border-box}html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.wrap{max-width:680px;margin:0 auto;padding:20px 16px 40px}
+h1{font-size:21px;margin:0 0 2px;color:var(--indigo);line-height:1.25}
+.sub{font-size:14px;opacity:.7;margin:0 0 14px}
+button{font:inherit;cursor:pointer}
+.list{display:flex;flex-direction:column;gap:10px}
+.les{display:flex;flex-direction:column;align-items:flex-start;gap:2px;text-align:left;padding:14px 16px;border-radius:14px;border:2px solid var(--line);background:var(--card);color:var(--ink);font-size:16px;font-weight:600}
+.les small{font-weight:400;opacity:.65;font-size:13px}
+.back{background:none;border:none;color:var(--indigo);font-weight:600;font-size:14px;padding:0 0 10px}
+.stage{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px;margin-top:12px}
+.track{height:8px;border-radius:9px;background:var(--line);overflow:hidden;margin-bottom:14px}
+.fill{height:100%;background:var(--teal);transition:width .3s}
+.qn{font-size:12px;font-weight:700;color:var(--coral);margin-bottom:6px}
+.qt{font-size:17px;font-weight:600;line-height:1.45;margin:0 0 12px}
+.pbox{background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:10px 14px;margin:0 0 14px;font-size:15px;line-height:1.55}
+.pbox .ban{display:inline-block;background:var(--indigo);color:var(--bg);border-radius:8px;padding:2px 10px;font-size:12px;font-weight:700;margin-bottom:6px}
+.pbox .txt{white-space:pre-line}
+.pbox .ref{opacity:.75;font-size:13px}
+.pbox.hasimg .txt{display:none}
+.pbox img.pimg{display:block;margin:6px 0}
+.pbox img{max-width:100%;border-radius:8px;margin-top:8px;background:#fff}
+.opts{display:flex;flex-direction:column;gap:9px}
+.opt{display:flex;align-items:center;gap:10px;text-align:left;padding:12px 14px;border-radius:12px;border:2px solid var(--line);background:var(--card);color:var(--ink);font-size:16px}
+.lt{font-size:18px;min-width:26px}
+.opt.sel{border-color:var(--indigo);background:rgba(128,128,128,.14)}
+.opt.ok{border-color:var(--teal);background:rgba(42,157,143,.16)}
+.opt.no{border-color:var(--coral);background:rgba(255,107,74,.16)}
+textarea{font:inherit;font-size:15px;width:100%;min-height:90px;padding:10px;border-radius:10px;border:2px solid var(--line);background:var(--bg);color:var(--ink)}
+table{border-collapse:collapse;width:100%;font-size:14px}td,th{border:1px solid var(--line);padding:8px 6px;text-align:center}
+.nb{margin-top:14px;width:100%;padding:13px;border:none;border-radius:12px;background:var(--indigo);color:#fff;font-weight:700;font-size:15px}
+@media(prefers-color-scheme:dark){.nb{color:#1D2233}}
+.nb:disabled{opacity:.4}.nb.alt{background:var(--teal);color:#fff}.nb.ghost{background:none;color:var(--ink);border:2px solid var(--line)}
+.fb{margin-top:14px;padding:12px 14px;border-radius:12px;font-size:15px;line-height:1.45}
+.fb.good{background:rgba(42,157,143,.16);border:1px solid var(--teal)}
+.fb.bad{background:rgba(255,107,74,.14);border:1px solid var(--coral)}
+.navwrap{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
+.navbox{width:34px;height:34px;border-radius:9px;border:2px solid var(--line);background:var(--card);color:var(--ink);font-weight:700;font-size:13px;padding:0}
+.navbox.cur{border-color:var(--indigo);box-shadow:0 0 0 2px var(--indigo) inset}
+.navbox.done.ok{background:rgba(42,157,143,.28);border-color:var(--teal)}
+.navbox.done.no{background:rgba(255,107,74,.28);border-color:var(--coral)}
+.score{font-size:46px;font-weight:800;color:var(--indigo);text-align:center}.c{text-align:center}.small{font-size:13px;opacity:.7}
+.revh{margin:22px 0 8px;font-size:16px;color:var(--indigo)}
+.ri{border:1px solid var(--line);border-left:6px solid var(--teal);border-radius:10px;padding:10px 12px;margin-bottom:8px;font-size:14px;line-height:1.45;text-align:left}
+.ri.nor{border-left-color:var(--coral)}.mk{font-size:18px;font-weight:800}.okr .mk{color:var(--teal)}.nor .mk{color:var(--coral)}
+.rq{opacity:.7;margin:2px 0 4px}.rc{color:var(--teal)}
+</style></head><body><div class="wrap">
+<h1>Chapter 1 Reading Literature</h1><p class="sub" id="sub">Pick a lesson to practice</p>
+<div class="stage" id="st"></div>
+</div>
+<script src="passages.js"></script>
+<script>
+// ---- Chapter 1 data (new format) ----
+const PASS = {
+ "story_margaret": {
+  "label": "the story about Margaret, Robert, Amy and the narrow bridge",
+  "pages": "4",
+  "banner": "Questions 1-3 are based on the story",
+  "organizer": "ch1_l1_p05_organizer.jpg"
+ },
+ "story_elephant": {
+  "label": "the story about the little elephant and the monkey, swans and bear",
+  "pages": "6",
+  "banner": "Question 4 is based on the story",
+  "organizer": "ch1_l1_p07_organizer.jpg"
+ },
+ "poem_animals": {
+  "label": "the poem about animals (camels, giraffes, bears, hyenas, dolphins, kangaroos, monkeys)",
+  "pages": "8",
+  "banner": "Questions 5-8 are based on the poem",
+  "organizer": null
+ },
+ "story_lady_doctor": {
+  "label": "the story about the wealthy woman and the doctor",
+  "pages": "9-10",
+  "banner": "Question 9 is based on the story",
+  "organizer": "ch1_l1_p10_organizer.jpg"
+ },
+ "story_brandon": {
+  "label": "the story about Brandon and the forest",
+  "pages": "10-11",
+  "banner": "Question 10 is based on the story",
+  "organizer": "ch1_l1_p11_organizer.jpg"
+ },
+ "story_tess": {
+  "label": "the story about Tess, her brother Andrew and the miracle",
+  "pages": "12-13",
+  "banner": "Questions 11 and 12 are based on the story",
+  "organizer": "ch1_l1_p13_organizer.jpg"
+ }
+};
+const L1 = [
+ {
+  "p": "story_margaret",
+  "n": "1",
+  "q": "How is Margaret related to Amy?",
+  "exp": "The opening lines of the story say Amy is Margaret’s daughter, so Margaret is her mother.",
+  "t": "mc",
+  "opts": [
+   "She is her cousin.",
+   "She is her friend.",
+   "She is her mother.",
+   "She is her aunt."
+  ],
+  "a": 2
+ },
+ {
+  "p": "story_margaret",
+  "n": "2",
+  "q": "Who slipped on the narrow bridge?",
+  "exp": "Rebecca is the one who slipped while crossing; look at the start of the fourth paragraph.",
+  "t": "mc",
+  "opts": [
+   "Amy",
+   "Margaret",
+   "Robert",
+   "Rebecca"
+  ],
+  "a": 3
+ },
+ {
+  "p": "story_margaret",
+  "n": "3",
+  "q": "Why did Robert and Margaret go along with the girls?",
+  "exp": "The market and the school were both across the river, so they walked together on the way to buy groceries.",
+  "t": "mc",
+  "opts": [
+   "They wanted to walk them to school.",
+   "They wanted to go for a walk.",
+   "They wanted to buy some groceries.",
+   "They wanted to walk on the bridge."
+  ],
+  "a": 2
+ },
+ {
+  "p": "story_elephant",
+  "n": "4",
+  "q": "According to the story, why does an elephant’s skin look ‘wrinkly’?",
+  "exp": "The swans describe the elephant’s skin as having many folds, which is why it looks wrinkly (fifth paragraph).",
+  "t": "mc",
+  "opts": [
+   "It is grey in color.",
+   "It has too many folds.",
+   "It is thick.",
+   "It is hard."
+  ],
+  "a": 1
+ },
+ {
+  "p": "poem_animals",
+  "n": "5",
+  "q": "According to the poem, where is the camel’s hump?",
+  "exp": "The second line of the first stanza places the camel’s hump on its back.",
+  "t": "mc",
+  "opts": [
+   "on its stomach",
+   "on its back",
+   "underneath its stomach",
+   "it has no hump"
+  ],
+  "a": 1
+ },
+ {
+  "p": "poem_animals",
+  "n": "6",
+  "q": "According to the poem, which animal is long-legged?",
+  "exp": "The third line of the first stanza calls the giraffe long-legged.",
+  "t": "mc",
+  "opts": [
+   "Hyena",
+   "Camel",
+   "Giraffe",
+   "Elephant"
+  ],
+  "a": 2
+ },
+ {
+  "p": "poem_animals",
+  "n": "7 (Part A)",
+  "q": "What does the poem say about Dolphin?",
+  "exp": "The first stanza says dolphins are slippery and sleek. This hints that they live in water and move through it easily.",
+  "t": "self",
+  "model": "Dolphins are slippery and sleek."
+ },
+ {
+  "p": "poem_animals",
+  "n": "7 (Part B)",
+  "q": "What does the poem say causes dolphins to be slippery?",
+  "exp": "The poem calls dolphins slippery and sleek; the book’s answer is that living in water and having smooth skin makes them slippery.",
+  "t": "self",
+  "model": "Being in the water and having smooth skin."
+ },
+ {
+  "p": "poem_animals",
+  "n": "8",
+  "q": "Read the Poem. Match each animal to its characteristic, put a tick mark against the characteristic for each animal.",
+  "exp": "Each ticked box matches the animal to the trait the poem gives it.",
+  "t": "grid",
+  "corner": "Animals",
+  "cols": [
+   "Has Hump",
+   "Has Pocket",
+   "Slippery",
+   "Long legged"
+  ],
+  "rows": [
+   "Kangaroo",
+   "Camel",
+   "Giraffe",
+   "Dolphins"
+  ],
+  "a": [
+   "0:1",
+   "1:0",
+   "2:3",
+   "3:2"
+  ],
+  "show": "Kangaroo → Has Pocket; Camel → Has Hump; Giraffe → Long legged; Dolphins → Slippery."
+ },
+ {
+  "p": "story_lady_doctor",
+  "n": "9",
+  "q": "What was the old lady’s eye sight like before her operation?",
+  "exp": "The second sentence of the story says her eyesight was very poor, so she could see, but not clearly.",
+  "t": "mc",
+  "opts": [
+   "She was not able to see anything.",
+   "She could only see one thing.",
+   "She could see things but not very clearly.",
+   "She was totally blind."
+  ],
+  "a": 2
+ },
+ {
+  "p": "story_brandon",
+  "n": "10",
+  "q": "What is the best title for this story?",
+  "exp": "A good title says what the whole story is about: a boy who finds confidence and courage to cross a scary forest.",
+  "t": "self",
+  "model": "Confidence and Courage (a sample title; other fitting titles can be accepted by a parent or teacher)."
+ },
+ {
+  "p": "story_tess",
+  "n": "11",
+  "q": "Who saved Andrew in this story?",
+  "exp": "The neurosurgeon performed the operation for free, which saved Andrew’s life.",
+  "t": "self",
+  "model": "The Neurosurgeon"
+ },
+ {
+  "p": "story_tess",
+  "n": "12",
+  "q": "Why were Tess’s parents worried?",
+  "exp": "The first paragraph says Andrew was very sick and the family could not afford his treatment.",
+  "t": "mc",
+  "opts": [
+   "They did not know what was wrong with her brother.",
+   "Tess had little money in her piggybank.",
+   "Andrew was sick and they had no money for treatment.",
+   "Tess did not know the price of a miracle."
+  ],
+  "a": 2
+ }
+];
+const LES = [
+ {name:'Lesson 1: The Question Session', qs:L1}
+];
+
+// ---- engine: lesson list, one question per screen, instant feedback, review ----
+const LT = ['Ⓐ', 'Ⓑ', 'Ⓒ', 'Ⓓ'];
+const $ = id => document.getElementById(id);
+const esc = t => String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+let lesson = null, i = 0, answered = {}, selMC = null, timerInt = null;
+
+function stopTimer() { if (timerInt) { clearInterval(timerInt); timerInt = null; } }
+function startTimer() {
+  stopTimer(); let t = 300;
+  const tick = () => {
+    const n = $('timer'); if (!n) { stopTimer(); return; }
+    n.textContent = Math.floor(t / 60) + ':' + String(t % 60).padStart(2, '0');
+    n.style.color = t <= 60 ? 'var(--coral)' : 'var(--indigo)';
+    if (t <= 0) stopTimer(); else t--;
+  };
+  tick(); timerInt = setInterval(tick, 1000);
+}
+
+function passageHTML(id) {
+  const p = PASS[id]; if (!p) return '';
+  const txt = (typeof PASSAGES !== 'undefined' && PASSAGES[id] || '').trim();
+  let h = '<div class="pbox"><span class="ban">' + esc(p.banner) + '</span>';
+  if (txt) h += '<div class="txt">' + esc(txt) + '</div>';
+  h += '<div class="ref">' + (txt ? '' : 'Read ' + esc(p.label) + ' in your workbook. ') + '(Workbook page ' + esc(p.pages) + ')</div>';
+  ['', '_1', '_2', '_3', '_4', '_5'].forEach(function (sx) { h += '<img class="pimg" src="images/passages/' + id + sx + '.png" alt="" onload="this.parentNode.classList.add(\'hasimg\')" onerror="this.remove()">'; });
+  if (p.organizer) h += '<img src="images/' + p.organizer + '" alt="Graphic organizer from the book">';
+  return h + '</div>';
+}
+
+function correctText(q) {
+  if (q.t === 'mc') return LT[q.a] + ' ' + q.opts[q.a];
+  return q.show || q.model || '';
+}
+
+function home() {
+  stopTimer(); lesson = null; $('sub').textContent = 'Pick a lesson to practice';
+  $('st').innerHTML = '<div class="list">' + LES.map((l, k) =>
+    '<button class="les" onclick="start(' + k + ')"><span>' + l.name + '</span><small>' + l.qs.length + ' questions</small></button>').join('') + '</div>';
+}
+function start(k) { lesson = k; i = 0; answered = {}; selMC = null; show(); }
+function goTo(k) { if (lesson === null) return; i = k; show(); }
+function navBar(Q) {
+  let b = '';
+  for (let k = 0; k < Q.length; k++) {
+    const a = answered[k]; let c = 'navbox';
+    if (k === i) c += ' cur'; if (a) c += ' done ' + (a.ok ? 'ok' : 'no');
+    b += '<button class="' + c + '" onclick="goTo(' + k + ')">' + (k + 1) + '</button>';
+  }
+  return '<div class="navwrap">' + b + '</div>';
+}
+function record(ok, given, extra) { answered[i] = Object.assign({ ok: ok, given: given }, extra || {}); }
+function advance() { i++; show(); }
+
+// ---- screen rendering ----
+function reviewScreen(L, Q) {
+  stopTimer();
+  const score = Q.filter((q, k) => answered[k] && answered[k].ok).length;
+  const pct = Math.round(score / Q.length * 100);
+  const rows = Q.map((q, k) => {
+    const r = answered[k] || { ok: false, given: '(no answer)' };
+    return '<div class="ri ' + (r.ok ? 'okr' : 'nor') + '"><div><span class="mk">' + (r.ok ? '✓' : '✗') + '</span> <b>Question ' + esc(q.n) + '</b></div>' +
+      '<div class="rq">' + esc(q.q.slice(0, 110)) + (q.q.length > 110 ? '…' : '') + '</div>' +
+      '<div><b>Your answer:</b> ' + esc(r.given || '(no answer)') + '</div>' +
+      (r.ok ? '' : '<div class="rc"><b>Correct answer:</b> ' + esc(correctText(q)) + '</div>') + '</div>';
+  }).join('');
+  $('st').innerHTML = '<div class="c"><div class="score">' + score + '/' + Q.length + '</div><p><b>Test score: ' + pct + '%</b><br>' + score + ' correct · ' + (Q.length - score) + ' wrong</p>' +
+    '<p class="small">' + L.name + '</p><button class="nb" onclick="start(lesson)">Try again</button>' +
+    (lesson < LES.length - 1 ? '<button class="nb alt" onclick="start(' + (lesson + 1) + ')">Next lesson →</button>' : '') +
+    '<button class="nb ghost" onclick="home()">All lessons</button></div><h3 class="revh">Review of your answers</h3>' + rows;
+}
+
+function questionBody(q) {
+  if (q.t === 'mc') return '<div class="opts">' + q.opts.map((o, j) =>
+    '<button class="opt" id="m' + j + '" onclick="selectMC(' + j + ')"><b class="lt">' + LT[j] + '</b><span>' + o + '</span></button>').join('') +
+    '</div><button class="nb" id="chk" onclick="confirmMC()" disabled>OK</button>';
+  if (q.t === 'grid') return '<table><tr><th>' + q.corner + '</th>' + q.cols.map(c => '<th>' + c + '</th>').join('') + '</tr>' +
+    q.rows.map((r, k) => '<tr><td style="text-align:left">' + r + '</td>' + q.cols.map((c, j) => '<td><input type="checkbox" id="g' + k + '_' + j + '"></td>').join('') + '</tr>').join('') +
+    '</table><button class="nb" id="chk" onclick="chkGrid()">Check</button>';
+  return '<textarea id="ta" placeholder="Write your answer here..."></textarea><button class="nb" id="chk" onclick="showModel()">Show model answer</button>';
+}
+
+function show() {
+  if (lesson === null) { home(); return; }
+  const L = LES[lesson], Q = L.qs;
+  $('sub').innerHTML = L.name;
+  if (i >= Q.length) { reviewScreen(L, Q); return; }
+  const q = Q[i], locked = answered[i];
+  $('st').innerHTML = '<button class="back" onclick="home()">← All lessons</button>' + navBar(Q) +
+    '<div class="track"><div class="fill" style="width:' + (i / Q.length * 100) + '%"></div></div>' +
+    '<div class="qn">QUESTION ' + esc(q.n) + ' (' + (i + 1) + ' OF ' + Q.length + ')' +
+    (locked ? '' : '<span id="timer" style="float:right;font-weight:700;color:var(--indigo)">5:00</span>') + '</div>' +
+    passageHTML(q.p) + '<p class="qt">' + q.q + '</p>' + questionBody(q) + '<div id="fb"></div>';
+  if (locked) applyLock(q, locked); else startTimer();
+}
+
+function feedback(ok, msg, locked) {
+  $('fb').innerHTML = '<div class="fb ' + (ok ? 'good' : 'bad') + '">' + (ok ? (locked ? '✓ You answered this correctly. ' : 'Nice work! ') : (locked ? '✗ Not quite. ' : 'Not quite — ')) + msg + '</div>' +
+    '<button class="nb alt" onclick="advance()">' + (locked ? 'Continue →' : 'Next') + '</button>';
+  const c = $('chk'); if (c) c.style.display = 'none';
+}
+
+// ---- answer handlers ----
+const cur = () => LES[lesson].qs[i];
+let pendingW = '';
+
+function selectMC(j) {
+  selMC = j;
+  document.querySelectorAll('.opts .opt').forEach((o, k) => o.classList.toggle('sel', k === j));
+  $('chk').disabled = false;
+}
+function paintMC(q, chosen) {
+  document.querySelectorAll('.opts .opt').forEach((o, k) => {
+    o.disabled = true; o.classList.remove('sel');
+    if (k === q.a) o.classList.add('ok'); else if (k === chosen) o.classList.add('no');
+  });
+}
+function confirmMC() {
+  if (selMC === null) return;
+  const q = cur(), j = selMC; selMC = null; stopTimer();
+  paintMC(q, j); const ok = j === q.a;
+  record(ok, LT[j] + ' ' + q.opts[j], { sel: j });
+  feedback(ok, q.exp, false);
+}
+
+function gridPicks(q) {
+  const out = [];
+  q.rows.forEach((r, k) => q.cols.forEach((c, j) => { const e = $('g' + k + '_' + j); if (e && e.checked) out.push(k + ':' + j); }));
+  return out;
+}
+function chkGrid() {
+  const q = cur(), picks = gridPicks(q); stopTimer();
+  const ok = picks.slice().sort().join(',') === q.a.slice().sort().join(',');
+  document.querySelectorAll('table input').forEach(e => e.disabled = true);
+  record(ok, picks.length ? picks.map(p => { const [r, c] = p.split(':'); return q.rows[r] + ' → ' + q.cols[c]; }).join('; ') : '(nothing ticked)', { picks: picks });
+  feedback(ok, ok ? q.exp : q.exp + ' Correct: ' + q.show, false);
+}
+
+function showModel() {
+  const q = cur(), ta = $('ta'); stopTimer();
+  const written = ta.value.trim(); ta.disabled = true; $('chk').style.display = 'none';
+  $('fb').innerHTML = '<div class="fb good"><b>Model answer:</b> ' + q.model + '<br>' + q.exp + '</div>' +
+    '<p class="small">Compare with what you wrote, then mark yourself:</p>' +
+    '<button class="nb alt" onclick="selfMark(true)">I got it</button><button class="nb ghost" onclick="selfMark(false)">Not yet</button>';
+  pendingW = written;
+}
+function selfMark(ok) {
+  const w = pendingW || '';
+  record(ok, w || '(left blank)', { written: w });
+  advance();
+}
+
+function applyLock(q, a) {
+  stopTimer();
+  if (q.t === 'mc') paintMC(q, a.sel);
+  else if (q.t === 'grid') q.rows.forEach((r, k) => q.cols.forEach((c, j) => { const e = $('g' + k + '_' + j); if (e) { e.checked = (a.picks || []).includes(k + ':' + j); e.disabled = true; } }));
+  else { const t = $('ta'); if (t) { t.value = a.written || ''; t.disabled = true; } }
+  const c = $('chk'); if (c) c.style.display = 'none';
+  const msg = q.t === 'self' ? '<b>Model answer:</b> ' + q.model + '<br>' + q.exp : q.exp;
+  feedback(a.ok, msg, true);
+}
+
+home();
+</script>
+<script src="../njsla-shared/sling.js"></script>
+<script>Sling.attach();</script>
+</body></html>

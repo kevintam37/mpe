@@ -1,0 +1,1221 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Spelling Practice</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@500;700;800&display=swap">
+<style>
+/* Layout: one centered play column. Home = word board + five game buttons. Games = progress bar, prompt, answer area, feedback bar. */
+:root{
+  --bg:#eef3fb; --surface:#ffffff; --ink:#132043; --muted:#5b6788; --line:#d5dded;
+  --accent:#2f5bea; --accent-ink:#ffffff; --gold:#f5a800; --good:#178a4c; --good-bg:#dff5e8; --bad:#c62f3d; --bad-bg:#fde3e5;
+  --tile:#e3ebfd; --shadow:0 2px 0 rgba(19,32,67,.12);
+  --display:"Fredoka","Trebuchet MS",system-ui,sans-serif; --body:"Nunito",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0f1730; --surface:#18234a; --ink:#eaf0ff; --muted:#a1aed3; --line:#2c3a6b;
+  --accent:#7d9bff; --accent-ink:#0f1730; --gold:#ffc23d; --good:#5fd394; --good-bg:#12382a; --bad:#ff8892; --bad-bg:#3d1b24;
+  --tile:#25336a; --shadow:0 2px 0 rgba(0,0,0,.4); color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0f1730; --surface:#18234a; --ink:#eaf0ff; --muted:#a1aed3; --line:#2c3a6b;
+  --accent:#7d9bff; --accent-ink:#0f1730; --gold:#ffc23d; --good:#5fd394; --good-bg:#12382a; --bad:#ff8892; --bad-bg:#3d1b24;
+  --tile:#25336a; --shadow:0 2px 0 rgba(0,0,0,.4); color-scheme:dark}
+*{box-sizing:border-box}
+html{color-scheme:light}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:18px;line-height:1.45;padding-inline:16px;padding-block:20px 40px}
+main{max-width:720px;margin-inline:auto;display:flex;flex-direction:column;gap:18px}
+h1,h2,h3{font-family:var(--display);margin:0;line-height:1.15;text-wrap:balance;font-weight:600}
+h1{font-size:2rem} h2{font-size:1.4rem}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.tag{font-size:.8rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:800}
+.card{background:var(--surface);border:2px solid var(--line);border-radius:18px;padding:18px}
+.words{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px}
+.w small{display:block;color:var(--muted);font-size:.8rem;line-height:1.3;font-weight:600;margin-top:2px}
+.w{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;background:var(--tile);border-radius:12px;padding:10px 14px;border:0;text-align:left;min-width:0}
+.w b{font-family:var(--display);font-weight:600;font-size:1.1rem;overflow-wrap:anywhere}
+.stars{color:var(--gold);letter-spacing:1px;white-space:nowrap;font-size:1rem}
+.stars i{font-style:normal;color:var(--line)}
+.tests{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
+.test strong{font-size:1.4rem}
+.modes{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px}
+.mode{background:var(--accent);color:var(--accent-ink);border:0;border-radius:16px;padding:16px;text-align:left;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:4px}
+.mode strong{font-family:var(--display);font-size:1.25rem;font-weight:600}
+.mode span{font-size:.92rem;font-weight:700;opacity:.92}
+.mode:active{transform:translateY(2px)}
+.btn{background:var(--accent);color:var(--accent-ink);border:0;border-radius:12px;padding:12px 20px;font-weight:800;box-shadow:var(--shadow)}
+.btn.ghost{background:transparent;color:var(--ink);border:2px solid var(--line);box-shadow:none}
+.btn:disabled{opacity:.45;cursor:default}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.bar{height:12px;border-radius:99px;background:var(--line);overflow:hidden;flex:1;min-width:100px}
+.bar>div{height:100%;background:var(--gold);transition:width .3s}
+.prompt{display:flex;flex-direction:column;gap:12px;align-items:flex-start}
+.sentence{font-size:1.05rem;color:var(--muted);margin:0}
+.big{font-family:var(--display);font-size:clamp(2rem,9vw,3.2rem);font-weight:600;letter-spacing:.02em;overflow-wrap:anywhere}
+.syl{font-family:var(--display);font-size:1.4rem;color:var(--accent);letter-spacing:.06em}
+.slots{display:flex;flex-wrap:wrap;gap:6px}
+.slot{width:clamp(28px,7.8vw,46px);height:clamp(38px,10vw,56px);border-radius:10px;border:2px dashed var(--line);background:var(--surface);display:grid;place-items:center;font-family:var(--display);font-size:clamp(1.2rem,5vw,1.8rem);font-weight:600;padding:0}
+.slot.fixed{background:var(--tile);border:2px solid var(--tile)}
+.slot.filled{border:2px solid var(--accent);background:var(--tile)}
+.bank{display:flex;flex-wrap:wrap;gap:8px}
+.tile{width:clamp(40px,10vw,52px);height:clamp(44px,11vw,56px);border-radius:12px;border:0;background:var(--accent);color:var(--accent-ink);font-family:var(--display);font-size:1.5rem;font-weight:600;box-shadow:var(--shadow);padding:0}
+.tile:disabled{opacity:.25;box-shadow:none}
+input.type{width:100%;font-family:var(--display);font-size:1.7rem;font-weight:600;padding:12px 14px;border-radius:12px;border:2px solid var(--line);background:var(--surface);color:var(--ink);letter-spacing:.06em}
+.fb{border-radius:14px;padding:12px 16px;font-weight:800;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.fb.good{background:var(--good-bg);color:var(--good)} .fb.bad{background:var(--bad-bg);color:var(--bad)} .fb.info{background:var(--tile);color:var(--ink)}
+.fb .word{font-family:var(--display);letter-spacing:.06em}
+.choices{display:flex;gap:12px;flex-wrap:wrap}
+.choices .btn{font-family:var(--display);font-size:1.5rem;min-width:130px}
+.shake{animation:shake .35s}
+@keyframes shake{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.spk{display:inline-flex;align-items:center;gap:8px}
+.score{font-family:var(--display);font-size:3rem;font-weight:700;color:var(--accent)}
+.miss{color:var(--bad);font-weight:800}
+.hit{color:var(--good);font-weight:800}
+.boss{display:flex;align-items:center;gap:14px;background:var(--surface);border:2px solid var(--line);border-radius:16px;padding:10px 14px}
+.boss svg{width:84px;height:auto;flex:none}
+.hp{flex:1;min-width:0;display:flex;flex-direction:column;gap:6px}
+.hpbar{height:14px;border-radius:99px;background:var(--line);overflow:hidden}
+.hpbar>div{height:100%;background:var(--bad);transition:width .4s}
+.hearts{color:var(--bad);font-size:1.4rem;letter-spacing:3px;line-height:1}
+.hearts i{font-style:normal;color:var(--line)}
+.mon{animation:bob 2.4s ease-in-out infinite}
+.hurt .mon{animation:shake .4s}
+@keyframes bob{50%{transform:translateY(-4px)}}
+.bigmon svg{width:150px;height:auto}
+.chip{font-weight:800;font-size:.85rem;color:var(--accent);white-space:nowrap;min-width:0}
+.mode.alt{background:var(--surface);color:var(--ink);border:2px solid var(--accent)}
+.stickers{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+.sticker{display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px;padding:14px;border-radius:16px;background:var(--surface);border:2px solid var(--line);min-width:0}
+.sticker svg{width:72px;height:72px}
+.sticker b{font-family:var(--display);font-weight:600}
+.sticker small{color:var(--muted);font-size:.8rem;line-height:1.3}
+.sticker.locked{opacity:.55}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(20px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--bg);padding:12px 18px;border-radius:99px;font-weight:800;z-index:10;max-width:90vw;text-align:center}
+.arena{border:2px solid var(--line);border-radius:16px;overflow:hidden;background:var(--tile)}
+.arena canvas{display:block;width:100%;height:auto;aspect-ratio:2/1;touch-action:none;cursor:grab}
+.etools{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.etool{background:var(--tile);color:var(--ink);border:2px solid var(--line);box-shadow:none}
+.etool.on{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.pill{font:inherit;color:inherit;cursor:pointer;font-weight:800;font-size:.9rem;background:var(--surface);border:2px solid var(--line);border-radius:99px;padding:4px 12px;white-space:nowrap}
+.rep{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:8px 12px;border-radius:10px;background:var(--tile);width:100%}
+.rep b{font-family:var(--display);font-weight:600}
+.reps{display:flex;flex-direction:column;gap:6px;width:100%}
+@media (prefers-reduced-motion:reduce){.shake,.mon,.hurt .mon{animation:none}.bar>div{transition:none}}
+</style>
+</head>
+<body>
+<script src="minigames.js?v=1"></script>
+
+
+<main id="app"></main>
+
+<script>
+function W(w,s,x,d,alt){return{w:w,s:s,x:x,d:d,alt:alt?[alt]:[]}}
+var TESTS=[
+ {id:"2026-bee-5",title:"5th Grade Bee Study Words",bee:true,sort:7,
+  note:"These are the 50 challenging fifth-grade words from the 2026-2027 Scripps National Spelling Bee study list. Capital letters do not matter when you type. For piñata you can type pinata or piñata. For fertilizer, fertiliser (British spelling) also counts.",
+  words:[
+   W("Halloween","Hal-low-een","We wore costumes and went trick-or-treating on Halloween.","A holiday on October 31 when children dress up in costumes."),
+   W("compliment","com-pli-ment","She gave me a compliment on my drawing.","A kind remark that praises someone."),
+   W("compromise","com-pro-mise","We reached a compromise and split the last slice of pizza.","An agreement in which each side gives up a little of what it wants."),
+   W("incident","in-ci-dent","The teacher wrote a report about the incident on the playground.","Something that happens, especially something unusual."),
+   W("Japanese","Jap-a-nese","She is learning to speak Japanese.","Having to do with Japan, its people, or its language."),
+   W("investment","in-vest-ment","Buying a good pair of shoes was a smart investment.","Money, time, or effort put into something to get a benefit later."),
+   W("bifocals","bi-fo-cals","Grandpa wears bifocals to read and to see far away.","Eyeglasses with lenses that help you see both close up and far away."),
+   W("cutlery","cut-ler-y","Please set the cutlery next to each plate.","Knives, forks, and spoons used for eating."),
+   W("chisel","chis-el","The sculptor used a chisel to carve the stone.","A tool with a sharp, flat edge used to cut or shape wood, stone, or metal."),
+   W("fundraiser","fund-rais-er","Our school held a fundraiser to buy new library books.","An event held to collect money for a cause."),
+   W("geologist","ge-ol-o-gist","The geologist studied the rocks in the canyon.","A scientist who studies the Earth, including its rocks and soil."),
+   W("bellowed","bel-lowed","The coach bellowed across the field.","Shouted in a loud, deep voice."),
+   W("organism","or-gan-ism","A tiny organism lives in a drop of pond water.","A living thing, such as a plant, an animal, or a germ."),
+   W("quail","quail","A quail and her chicks ran across the path.","A small, plump bird that nests on the ground."),
+   W("atmosphere","at-mos-phere","Earth's atmosphere is made of layers of gases.","The layer of gases that surrounds a planet."),
+   W("disappointment","dis-ap-point-ment","She tried to hide her disappointment when the trip was canceled.","The sad feeling you get when something you hoped for does not happen."),
+   W("truant","tru-ant","The truant student skipped school to go fishing.","A student who stays away from school without permission."),
+   W("pamphlet","pam-phlet","The museum gave us a pamphlet about dinosaurs.","A thin booklet of information with a paper cover."),
+   W("helium","he-li-um","The balloon floated up because it was filled with helium.","A very light gas that is lighter than air."),
+   W("suggested","sug-gest-ed","Mom suggested that we take a walk after dinner.","Offered an idea for someone to think about."),
+   W("chimpanzees","chim-pan-zees","The chimpanzees swung from branch to branch.","Smart apes with dark fur that live in Africa."),
+   W("desperate","des-per-ate","The desperate hikers searched everywhere for water.","Feeling a great need and having little hope."),
+   W("annoyance","an-noy-ance","He sighed with annoyance when the alarm rang again.","A feeling of being bothered or a little angry."),
+   W("interruption","in-ter-rup-tion","The loud phone call was an interruption.","A break in something that is going on."),
+   W("concentrate","con-cen-trate","I need quiet to concentrate on my homework.","To keep all of your attention on one thing."),
+   W("piñata","pi-ña-ta","The kids took turns hitting the piñata at the party.","A decorated container filled with candy that is hit until it breaks open.","pinata"),
+   W("territory","ter-ri-to-ry","The wolves defended their territory.","An area of land that belongs to or is controlled by someone."),
+   W("stragglers","strag-glers","The stragglers walked slowly behind the rest of the group.","People who fall behind or move more slowly than the others."),
+   W("albino","al-bi-no","The albino rabbit had white fur and pink eyes.","A person or animal born with very little color in the skin, hair, and eyes."),
+   W("ridiculous","ri-dic-u-lous","The clown wore a ridiculous hat.","Very silly or hard to believe."),
+   W("monorail","mon-o-rail","The monorail glided above the park on a single track.","A train that runs on just one rail."),
+   W("exploratory","ex-plor-a-to-ry","The doctor ordered an exploratory test to learn more.","Done in order to find out more about something."),
+   W("indigo","in-di-go","The sky turned a deep indigo after sunset.","A dark blue-purple color."),
+   W("bratwurst","brat-wurst","We grilled bratwurst for dinner.","A kind of German sausage."),
+   W("alphabetical","al-pha-bet-i-cal","The names on the list are in alphabetical order.","Arranged in the order of the letters of the alphabet."),
+   W("integrity","in-teg-ri-ty","She showed integrity by telling the truth.","Being honest and doing what is right."),
+   W("Oregon","Or-e-gon","Oregon is a state on the West Coast.","A state in the northwestern United States."),
+   W("rebuttal","re-but-tal","He gave a rebuttal to the other team's argument.","An answer that argues against what someone else has said."),
+   W("prejudice","prej-u-dice","Prejudice means judging people unfairly before you know them.","An unfair opinion formed without knowing the facts."),
+   W("solidarity","sol-i-dar-i-ty","The class stood in solidarity with their friend.","Unity among people who share goals and support each other."),
+   W("calico","cal-i-co","The calico cat has patches of white, black, and orange.","Having spots or patches of several colors, like some cats and cloth."),
+   W("sputnik","sput-nik","Sputnik was the first satellite sent into space.","The first human-made satellite, launched into space in 1957."),
+   W("cartridge","car-tridge","She put a new ink cartridge in the printer.","A small case that holds something, such as ink, and fits into a machine."),
+   W("segregation","seg-re-ga-tion","The class studied the history of segregation in America.","Keeping people or groups apart, often unfairly."),
+   W("tortillas","tor-til-las","We wrapped beans and cheese in warm tortillas.","Thin, flat, round breads made from corn or wheat flour."),
+   W("civilian","ci-vil-ian","A civilian is not a member of the military.","A person who is not in the military or the police."),
+   W("fertilizer","fer-ti-liz-er","The farmer spread fertilizer on the field.","Something added to soil to help plants grow.","fertiliser"),
+   W("apprentice","ap-pren-tice","The apprentice learned carpentry from an expert.","A person who learns a job by working with a skilled worker."),
+   W("synthetic","syn-thet-ic","Nylon is a synthetic fabric.","Made by people instead of found in nature."),
+   W("Caesar","Cae-sar","Julius Caesar was a powerful leader of ancient Rome.","The title of the emperors of Rome. Julius Caesar was a famous Roman leader.")],
+  items:[]},
+ {id:"2026-10-w4",week:4,month:"October",year:2026,sort:6,pair:["through","threw"],
+  hint:"<b>through</b> means going in one side and out the other. <b>threw</b> is the past tense of throw.",
+  words:[
+   W("confession","con-fes-sion","He made a confession that he ate the last cookie.","Telling the truth about something wrong that you did."),
+   W("selection","se-lec-tion","The library has a large selection of books.","A choice, or a group of things to choose from."),
+   W("depression","de-pres-sion","Rain collected in a deep depression in the ground.","A hollow place. A low area that sinks below the surface around it."),
+   W("procession","pro-ces-sion","The parade was a long procession of floats.","A line of people or vehicles moving along in order, like a parade."),
+   W("possession","pos-ses-sion","My bike is my favorite possession.","Something that you own."),
+   W("discuss","dis-cuss","Let's discuss our plan for the project.","To talk about something with other people."),
+   W("express","ex-press","Words can express how we feel.","To show a feeling or an idea with words or actions."),
+   W("collection","col-lec-tion","She has a collection of seashells.","A group of things gathered together."),
+   W("protect","pro-tect","A helmet helps protect your head.","To keep safe from harm."),
+   W("emission","e-mis-sion","The factory worked to reduce the emission of smoke.","Something let out into the air, like gas or smoke."),
+   W("through","through","We walked through the tunnel.","Going in one side and out the other."),
+   W("threw","threw","He threw the ball over the fence.","The past tense of throw. Sent something through the air with your arm.")],
+  items:[["We walked ___ the forest.","through"],["She ___ the ball to her friend.","threw"],
+   ["The train went ___ the tunnel.","through"],["He ___ his hat into the air.","threw"],
+   ["Water flows ___ the pipe.","through"],["I ___ away the old papers.","threw"],
+   ["We looked ___ the window.","through"],["The pitcher ___ a fast ball.","threw"],
+   ["Read the book all the way ___.","through"],["Yesterday, Dad ___ the frisbee to the dog.","threw"]]},
+ {id:"2026-10-w3",week:3,month:"October",year:2026,sort:5,pair:["quiet","quite"],
+  hint:"<b>quiet</b> means with little or no noise. <b>quite</b> means very or completely.",
+  words:[
+   W("tutorial","tu-to-ri-al","The online tutorial showed us how to play the game.","A lesson that teaches you how to do something, step by step."),
+   W("memorial","me-mo-ri-al","We visited the memorial to honor the soldiers.","Something built or done to remember a person or an event."),
+   W("burial","bur-i-al","The explorers found an ancient burial ground.","Placing someone who has died into a grave."),
+   W("heroic","he-ro-ic","The dog made a heroic rescue.","Very brave, like a hero."),
+   W("angelic","an-gel-ic","The sleeping baby had an angelic face.","Like an angel. Very kind, good, and gentle."),
+   W("rhythmic","rhyth-mic","The drummer kept a rhythmic beat.","Having a regular, repeating beat or pattern."),
+   W("accidental","ac-ci-den-tal","Spilling the juice was accidental.","Happening by chance, not on purpose."),
+   W("logical","log-i-cal","It is logical to wear a coat in winter.","Making sense. Based on clear, careful thinking."),
+   W("global","glo-bal","Climate change is a global problem.","Having to do with the whole world."),
+   W("territorial","ter-ri-to-ri-al","The territorial dog barked at every stranger.","Guarding an area as its own. Also, having to do with an area of land."),
+   W("quiet","qui-et","Please be quiet in the library.","Making little or no noise."),
+   W("quite","quite","The movie was quite funny.","Very, or completely.")],
+  items:[["The library is very ___ today.","quiet"],["It was ___ cold outside.","quite"],
+   ["Please be ___ during the test.","quiet"],["I am ___ sure I locked the door.","quite"],
+   ["The ___ night helped me sleep.","quiet"],["That puzzle is ___ hard.","quite"],
+   ["The mouse was ___ as it crept across the floor.","quiet"],["She has ___ a few friends.","quite"],
+   ["Let's find a ___ spot to read.","quiet"],["He ran ___ fast to catch the bus.","quite"]]},
+ {id:"2026-09-w4",week:4,month:"September",year:2026,sort:3,pair:["than","then"],
+  hint:"<b>than</b> compares two things. <b>then</b> tells what happens next.",
+  words:[
+   W("courageous","cou-ra-geous","The courageous firefighter ran back into the building.","Brave. Doing the right thing even when it is scary or hard."),
+   W("marvelous","mar-vel-ous","We saw a marvelous rainbow after the storm.","Wonderful and amazing. Extremely good."),
+   W("humorous","hu-mor-ous","My dad told a humorous story at dinner.","Funny. Full of jokes or fun."),
+   W("rebellious","re-bel-lious","The rebellious cat refused to stay off the table.","Refusing to obey rules or follow orders."),
+   W("delightful","de-light-ful","The picnic in the park was delightful.","Very pleasing. Giving great joy."),
+   W("furious","fu-ri-ous","She was furious when her tower got knocked over.","Extremely angry."),
+   W("studious","stu-di-ous","The studious student read every night.","Spending a lot of time studying and learning."),
+   W("nervous","ner-vous","I felt nervous before my big test.","Worried or a little afraid about what might happen."),
+   W("successful","suc-cess-ful","Their science project was successful.","Reaching a goal. Doing well at what you tried."),
+   W("outrageous","out-ra-geous","The price of that toy is outrageous!","Shocking or far too much. Way over the top."),
+   W("than","than","My brother is taller than me.","A word used to compare two things."),
+   W("then","then","First we eat lunch, then we go outside.","At that time, or what happens next.")],
+  items:[["I would rather read ___ watch TV.","than"],["First we brush our teeth, ___ we go to bed.","then"],
+   ["A cheetah is faster ___ a horse.","than"],["Mix the flour and eggs, ___ add the milk.","then"],
+   ["This book is funnier ___ that one.","than"],["We finished dinner, and ___ we had dessert.","then"],
+   ["She is braver ___ she thinks.","than"],["If it rains, ___ we will stay inside.","then"],
+   ["My backpack is heavier ___ yours.","than"],["Wait until the bell rings, ___ line up.","then"]]}
+];
+var WORDS=[],TT=[],CUR=null;
+function cap(t){return t.charAt(0).toUpperCase()+t.slice(1)}
+function label(t){return t.title||("Week "+t.week+" of "+t.month+" "+t.year)}
+function norm(s){return String(s).normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase()}
+function same(v,o){var n=norm(v);return n===norm(o.w)||(o.alt||[]).some(function(a){return n===norm(a)})}
+var MODES={
+ boss:{name:"Monster Battle",desc:"Spell words to defeat the monster. Lose 3 hearts and it wins."},
+ arcade:{name:"Arcade Games",desc:"Spell words to earn plays, then pick a quick game: balloons, stars, hoops, matching, coins, gems or eggs."},
+ eng:{name:"Bridge Engineer",desc:"Spell a word, then design a real bridge. A heavy truck tests it. Build it right to level up."},
+ sling:{name:"Sling Showdown",desc:"Every word you spell earns a shot. Knock out the monsters."},
+ listen:{name:"Listen and Spell",desc:"Hear the word, then type it."},
+ gaps:{name:"Missing Letters",desc:"Tap the letters that fill the gaps."},
+ scramble:{name:"Unscramble",desc:"Put the mixed-up letters in order."},
+ thenthan:{name:"Word Pairs",desc:"Pick the right word for each sentence."},
+ flash:{name:"Study Cards",desc:"Look, listen, and learn each word."},
+ testday:{name:"Test Day",desc:"A real practice test. Words read aloud, no hints."}
+};
+var app=document.getElementById("app");
+var prog={};
+try{prog=JSON.parse(localStorage.getItem("sort3")||"{}")||{}}catch(e){prog={}}
+function save(){try{localStorage.setItem("sort3",JSON.stringify(prog))}catch(e){}}
+function bump(w,ok){var v=prog[w]||0;prog[w]=ok?Math.min(3,v+1):Math.max(0,v-1);save()}
+function shuffle(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t}return a}
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
+function stars(n){var s="";for(var i=0;i<3;i++)s+=i<n?"★":"<i>★</i>";return '<span class="stars" aria-label="'+n+' of 3 stars">'+s+"</span>"}
+function speak(t){try{var u=new SpeechSynthesisUtterance(t);u.rate=.85;u.lang="en-US";speechSynthesis.cancel();speechSynthesis.speak(u)}catch(e){}}
+var G=null;
+var badges={};
+try{badges=JSON.parse(localStorage.getItem("sort3_badges")||"{}")||{}}catch(e){badges={}}
+function saveB(){try{localStorage.setItem("sort3_badges",JSON.stringify(badges))}catch(e){}}
+function speakSeq(arr){try{speechSynthesis.cancel();arr.forEach(function(t){var u=new SpeechSynthesisUtterance(t);u.rate=.8;u.lang="en-US";speechSynthesis.speak(u)})}catch(e){}}
+var ICONS={
+ star:'<polygon points="36,14 41,28 56,28.5 44,37.5 48.5,52 36,43.5 23.5,52 28,37.5 16,28.5 31,28"/>',
+ bolt:'<polygon points="39,12 22,40 34,40 31,60 50,31 38,31"/>',
+ crown:'<polygon points="16,50 16,24 27,35 36,18 45,35 56,24 56,50"/>',
+ check:'<path d="M20 37l11 11 21-24" fill="none" stroke="var(--surface)" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>',
+ heart:'<path d="M36 54C14 40 18 20 30 20c4 0 6 2 6 5 0-3 2-5 6-5 12 0 16 20-6 34z"/>'
+};
+function sticker(icon,tone,locked){
+  return '<svg viewBox="0 0 72 72" aria-hidden="true"><circle cx="36" cy="36" r="33" style="fill:'+(locked?'var(--line)':'var(--'+tone+')')+'"/><g style="fill:'+(locked?'var(--muted)':'var(--surface)')+'">'+ICONS[icon]+'</g></svg>';
+}
+function badgeDefs(){
+  var d=[
+   {id:"first_star",name:"First Star",desc:"Spell a word right on the first try.",icon:"star",tone:"accent"},
+   {id:"streak5",name:"On Fire",desc:"Get 5 right in a row.",icon:"bolt",tone:"bad"},
+   {id:"streak10",name:"Unstoppable",desc:"Get 10 right in a row.",icon:"bolt",tone:"accent"},
+   {id:"perfect",name:"Perfect Round",desc:"Finish a round with no misses.",icon:"check",tone:"good"},
+   {id:"sling_win",name:"Sharpshooter",desc:"Clear a level in Sling Showdown.",icon:"star",tone:"good"},
+   {id:"sling_all",name:"Sling Champion",desc:"Clear 5 levels in one Sling Showdown game.",icon:"crown",tone:"bad"},
+   {id:"eng_win",name:"Bridge Engineer",desc:"Design a bridge the truck can cross.",icon:"check",tone:"good"},
+   {id:"eng_all",name:"Chief Engineer",desc:"Design 5 working bridges in one Bridge Engineer game.",icon:"crown",tone:"bad"}];
+  TESTS.forEach(function(t,i){
+    d.push({id:"boss:"+t.id,name:"Monster Slayer",desc:"Beat the monster in "+label(t)+".",icon:"heart",tone:"bad"});
+    d.push({id:"master:"+t.id,name:"Word Master",desc:"Get 3 stars on every word in "+label(t)+".",icon:"crown",tone:"accent"});
+    d.push({id:"testday:"+t.id,name:"Test Day Ace",desc:"Score "+Math.ceil(t.words.length*.9)+" or more on Test Day in "+label(t)+".",icon:"check",tone:"good"});
+  });
+  return d;
+}
+function toast(msg){
+  var el=document.createElement("div");el.className="toast";el.setAttribute("role","status");el.textContent=msg;document.body.appendChild(el);
+  setTimeout(function(){if(el.parentNode)el.parentNode.removeChild(el)},3200);
+}
+function unlock(id){
+  if(badges[id])return;badges[id]=1;saveB();
+  var b=badgeDefs().filter(function(x){return x.id===id})[0];
+  if(b)toast("New sticker: "+b.name+(id.indexOf(":")>0?" ("+id.split(":")[0]+")":""));
+}
+function monster(k,state){
+  var cols=["#7a5cf0","#e8744f","#2aa876","#d9519d"],c=cols[k%4],n=(k%3)+1,x=state==="dead"||state==="hurt";
+  var ex=n===1?[60]:n===2?[44,76]:[34,60,86],ey=n===3?[54,46,54]:n===2?[52,52]:[50],r=n===1?15:n===2?11:9;
+  var o='<svg viewBox="0 0 120 112" role="img" aria-label="Monster" class="mon"><path d="M32 26L26 4L50 18ZM88 26L94 4L70 18Z" style="fill:'+c+'"/>'+
+   '<path d="M18 70C8 30 38 12 60 12S112 30 102 70C100 92 84 104 60 104S20 92 18 70Z" style="fill:'+c+'"/><ellipse cx="60" cy="86" rx="30" ry="14" fill="#fff" opacity=".22"/>';
+  ex.forEach(function(px,i){
+    var py=ey[i];
+    if(x)o+='<path d="M'+(px-r*.7)+' '+(py-r*.7)+'L'+(px+r*.7)+' '+(py+r*.7)+'M'+(px+r*.7)+' '+(py-r*.7)+'L'+(px-r*.7)+' '+(py+r*.7)+'" stroke="#2a1530" stroke-width="4" stroke-linecap="round"/>';
+    else o+='<circle cx="'+px+'" cy="'+py+'" r="'+r+'" fill="#fff"/><circle cx="'+(px+2)+'" cy="'+(py+2)+'" r="'+(r*.45)+'" fill="#2a1530"/>';
+  });
+  if(state==="dead")o+='<path d="M44 90Q60 82 76 90" fill="none" stroke="#2a1530" stroke-width="4" stroke-linecap="round"/>';
+  else if(state==="hurt")o+='<ellipse cx="60" cy="88" rx="9" ry="7" fill="#2a1530"/>';
+  else o+='<path d="M38 78Q60 100 82 78Z" fill="#2a1530"/><path d="M44 79L49 87L54 80ZM66 80L71 87L76 79Z" fill="#fff"/>';
+  return o+'</svg>';
+}
+function bossPanel(){
+  var b=G.boss,h="";for(var i=0;i<3;i++)h+=i<b.hearts?"&hearts;":"<i>&hearts;</i>";
+  return monster(b.k,b.state)+'<div class="hp"><div class="tag">Monster HP</div><div class="hpbar"><div style="width:'+Math.round(b.hp/b.max*100)+'%"></div></div><div class="hearts" aria-label="'+b.hearts+' hearts left">'+h+'</div></div>';
+}
+function updateBoss(state){
+  G.boss.state=state;var el=document.getElementById("boss");if(!el)return;
+  el.innerHTML=bossPanel();el.className="boss"+(state==="hurt"?" hurt":"");
+}
+function practiceMissed(list){
+  G={kind:"listen",items:shuffle(list).map(function(w){return{o:WORDS.filter(function(o){return o.w===w})[0]}}),i:0,right:0,missed:[]};step();
+}
+
+function hub(){
+  stopArena();G=null;CUR=null;
+  app.innerHTML='<div><div class="tag">Spelling tests</div><h1>Choose a test</h1></div>'+
+   '<div class="tests">'+TESTS.map(function(t,i){var m=t.words.filter(function(o){return(prog[o.w]||0)>=3}).length;
+     return '<button class="mode test" data-t="'+i+'"><strong>'+label(t)+'</strong><span>'+(t.bee?'School spelling bee':'Sort #'+t.sort)+' &middot; '+t.words.length+' words &middot; '+m+' mastered</span></button>'}).join("")+'</div>'+
+   '<div class="row"><button class="btn" id="book">Sticker book ('+earned()+' of '+badgeDefs().length+')</button></div>';
+  document.getElementById("book").onclick=book;
+  app.querySelectorAll("[data-t]").forEach(function(b){b.onclick=function(){pick(TESTS[+b.dataset.t])}});
+}
+function earned(){return badgeDefs().filter(function(b){return badges[b.id]}).length}
+function book(){
+  var d=badgeDefs();
+  app.innerHTML='<div class="row"><button class="btn ghost" id="all">Back</button></div><div><div class="tag">'+earned()+' of '+d.length+' earned</div><h1>Sticker book</h1></div>'+
+   '<div class="stickers">'+d.map(function(b){var on=!!badges[b.id];
+     return '<div class="sticker'+(on?"":" locked")+'">'+sticker(b.icon,b.tone,!on)+'<b>'+(on?b.name:"Locked")+'</b><small>'+esc(b.desc)+'</small></div>'}).join("")+'</div>';
+  document.getElementById("all").onclick=function(){CUR?home():hub()};
+}
+function pick(t){
+  CUR=t;WORDS=t.words;TT=t.items||[];
+  if(t.pair)MODES.thenthan.name=cap(t.pair[0])+" or "+cap(t.pair[1]);
+  home();
+}
+function home(){
+  if(!CUR)return hub();
+  stopArena();G=null;
+  var mastered=WORDS.filter(function(o){return(prog[o.w]||0)>=3}).length;
+  app.innerHTML=
+   '<div class="row"><button class="btn ghost" id="all">All tests</button></div>'+
+   '<div class="top"><div><div class="tag">'+(CUR.bee?'School spelling bee list':'Sort #'+CUR.sort+' spelling list')+'</div><h1>'+label(CUR)+'</h1></div>'+
+   '<div class="card" style="padding:10px 16px"><b>'+mastered+' of '+WORDS.length+'</b> words mastered</div></div>'+
+   '<div class="modes">'+Object.keys(MODES).filter(function(k){return k!=="thenthan"||CUR.pair}).map(function(k){return '<button class="mode'+(k==="testday"?" alt":"")+'" data-m="'+k+'"><strong>'+MODES[k].name+'</strong><span>'+MODES[k].desc+'</span></button>'}).join("")+'</div>'+
+   '<section class="card"><h2>Your words</h2><p class="sentence" style="margin:6px 0 12px">Get a word right on the first try to earn a star. Three stars means mastered. Tap a word to hear it.</p>'+
+   '<div class="words">'+WORDS.map(function(o){return '<button class="w" data-say="'+o.w+'"><span style="min-width:0"><b>'+o.w+'</b><small>'+esc(o.d)+'</small></span>'+stars(prog[o.w]||0)+'</button>'}).join("")+'</div>'+
+   (CUR.pair?'<p class="sentence" style="margin:14px 0 0">The last two, '+CUR.pair[0]+' and '+CUR.pair[1]+', are the non-negotiables.</p>':(CUR.note?'<p class="sentence" style="margin:14px 0 0">'+esc(CUR.note)+'</p>':''))+'</section>';
+  document.getElementById("all").onclick=hub;
+  app.querySelectorAll("[data-m]").forEach(function(b){b.onclick=function(){start(b.dataset.m)}});
+  app.querySelectorAll("[data-say]").forEach(function(b){b.onclick=function(){speak(b.dataset.say)}});
+}
+
+function pickMg(){return["listen","gaps","scramble"][Math.floor(Math.random()*3)]}
+function start(kind){
+  stopArena();
+  if(kind==="arcade"){
+    G={kind:"arcade",items:shuffle(WORDS).map(function(o){return{o:o,mg:pickMg()}}),i:0,right:0,missed:[],streak:0,best:0};
+    return step();
+  }
+  if(kind==="eng"){
+    G={kind:"eng",items:shuffle(WORDS).map(function(o){return{o:o,mg:pickMg()}}),i:0,right:0,missed:[],streak:0,best:0};
+    return step();
+  }
+  if(kind==="sling"){
+    G={kind:"sling",items:shuffle(WORDS).map(function(o){return{o:o,mg:pickMg()}}),i:0,right:0,missed:[],streak:0,best:0};
+    return step();
+  }
+  if(kind==="boss"){
+    var its=shuffle(WORDS).map(function(o){return{o:o,mg:pickMg()}});
+    G={kind:"boss",items:its,i:0,right:0,missed:[],streak:0,best:0,requeued:{},boss:{hp:its.length,max:its.length,hearts:3,k:CUR.sort,state:"idle"}};
+    return step();
+  }
+  if(kind==="testday"){
+    G={kind:"testday",items:shuffle(WORDS).map(function(o){return{o:o}}),i:0,right:0,missed:[],answers:[]};
+    return step();
+  }
+  var items=kind==="thenthan"?shuffle(TT).map(function(t){return{t:t}}):shuffle(WORDS).map(function(o){return{o:o}});
+  G={kind:kind,items:items,i:0,right:0,missed:[],streak:0,best:0};
+  step();
+}
+function header(){
+  var pct=Math.round(G.i/G.items.length*100);
+  return '<div class="row"><button class="btn ghost" id="quit">Home</button><div class="bar" role="progressbar" aria-valuenow="'+pct+'" aria-valuemin="0" aria-valuemax="100"><div style="width:'+pct+'%"></div></div><span class="tag">'+Math.min(G.i+1,G.items.length)+' / '+G.items.length+'</span><span class="chip" id="streak"></span></div>'+(G.boss?'<div class="boss" id="boss">'+bossPanel()+'</div>':'');
+}
+function step(){
+  if(G.kind==="sling")return slingStep();
+  if(G.kind==="eng")return engineerStep();
+  if(G.kind==="arcade")return arcadeStep();
+  if(G.i>=G.items.length||(G.boss&&(G.boss.hp<=0||G.boss.hearts<=0)))return end();
+  var it=G.items[G.i];
+  if(G.kind==="flash")return flash(it.o);
+  if(G.kind==="testday")return testday(it.o);
+  app.innerHTML=header()+'<section class="card prompt" id="stage"></section><div id="fb"></div>';
+  document.getElementById("quit").onclick=home;
+  var k=G.kind==="boss"?it.mg:G.kind;
+  if(k==="listen")listen(it.o);
+  else if(k==="gaps")builder(it.o,true);
+  else if(k==="scramble")builder(it.o,false);
+  else thenthan(it.t);
+}
+function finish(word,ok,solved){
+  if(solved===undefined)solved=ok;
+  if(word){bump(word,ok)}
+  if(ok)G.right++;else if(word)G.missed.push(word);
+  G.streak=ok?(G.streak||0)+1:0;G.best=Math.max(G.best||0,G.streak);
+  var ch=document.getElementById("streak");if(ch)ch.textContent=G.streak>=2?"Streak x"+G.streak:"";
+  if(ok){unlock("first_star");if(G.streak===5)unlock("streak5");if(G.streak===10)unlock("streak10")}
+  if(CUR&&CUR.words.every(function(o){return(prog[o.w]||0)>=3}))unlock("master:"+CUR.id);
+  if(G.kind==="eng"&&S&&S.kind==="eng"&&solved){S.pending=true}
+  if(G.kind==="arcade"&&MGI){try{MGI.answer(!!solved)}catch(e){}}
+  if(G.kind==="sling"&&S&&solved){S.ammo++;SFX.ding();slingUI();toast("+1 shot! Pull back the sling.")}
+  if(G.boss){
+    if(ok){G.boss.hp=Math.max(0,G.boss.hp-1);updateBoss("hurt")}
+    else{G.boss.hearts--;updateBoss("idle");
+      if(word&&!G.requeued[word]){G.requeued[word]=1;G.items.push({o:WORDS.filter(function(o){return o.w===word})[0],mg:pickMg()})}}
+  }
+  G.i++;
+}
+function feedback(ok,word,msg){
+  var fb=document.getElementById("fb");
+  fb.innerHTML='<div class="fb '+(ok?"good":"bad")+'"><span>'+msg+' <span class="word">'+esc(word)+'</span></span><button class="btn" id="nx">'+((G.kind==="eng"&&S&&S.pending)?"Build a bridge!":(G.kind==="sling"||G.kind==="eng"||G.kind==="arcade")?(G.i>=G.items.length?"Done spelling":"Next word"):(G.i>=G.items.length?"See results":"Next"))+'</button></div>';
+  var nx=document.getElementById("nx");nx.onclick=step;nx.focus();
+}
+function speakBtn(text,label){return '<button class="btn" data-sp="'+esc(text)+'"><span class="spk">&#128266; '+label+'</span></button>'}
+function wireSpeak(root){root.querySelectorAll("[data-sp]").forEach(function(b){b.onclick=function(){speak(b.dataset.sp)}})}
+
+/* Listen and Spell */
+function listen(o){
+  var st=document.getElementById("stage"),tries=0,hinted=false;
+  st.innerHTML='<div class="tag">Type the word you hear</div><div class="row">'+speakBtn(o.w,"Say the word")+speakBtn(o.x,"Use it in a sentence")+speakBtn(o.d,"What it means")+'</div>'+
+   '<input class="type" id="ans" type="text" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false" aria-label="Type the word" placeholder="'+o.w.length+' letters">'+
+   '<div class="row"><button class="btn" id="chk">Check</button><button class="btn ghost" id="hint">Show first letter</button></div><div id="msg" class="sentence"></div>';
+  wireSpeak(st);speak(o.w);
+  var inp=document.getElementById("ans"),msg=document.getElementById("msg");inp.focus();
+  function check(){
+    var v=inp.value.trim().toLowerCase();if(!v)return;
+    if(same(v,o)){inp.disabled=true;var first=tries===0&&!hinted;finish(o.w,first,true);feedback(true,o.w,first?"Correct on the first try!":"Correct!");}
+    else{tries++;if(tries>=2){inp.disabled=true;finish(o.w,false,false);
+      var d="";for(var i=0;i<o.w.length;i++){d+=(v[i]!==undefined&&norm(v[i])===norm(o.w[i]))?o.w[i]:'<u>'+o.w[i]+'</u>'}
+      feedback(false,o.w,"The word is");document.querySelector("#fb .word").innerHTML=d;}
+      else{msg.textContent="Not quite. Listen again and try one more time.";inp.classList.add("shake");setTimeout(function(){inp.classList.remove("shake")},400);inp.select();}}
+  }
+  document.getElementById("chk").onclick=check;
+  inp.onkeydown=function(e){if(e.key==="Enter"){e.preventDefault();check()}};
+  document.getElementById("hint").onclick=function(){hinted=true;msg.textContent="It starts with "+o.w[0].toUpperCase()+" and has "+o.w.length+" letters."};
+}
+
+/* Missing Letters and Unscramble share a tile builder */
+function builder(o,gaps){
+  var st=document.getElementById("stage"),word=o.w,L=word.split(""),n=L.length;
+  var missing=[];
+  if(gaps){var cnt=n<=4?1:(n<=8?2:3),pos=shuffle(L.map(function(_,i){return i})).slice(0,cnt);missing=pos}
+  var slots=L.map(function(ch,i){var fixed=gaps&&missing.indexOf(i)<0;return{ch:ch,fixed:fixed,bi:fixed?-2:-1}});
+  var need=gaps?missing.map(function(i){return L[i]}):L.slice();
+  var extras=gaps?shuffle("abcdefghiklmnoprstuvy".split("").filter(function(c){return need.indexOf(c)<0})).slice(0,3):[];
+  var bank=shuffle(need.concat(extras)).map(function(c){return{ch:c,used:false}});
+  if(!gaps&&n>1){var tries=0;while(bank.map(function(b){return b.ch}).join("")===word&&tries++<10)bank=shuffle(bank)}
+  var wrong=false,done=false;
+  function draw(){
+    st.innerHTML='<div class="tag">'+(gaps?"Fill in the missing letters":"Unscramble the letters")+'</div>'+
+     '<div class="row">'+speakBtn(word,"Hear it")+speakBtn(o.x,"Sentence")+speakBtn(o.d,"Meaning")+'</div>'+
+     '<div class="slots" id="slots">'+slots.map(function(s,i){
+        if(s.fixed)return '<div class="slot fixed">'+s.ch+'</div>';
+        if(s.bi>=0)return '<button class="slot filled" data-s="'+i+'" aria-label="Remove letter">'+bank[s.bi].ch+'</button>';
+        return '<div class="slot" aria-label="Empty slot"></div>'}).join("")+'</div>'+
+     '<div class="bank">'+bank.map(function(b,i){return '<button class="tile" data-b="'+i+'"'+(b.used||done?" disabled":"")+'>'+b.ch+'</button>'}).join("")+'</div>'+
+     '<div class="row"><button class="btn ghost" id="clr"'+(done?" disabled":"")+'>Clear</button></div>';
+    wireSpeak(st);
+    st.querySelectorAll("[data-b]").forEach(function(b){b.onclick=function(){place(+b.dataset.b)}});
+    st.querySelectorAll("[data-s]").forEach(function(b){b.onclick=function(){var s=slots[+b.dataset.s];bank[s.bi].used=false;s.bi=-1;draw()}});
+    document.getElementById("clr").onclick=clear;
+  }
+  function clear(){slots.forEach(function(s){if(!s.fixed)s.bi=-1});bank.forEach(function(b){b.used=false});draw()}
+  function place(bi){
+    var s=slots.filter(function(s){return!s.fixed&&s.bi===-1})[0];if(!s)return;
+    s.bi=bi;bank[bi].used=true;
+    var full=slots.every(function(s){return s.fixed||s.bi>=0});
+    if(!full)return draw();
+    var built=slots.map(function(s){return s.fixed?s.ch:bank[s.bi].ch}).join("");
+    if(built===word){done=true;draw();var first=!wrong;finish(word,first,true);feedback(true,word,first?"Correct on the first try!":"Correct!");}
+    else{wrong=true;draw();var sl=document.getElementById("slots");sl.classList.add("shake");
+      var fb=document.getElementById("fb");fb.innerHTML='<div class="fb info">Not quite. Check the order and try again.</div>';
+      setTimeout(function(){sl.classList.remove("shake");clear()},650);}
+  }
+  draw();speak(word);
+}
+
+/* Than or Then */
+function thenthan(t){
+  var st=document.getElementById("stage"),parts=t[0].split("___"),tried=false;
+  st.innerHTML='<div class="tag">Which word fits?</div><p class="big" style="font-size:clamp(1.4rem,5vw,2rem);letter-spacing:0">'+esc(parts[0])+'<u>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</u>'+esc(parts[1])+'</p>'+
+   '<div class="choices"><button class="btn" data-c="'+CUR.pair[0]+'">'+CUR.pair[0]+'</button><button class="btn" data-c="'+CUR.pair[1]+'">'+CUR.pair[1]+'</button></div>'+
+   '<p class="sentence">'+CUR.hint+'</p>';
+  st.querySelectorAll("[data-c]").forEach(function(b){b.onclick=function(){
+    if(b.dataset.c===t[1]){st.querySelectorAll("[data-c]").forEach(function(x){x.disabled=true});
+      finish(t[1],!tried,true);if(!tried)G.right;feedback(true,t[1],tried?"Correct!":"Correct on the first try!");}
+    else{tried=true;b.disabled=true;document.getElementById("fb").innerHTML='<div class="fb info">Not that one. Try the other word.</div>';}}});
+}
+
+/* Test Day */
+function testday(o){
+  var last=G.i>=G.items.length-1;
+  app.innerHTML=header()+'<section class="card prompt" id="stage"><div class="tag">Test day &middot; word '+(G.i+1)+' of '+G.items.length+'</div>'+
+   '<p class="sentence">Listen, then spell the word. A real test has no hints and no second tries.</p>'+
+   '<div class="row"><button class="btn" id="hear">&#128266; Hear it again</button></div>'+
+   '<input class="type" id="ans" type="text" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false" aria-label="Type the word">'+
+   '<div class="row"><button class="btn" id="go">'+(last?"Finish test":"Next word")+'</button></div></section>';
+  document.getElementById("quit").onclick=home;
+  function say(){speakSeq([o.w,o.x,o.w])}
+  document.getElementById("hear").onclick=say;say();
+  var inp=document.getElementById("ans");inp.focus();
+  function submit(){G.answers.push(inp.value.trim().toLowerCase());G.i++;step()}
+  document.getElementById("go").onclick=submit;
+  inp.onkeydown=function(e){if(e.key==="Enter"){e.preventDefault();submit()}};
+}
+function testEnd(){
+  var n=G.items.length,r=0,rows="",miss=[];
+  G.items.forEach(function(it,i){
+    var a=G.answers[i]||"",ok=same(a,it.o);if(ok)r++;else miss.push(it.o.w);
+    bump(it.o.w,ok);
+    rows+='<div class="rep"><b>'+it.o.w+'</b><span class="'+(ok?"hit":"miss")+'">'+(ok?"Correct":"You wrote: "+esc(a||"(blank)"))+'</span></div>';
+  });
+  if(r>=Math.ceil(n*.9))unlock("testday:"+CUR.id);
+  if(CUR.words.every(function(o){return(prog[o.w]||0)>=3}))unlock("master:"+CUR.id);
+  var pct=Math.round(r/n*100),msg=r===n?"Perfect score!":pct>=90?"Test day ace!":pct>=70?"Good job. A little more practice.":"Keep practicing. Try Study Cards, then test again.";
+  app.innerHTML='<section class="card prompt"><div class="tag">Report card</div><div class="score">'+r+' / '+n+' &middot; '+pct+'%</div><h2>'+msg+'</h2>'+
+   '<div class="reps">'+rows+'</div><div class="row"><button class="btn" id="again">Take it again</button>'+(miss.length?'<button class="btn ghost" id="fix">Practice missed words</button>':'')+'<button class="btn ghost" id="hm">Home</button></div></section>';
+  document.getElementById("again").onclick=function(){start("testday")};
+  var fx=document.getElementById("fix");if(fx)fx.onclick=function(){practiceMissed(miss)};
+  document.getElementById("hm").onclick=home;
+}
+function bossEnd(){
+  var b=G.boss,win=b.hearts>0,n=G.items.length,uniq=G.missed.filter(function(w,i){return G.missed.indexOf(w)===i});
+  if(win)unlock("boss:"+CUR.id);
+  if(win&&uniq.length===0&&n>=10)unlock("perfect");
+  app.innerHTML='<section class="card prompt"><div class="tag">'+(win?"Victory":"Defeated")+'</div><div class="bigmon">'+monster(b.k,win?"dead":"idle")+'</div>'+
+   '<h2>'+(win?"You beat the monster!":"The monster wins this time.")+'</h2>'+
+   '<p class="sentence">Hearts left: <b>'+Math.max(0,b.hearts)+'</b> of 3. Best streak: <b>'+G.best+'</b>.'+(uniq.length?'<br>Words to practice: <span class="miss">'+uniq.join(", ")+'</span>':'')+'</p>'+
+   '<div class="row"><button class="btn" id="again">'+(win?"Fight again":"Rematch")+'</button>'+(uniq.length?'<button class="btn ghost" id="fix">Practice missed words</button>':'')+'<button class="btn ghost" id="hm">Home</button></div></section>';
+  document.getElementById("again").onclick=function(){start("boss")};
+  var fx=document.getElementById("fix");if(fx)fx.onclick=function(){practiceMissed(uniq)};
+  document.getElementById("hm").onclick=home;
+}
+
+
+/* Sling Showdown */
+/* Sound */
+var AC=null,soundOn=true;
+try{soundOn=localStorage.getItem("sort3_sound")!=="0"}catch(e){}
+function ac(){try{if(!AC)AC=new (window.AudioContext||window.webkitAudioContext)();if(AC.state==="suspended")AC.resume();return AC}catch(e){return null}}
+function tone(f1,f2,dur,type,vol,delay){
+  var c=ac();if(!c||!soundOn)return;var t=c.currentTime+(delay||0),o=c.createOscillator(),g=c.createGain();
+  o.type=type||"sine";o.frequency.setValueAtTime(f1,t);o.frequency.exponentialRampToValueAtTime(Math.max(1,f2),t+dur);
+  g.gain.setValueAtTime(vol||.2,t);g.gain.exponentialRampToValueAtTime(.001,t+dur);
+  o.connect(g);g.connect(c.destination);o.start(t);o.stop(t+dur+.03);
+}
+function noise(dur,vol,fc){
+  var c=ac();if(!c||!soundOn)return;var n=Math.floor(c.sampleRate*dur),b=c.createBuffer(1,n,c.sampleRate),d=b.getChannelData(0);
+  for(var i=0;i<n;i++)d[i]=(Math.random()*2-1)*(1-i/n);
+  var s=c.createBufferSource();s.buffer=b;var f=c.createBiquadFilter();f.type="bandpass";f.frequency.value=fc||1000;
+  var g=c.createGain();g.gain.value=vol||.2;s.connect(f);f.connect(g);g.connect(c.destination);s.start();
+}
+var SFX={
+ stretch:function(d){tone(180+d*5,220+d*5,.05,"triangle",.07)},
+ shoot:function(){tone(160,720,.16,"sawtooth",.16);noise(.3,.14,1400);tone(950,260,.3,"sine",.12,.04)},
+ thud:function(){tone(170,60,.1,"square",.1)},
+ crack:function(){noise(.2,.28,900);tone(320,70,.16,"square",.12)},
+ pop:function(){tone(420,950,.1,"sine",.22);tone(950,220,.16,"triangle",.14,.07)},
+ ding:function(){tone(660,660,.12,"sine",.18);tone(990,990,.2,"sine",.18,.1)},
+ plank:function(){tone(240,170,.09,"square",.12);tone(520,300,.1,"triangle",.1,.03)},
+ level:function(){[523,659,784,1047].forEach(function(f,i){tone(f,f,.2,"triangle",.2,i*.12)})}
+};
+function sfxRate(name,gap){if(!S)return false;S.sf=S.sf||{};if((S.f||0)-(S.sf[name]||-99)<gap)return false;S.sf[name]=S.f||0;return true}
+document.addEventListener("pointerdown",function(){ac()},{passive:true});
+
+var SW=800,SH=400,GY=360,CS=40,X0=470,AX=120,AY=268,PR=14,MAXPULL=80,GRAV=0.36;
+var LV=[
+ [".M..M.",".W..W.","WWMWW."],
+ ["..M....",".WSW.M.",".WWW.S.","WWWWMSW"],
+ ["...M...","..WSW..","M.WSW.M","S.SSS.S","SWSWSWS"],
+ ["M.....M","S.M.M.S","S.W.W.S","SWWWWWS"],
+ ["M.....M","W.M.M.W","S.S.S.S","W.W.W.W","WWWWWWW"],
+ [".M.M.M.",".S.S.S.","SSMSMSS"],
+ ["......M","...MWSS",".MWWWSS","WWWWWSS"],
+ ["M..M..M","S.WSW.S","S.WSW.S","SMWSWMS","SSSSSSS"]];
+function genLevel(n){
+  var cols=7,h=[],mon=[],i,c,k=Math.min(5,3+Math.floor((n-9)/3)),maxH=Math.min(5,3+Math.floor((n-9)/4));
+  for(c=0;c<cols;c++){h.push(1+Math.floor(Math.random()*maxH));mon.push(false)}
+  var order=shuffle([0,1,2,3,4,5,6]);for(i=0;i<k;i++)mon[order[i]]=true;
+  var top=0;for(c=0;c<cols;c++)top=Math.max(top,h[c]+(mon[c]?1:0));
+  var pS=Math.min(.6,.2+.03*n),rows=[];
+  var grid=[];for(c=0;c<cols;c++){grid.push([]);for(var r=0;r<h[c];r++)grid[c].push(Math.random()<pS?"S":"W")}
+  for(var r=top-1;r>=0;r--){var row="";for(c=0;c<cols;c++)row+=r<h[c]?grid[c][r]:(r===h[c]&&mon[c]?"M":".");rows.push(row)}
+  return rows;
+}
+function levelTemplate(n){return n<=LV.length?LV[n-1]:genLevel(n)}
+var MCOL=["#7a5cf0","#e8744f","#2aa876"];
+var S=null;
+function stopArena(){if(MGI){try{MGI.destroy()}catch(e){}MGI=null}if(S){S.stop=true;if(S.raf)cancelAnimationFrame(S.raf);S=null}}
+function buildArena(){
+  app.innerHTML='<div class="row"><button class="btn ghost" id="quit">Home</button><span class="pill" id="shots"></span><span class="pill" id="lvl"></span><span class="pill" id="mleft"></span><button class="pill" id="snd" aria-pressed="true"></button></div>'+
+   '<div class="arena"><canvas id="cv" aria-label="Sling game. Pull back the sling and release to launch."></canvas></div><p class="sentence" id="aimhint"></p><div id="qa"></div>';
+  var cv=document.getElementById("cv"),dpr=Math.min(2,window.devicePixelRatio||1);
+  cv.width=SW*dpr;cv.height=SH*dpr;
+  S={cv:cv,ctx:cv.getContext("2d"),dpr:dpr,objs:[],level:1,ammo:0,proj:null,drag:null,fx:[],defeated:0,cleared:0,last:0,acc:0,stop:false,clearing:false,complete:false,raf:0};
+  document.getElementById("quit").onclick=function(){stopArena();home()};
+  cv.addEventListener("pointerdown",pdown);cv.addEventListener("pointermove",pmove);
+  cv.addEventListener("pointerup",pup);cv.addEventListener("pointercancel",pup);
+  var sb=document.getElementById("snd");
+  function sbl(){sb.textContent="Sound: "+(soundOn?"On":"Off");sb.setAttribute("aria-pressed",soundOn?"true":"false")}
+  sb.onclick=function(){soundOn=!soundOn;try{localStorage.setItem("sort3_sound",soundOn?"1":"0")}catch(e){}sbl();if(soundOn)SFX.ding()};
+  sbl();
+  loadLevel();slingUI();S.raf=requestAnimationFrame(loop);
+}
+function loadLevel(){
+  var t=levelTemplate(S.level);S.objs=[];
+  t.forEach(function(row,i){var r=t.length-1-i;row.split("").forEach(function(ch,c){
+    if(ch===".")return;
+    S.objs.push({t:ch,c:c,r:r,hp:ch==="S"?2:1,k:(S.level-1)%3,y:GY-(r+1)*CS});
+  })});
+  settle(false);
+}
+function monsLeft(){return S.objs.filter(function(o){return o.t==="M"}).length}
+function slingUI(){
+  if(!S)return;
+  var a=function(id,t){var e=document.getElementById(id);if(e)e.textContent=t};
+  a("shots","Shots: "+S.ammo);a("lvl","Level "+S.level);a("mleft","Monsters: "+monsLeft());
+  a("aimhint",S.proj?"":S.ammo>0?"Ready! Touch the critter, pull back, and let go.":"No shots yet. Spell a word below to earn one.");
+}
+function pos(e){var r=S.cv.getBoundingClientRect();return{x:(e.clientX-r.left)*SW/r.width,y:(e.clientY-r.top)*SH/r.height}}
+function pdown(e){
+  if(!S||S.proj||S.ammo<=0)return;var p=pos(e);
+  if(Math.hypot(p.x-AX,p.y-AY)<70){S.drag={x:p.x,y:p.y};try{S.cv.setPointerCapture(e.pointerId)}catch(x){}pmove(e);e.preventDefault()}
+}
+function pmove(e){
+  if(!S||!S.drag)return;var p=pos(e),dx=p.x-AX,dy=p.y-AY,d=Math.hypot(dx,dy);
+  if(d>MAXPULL){dx*=MAXPULL/d;dy*=MAXPULL/d}
+  S.drag={x:AX+dx,y:AY+dy};
+  var pl=Math.hypot(dx,dy);if(Math.abs(pl-(S.lastPull||0))>7){S.lastPull=pl;SFX.stretch(pl)}
+}
+function pup(){
+  if(!S||!S.drag)return;var d=S.drag;S.drag=null;S.lastPull=0;
+  if(Math.hypot(AX-d.x,AY-d.y)>=14)launch((AX-d.x)*.2,(AY-d.y)*.2);
+}
+function launch(vx,vy){
+  if(!S||S.proj||S.ammo<=0)return;
+  SFX.shoot();S.ammo--;S.proj={x:AX,y:AY,vx:vx,vy:vy,t:0,gr:0,trail:[]};slingUI();
+}
+function puff(x,y,col){for(var i=0;i<10;i++){var a=Math.random()*6.28,sp=1+Math.random()*3;S.fx.push({x:x,y:y,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp-1,life:24+Math.random()*10,c:col})}}
+function killObj(o,col){S.objs=S.objs.filter(function(x){return x!==o});puff(X0+o.c*CS+CS/2,o.y+CS/2,col)}
+function killMon(o){SFX.pop();killObj(o,MCOL[o.k]);S.defeated++;slingUI();checkClear()}
+function settle(kill){
+  var cols={},again=false;
+  S.objs.forEach(function(o){(cols[o.c]=cols[o.c]||[]).push(o)});
+  Object.keys(cols).forEach(function(c){
+    cols[c].sort(function(a,b){return a.r-b.r}).forEach(function(o,i){
+      var fall=o.r-i;o.r=i;
+      if(kill&&fall>=2&&o.t==="M"){killMon(o);again=true}
+    });
+  });
+  if(again)settle(false);
+}
+function checkClear(){
+  if(monsLeft()>0||S.clearing)return;
+  S.clearing=true;S.cleared++;unlock("sling_win");
+  setTimeout(function(){
+    if(!S)return;S.clearing=false;S.level++;
+    if(S.cleared>=5)unlock("sling_all");
+    SFX.level();toast("Level "+S.level+"! New monsters.");loadLevel();slingUI();
+  },1100);
+}
+function tick(){
+  S.f=(S.f||0)+1;
+  S.objs.forEach(function(o){var ty=GY-(o.r+1)*CS;o.y+=(ty-o.y)*.3;if(Math.abs(ty-o.y)<.5)o.y=ty});
+  S.fx.forEach(function(f){f.x+=f.vx;f.y+=f.vy;f.vy+=.2;f.life--});S.fx=S.fx.filter(function(f){return f.life>0});
+  var p=S.proj;if(!p)return;
+  p.t++;p.vy+=GRAV;p.x+=p.vx;p.y+=p.vy;
+  if(p.t%2===0){p.trail.push({x:p.x,y:p.y});if(p.trail.length>14)p.trail.shift()}
+  if(p.y+PR>GY){p.y=GY-PR;if(p.vy>2&&sfxRate("thud",8))SFX.thud();if(p.vy>0)p.vy=-p.vy*.35;p.vx*=.85;p.gr++}
+  var dirty=false;
+  S.objs.slice().forEach(function(o){
+    if(S.objs.indexOf(o)<0)return;
+    var x=X0+o.c*CS,y=GY-(o.r+1)*CS,cx=Math.max(x,Math.min(p.x,x+CS)),cy=Math.max(y,Math.min(p.y,y+CS));
+    var dx=p.x-cx,dy=p.y-cy,d2=dx*dx+dy*dy;if(d2>=PR*PR)return;
+    var sp=Math.hypot(p.vx,p.vy);
+    if(o.t==="M"){killMon(o);dirty=true;p.vx*=.85;p.vy*=.85;return}
+    if((o.t==="W"&&sp>=4)||(o.t==="S"&&sp>=6)){
+      o.hp--;
+      if(o.hp<=0){SFX.crack();killObj(o,o.t==="W"?"#c98a4b":"#98a0b4");dirty=true;p.vx*=.7;p.vy*=.7;return}
+      puff(cx,cy,"#98a0b4");if(sfxRate("thud",8))SFX.thud();
+    }
+    var d=Math.sqrt(d2)||.001,nx=dx/d,ny=dy/d;
+    p.x+=nx*(PR-d);p.y+=ny*(PR-d);
+    var vn=p.vx*nx+p.vy*ny;if(vn<0){p.vx-=1.3*vn*nx;p.vy-=1.3*vn*ny}
+  });
+  if(dirty&&S)settle(true);
+  if(!S)return;
+  var sp2=Math.hypot(p.vx,p.vy);
+  if(p.x>SW+40||p.x<-40||p.t>480||(p.gr>25&&sp2<.8)){S.proj=null;slingUI()}
+}
+function loop(t){
+  if(!S||S.stop||!document.body.contains(S.cv))return;
+  var dt=Math.min(50,t-(S.last||t));S.last=t;S.acc+=dt;
+  while(S.acc>=16.67&&S){S.acc-=16.67;if(S.kind==="eng")etick();else tick()}
+  if(S){if(S.kind==="eng")edraw();else draw();S.raf=requestAnimationFrame(loop)}
+}
+function zippy(c,x,y,r){
+  c.fillStyle="#19b5a5";c.beginPath();c.arc(x,y,r,0,6.283);c.fill();
+  c.fillStyle="#7fe3d6";c.beginPath();c.arc(x,y+r*.35,r*.6,0,3.14);c.fill();
+  c.strokeStyle="#0e7f74";c.lineWidth=2;c.lineCap="round";
+  for(var i=-1;i<=1;i++){c.beginPath();c.moveTo(x+i*4,y-r+1);c.lineTo(x+i*6,y-r-6);c.stroke()}
+  c.fillStyle="#fff";c.beginPath();c.arc(x-5,y-3,4.5,0,6.283);c.arc(x+5,y-3,4.5,0,6.283);c.fill();
+  c.fillStyle="#12303b";c.beginPath();c.arc(x-4,y-3,2,0,6.283);c.arc(x+6,y-3,2,0,6.283);c.fill();
+  c.beginPath();c.strokeStyle="#12303b";c.lineWidth=1.6;c.arc(x,y+3,5,.15,2.99);c.stroke();
+}
+function drawMon(c,o){
+  var x=X0+o.c*CS,y=o.y,col=MCOL[o.k];
+  c.fillStyle=col;c.beginPath();c.moveTo(x+4,y+CS-2);c.quadraticCurveTo(x-2,y+6,x+CS/2,y+3);c.quadraticCurveTo(x+CS+2,y+6,x+CS-4,y+CS-2);c.closePath();c.fill();
+  c.beginPath();c.moveTo(x+8,y+8);c.lineTo(x+6,y-1);c.lineTo(x+14,y+5);c.moveTo(x+CS-8,y+8);c.lineTo(x+CS-6,y-1);c.lineTo(x+CS-14,y+5);c.fill();
+  c.fillStyle="#fff";
+  if(o.k===1){c.beginPath();c.arc(x+CS/2,y+17,8,0,6.283);c.fill();c.fillStyle="#2a1530";c.beginPath();c.arc(x+CS/2+1,y+18,3.5,0,6.283);c.fill()}
+  else{c.beginPath();c.arc(x+13,y+17,6,0,6.283);c.arc(x+27,y+17,6,0,6.283);c.fill();c.fillStyle="#2a1530";c.beginPath();c.arc(x+14,y+18,2.6,0,6.283);c.arc(x+28,y+18,2.6,0,6.283);c.fill()}
+  c.strokeStyle="#2a1530";c.lineWidth=2;c.beginPath();c.moveTo(x+12,y+30);c.quadraticCurveTo(x+CS/2,y+36,x+CS-12,y+30);c.stroke();
+}
+function draw(){
+  var c=S.ctx;c.setTransform(S.dpr,0,0,S.dpr,0,0);
+  var sky=getComputedStyle(document.documentElement).getPropertyValue("--tile").trim()||"#e3ebfd";
+  c.fillStyle=sky;c.fillRect(0,0,SW,SH);
+  c.fillStyle="#7b5a3c";c.fillRect(0,GY,SW,SH-GY);c.fillStyle="#5a9b5f";c.fillRect(0,GY,SW,8);
+  S.objs.forEach(function(o){
+    if(o.t==="M")return drawMon(c,o);
+    var x=X0+o.c*CS,y=o.y;
+    c.fillStyle=o.t==="W"?"#c98a4b":"#98a0b4";c.fillRect(x+1,y+1,CS-2,CS-2);
+    c.strokeStyle=o.t==="W"?"#7a4f23":"#5d6578";c.lineWidth=2;c.strokeRect(x+1,y+1,CS-2,CS-2);
+    c.beginPath();if(o.t==="W"){c.moveTo(x+4,y+CS/2);c.lineTo(x+CS-4,y+CS/2)}else if(o.hp===1){c.moveTo(x+8,y+6);c.lineTo(x+18,y+20);c.lineTo(x+14,y+32)}c.stroke();
+  });
+  c.strokeStyle="#6b4423";c.lineCap="round";c.lineWidth=9;
+  c.beginPath();c.moveTo(AX,GY);c.lineTo(AX,AY+34);c.stroke();
+  c.lineWidth=7;c.beginPath();c.moveTo(AX,AY+34);c.lineTo(AX-14,AY+6);c.moveTo(AX,AY+34);c.lineTo(AX+14,AY+6);c.stroke();
+  for(var i=0;i<Math.min(S.ammo-(S.proj||S.drag?0:1),5);i++)zippy(c,AX-40-i*30,GY-PR,PR-2);
+  var bx=AX,by=AY,show=S.ammo>0&&!S.proj;
+  if(S.drag){bx=S.drag.x;by=S.drag.y}
+  if(show||S.drag){
+    c.strokeStyle="#3b2412";c.lineWidth=4;c.beginPath();c.moveTo(AX-14,AY+6);c.lineTo(bx,by);c.lineTo(AX+14,AY+6);c.stroke();
+    if(S.drag){
+      var vx=(AX-bx)*.2,vy=(AY-by)*.2,px=bx,py=by;
+      for(var k=1;k<=36;k++){vy+=GRAV;px+=vx;py+=vy;if(py>GY)break;if(k%3===0){c.fillStyle="rgba(255,255,255,"+(.9-k*.02)+")";c.strokeStyle="#12303b";c.lineWidth=1;c.beginPath();c.arc(px,py,3,0,6.283);c.fill();c.stroke()}}
+    }
+    zippy(c,bx,by,PR);
+  }
+  if(S.proj){
+    S.proj.trail.forEach(function(t,i){c.fillStyle="rgba(25,181,165,"+(i/S.proj.trail.length*.35)+")";c.beginPath();c.arc(t.x,t.y,4,0,6.283);c.fill()});
+    zippy(c,S.proj.x,S.proj.y,PR);
+  }
+  S.fx.forEach(function(f){c.globalAlpha=Math.max(0,f.life/30);c.fillStyle=f.c;c.beginPath();c.arc(f.x,f.y,4,0,6.283);c.fill()});c.globalAlpha=1;
+}
+function slingStep(){
+  if(!S)buildArena();
+  if(S.complete||G.i>=G.items.length)return showDone();
+  var it=G.items[G.i];
+  document.getElementById("qa").innerHTML='<section class="card prompt" id="stage"></section><div id="fb"></div>';
+  if(it.mg==="listen")listen(it.o);else builder(it.o,it.mg==="gaps");
+}
+function showDone(){
+  var qa=document.getElementById("qa");if(!qa||!S)return;
+  var msg=S.complete?"You cleared every level!":"All words done. "+(S.ammo>0?"You still have "+S.ammo+" shot"+(S.ammo>1?"s":"")+". Use them, then finish.":"You are out of shots.");
+  qa.innerHTML='<section class="card prompt"><div class="tag">Sling Showdown</div><h2>'+msg+'</h2><div class="row"><button class="btn" id="fin">Finish game</button></div></section>';
+  document.getElementById("fin").onclick=slingEnd;
+  slingUI();
+}
+function slingEnd(){
+  var st=S,lv=st?st.cleared:0,mons=st?st.defeated:0,all=st&&st.cleared>=5,n=G.items.length;
+  var uniq=G.missed.filter(function(w,i){return G.missed.indexOf(w)===i});
+  stopArena();
+  app.innerHTML='<section class="card prompt"><div class="tag">Sling Showdown results</div><div class="score">'+mons+' monsters</div>'+
+   '<h2>'+(all?"Champion! 5 or more levels cleared.":lv>0?"Nice shooting! "+lv+" level"+(lv>1?"s":"")+" cleared.":"Good try. Spell more words to earn more shots.")+'</h2>'+
+   '<p class="sentence">Spelled right on the first try: <span class="hit">'+G.right+'</span> of '+n+'. Best streak: <b>'+(G.best||0)+'</b>.'+(uniq.length?'<br>Words to practice: <span class="miss">'+uniq.join(", ")+'</span>':'')+'</p>'+
+   '<div class="row"><button class="btn" id="again">Play again</button>'+(uniq.length?'<button class="btn ghost" id="fix">Practice missed words</button>':'')+'<button class="btn ghost" id="hm">Home</button></div></section>';
+  document.getElementById("again").onclick=function(){start("sling")};
+  var fx=document.getElementById("fix");if(fx)fx.onclick=function(){practiceMissed(uniq)};
+  document.getElementById("hm").onclick=home;
+}
+
+/* Bridge Engineer: spell a word right, then design a real bridge. Beams are springs, joints are pinned, gravity pulls,
+   and a heavy truck drives across. Triangles stay strong; squares wobble. Beat the level and the next river is wider. */
+var EU=40,EGR=600,ESUB=24,EMAXL=3.2,EJ0=-3,EJ1=2,EM0=3.2,EMD=0.3,EMMAX=9,ESAG=0.5;
+var EMAT={
+  road:{k:50000,ft:9000,fc:9000,w:.05,cost:3,col:"#c58a4e",edge:"#7a4f23",wd:9},
+  steel:{k:100000,ft:30000,fc:45000,w:.08,cost:5,col:"#8795bd",edge:"#46527a",wd:5}
+};
+function engCfg(n){
+  var G=Math.min(13,4+n);
+  return{G:G,M:Math.min(EMMAX,EM0+n*EMD),walls:n<=4?2:1};
+}
+function engRef(G){
+  var h=G<=5?1:G<=9?2:3,nodes=[],beams=[],i;
+  function B(i1,j1,i2,j2,t){beams.push([i1,j1,i2,j2,t])}
+  for(i=0;i<G;i++)B(i,0,i+1,0,"road");
+  for(i=1;i<G;i++)B(i,0,i,-h,"steel");
+  for(i=1;i<G-1;i++)B(i,-h,i+1,-h,"steel");
+  B(0,0,1,-h,"steel");B(G,0,G-1,-h,"steel");
+  for(i=1;i<G-1;i++){
+    if(i+1<=G/2)B(i,-h,i+1,0,"steel");else B(i+1,-h,i,0,"steel");
+  }
+  return beams;
+}
+function engCost(len,type){return Math.max(1,Math.round(len/EU*EMAT[type].cost))}
+function engRefCost(G){return engRef(G).reduce(function(s,b){return s+engCost(Math.hypot(b[2]-b[0],b[3]-b[1])*EU,b[4])},0)}
+function engBudget(n,G){var mg=Math.max(1.35,2.3-n*.1);return Math.ceil(engRefCost(G)*mg/5)*5}
+function engLevel(n){
+  var c=engCfg(n),G=c.G;
+  S.level=n;S.G=G;S.M=c.M;S.LX=Math.round((SW-G*EU)/2);S.RX=S.LX+G*EU;S.CY=190;S.WY=S.CY+Math.round(2.4*EU);S.Z=Math.min(1.6,600/(G*EU));S.OY=215;
+  S.nodes=[];S.beams=[];S.sel=null;S.hist=[];S.hint=false;S.msg="";S.budget=engBudget(n,G);
+  S.truck={x:26,y:S.CY,vy:0,ang:0,state:"wait",t:0,sup:null};
+  var j;
+  for(j=0;j<=c.walls;j++){engMk(0,j,true);engMk(G,j,true)}
+  S.fx=[];S.sparks=[];
+}
+function engMk(i,j,fixed){
+  var n={i:i,j:j,x:S.LX+i*EU,y:S.CY+j*EU,hx:0,hy:0,vx:0,vy:0,fx:0,fy:0,m:1,fixed:!!fixed};
+  n.hx=n.x;n.hy=n.y;S.nodes.push(n);return n;
+}
+function engAt(i,j){for(var k=0;k<S.nodes.length;k++){var n=S.nodes[k];if(n.i===i&&n.j===j)return n}return null}
+function engScr(x,y){return{x:(x-SW/2)*S.Z+SW/2,y:(y-S.CY)*S.Z+S.OY}}
+function engGridOk(i,j){return i>=0&&i<=S.G&&j>=EJ0&&j<=EJ1}
+function engSpent(){return S.beams.reduce(function(s,b){return s+b.cost},0)}
+function engLeft(){return S.budget-engSpent()}
+function engSnap(){
+  return JSON.stringify({n:S.nodes.filter(function(n){return!n.fixed}).map(function(n){return[n.i,n.j]}),
+    b:S.beams.map(function(b){return[b.A.i,b.A.j,b.B.i,b.B.j,b.type]})});
+}
+function engRestore(js){
+  var d=JSON.parse(js);S.nodes=S.nodes.filter(function(n){return n.fixed});S.beams=[];S.sel=null;
+  d.n.forEach(function(p){engMk(p[0],p[1],false)});
+  d.b.forEach(function(p){engPush(engAt(p[0],p[1]),engAt(p[2],p[3]),p[4])});
+}
+function engPush(A,B,type){
+  var L=Math.hypot(B.hx-A.hx,B.hy-A.hy);
+  var b={A:A,B:B,type:type,L:L,cost:engCost(L,type),r:0,F:0,dead:false,k:0,c:0,ft:0,fc:0};
+  S.beams.push(b);return b;
+}
+function engTry(A,gi,gj,type){
+  if(!A){S.msg="Start from a dot.";return false}
+  if(!engGridOk(gi,gj)){S.msg="Build between the cliffs.";return false}
+  var Bn=engAt(gi,gj);
+  if(A===Bn)return false;
+  if(!Bn&&(gi===0||gi===S.G)){S.msg="Join the cliff at a bolt.";return false}
+  var len=Math.hypot(gi-A.i,gj-A.j);
+  if(len>EMAXL+1e-6){S.msg="Too long! A beam can reach about 3 squares.";return false}
+  var cost=engCost(len*EU,type);
+  if(cost>engLeft()){S.msg="Not enough money left for that beam.";return false}
+  if(Bn&&S.beams.some(function(b){return(b.A===A&&b.B===Bn)||(b.A===Bn&&b.B===A)})){S.msg="There is already a beam there.";return false}
+  S.hist.push(engSnap());if(S.hist.length>40)S.hist.shift();
+  if(!Bn)Bn=engMk(gi,gj,false);
+  engPush(A,Bn,type);S.msg="";SFX.plank();engUI();return Bn;
+}
+function engClean(){
+  S.nodes=S.nodes.filter(function(n){return n.fixed||S.beams.some(function(b){return b.A===n||b.B===n})});
+}
+function engErase(x,y){
+  var best=null,bd=14;
+  S.beams.forEach(function(b){
+    var ax=b.A.x,ay=b.A.y,bx=b.B.x,by=b.B.y,dx=bx-ax,dy=by-ay,t=Math.max(0,Math.min(1,((x-ax)*dx+(y-ay)*dy)/(dx*dx+dy*dy)));
+    var d=Math.hypot(x-(ax+dx*t),y-(ay+dy*t));if(d<bd){bd=d;best=b}
+  });
+  var nb=null,nd=14;
+  S.nodes.forEach(function(n){if(n.fixed)return;var d=Math.hypot(x-n.x,y-n.y);if(d<nd){nd=d;nb=n}});
+  if(!best&&!nb)return;
+  S.hist.push(engSnap());
+  if(nb)S.beams=S.beams.filter(function(b){return b.A!==nb&&b.B!==nb});else S.beams=S.beams.filter(function(b){return b!==best});
+  engClean();S.sel=null;SFX.thud();engUI();
+}
+/* ---------- physics ---------- */
+function engPrep(){
+  S.nodes.forEach(function(n){n.m=.6;n.vx=n.vy=0;n.x=n.hx;n.y=n.hy});
+  S.beams.forEach(function(b){var m=EMAT[b.type],w=m.w*b.L/EU;b.A.m+=w/2;b.B.m+=w/2;b.dead=false;b.r=0;b.F=0;
+    b.k=m.k*EU/b.L;b.ft=m.ft;b.fc=m.fc*Math.min(1,1.2*EU/b.L)});
+  S.beams.forEach(function(b){var ma=b.A.fixed?b.B.m:b.A.m,mb=b.B.fixed?b.A.m:b.B.m;b.c=2*.35*Math.sqrt(b.k*(ma*mb/(ma+mb)))});
+  S.truck={x:26,y:S.CY,vy:0,ang:0,state:"drive",t:0,sup:null,out:""};
+}
+function engReset(){
+  S.nodes.forEach(function(n){n.x=n.hx;n.y=n.hy;n.vx=n.vy=0});
+  S.beams.forEach(function(b){b.dead=false;b.r=0;b.F=0});
+  S.truck={x:26,y:S.CY,vy:0,ang:0,state:"wait",t:0,sup:null,out:""};
+}
+function engSupport(x){
+  var best=null,by=1e9;
+  for(var i=0;i<S.beams.length;i++){
+    var b=S.beams[i];if(b.dead||b.type!=="road")continue;
+    var x1=b.A.x,x2=b.B.x;if(x1>x2){var q=x1;x1=x2;x2=q}
+    if(x<x1||x>x2||x2-x1<1)continue;
+    var t=(x-b.A.x)/(b.B.x-b.A.x),y=b.A.y+(b.B.y-b.A.y)*t;
+    if(y<by){by=y;best={b:b,t:t,y:y}}
+  }
+  return best;
+}
+function engSub(h){
+  var N=S.nodes,B=S.beams,i,T=S.truck;
+  for(i=0;i<N.length;i++){var n=N[i];n.fx=0;n.fy=n.fixed?0:n.m*EGR}
+  for(i=0;i<B.length;i++){
+    var b=B[i];if(b.dead)continue;
+    var A=b.A,C=b.B,dx=C.x-A.x,dy=C.y-A.y,d=Math.sqrt(dx*dx+dy*dy)||1e-6,ux=dx/d,uy=dy/d;
+    var Fe=b.k*(d-b.L),rv=(C.vx-A.vx)*ux+(C.vy-A.vy)*uy,F=Fe+b.c*rv;
+    A.fx+=F*ux;A.fy+=F*uy;C.fx-=F*ux;C.fy-=F*uy;
+    b.F=Fe;var r=Fe>=0?Fe/b.ft:-Fe/b.fc;b.r=b.r*.85+r*.15;
+    if(b.r>1){b.dead=true;S.snap=true;if(S.sparks.length<80)for(var k=0;k<6;k++)S.sparks.push({x:(A.x+C.x)/2,y:(A.y+C.y)/2,vx:(Math.random()-.5)*5,vy:-Math.random()*4,life:30,c:EMAT[b.type].col})}
+  }
+  if(T.sup){
+    var sb=T.sup.b;
+    if(!sb.dead){var W=S.M*EGR,t=T.sup.t;sb.A.fy+=W*(1-t);sb.B.fy+=W*t}
+  }
+  for(i=0;i<N.length;i++){
+    var m=N[i];if(m.fixed)continue;
+    m.vx+=m.fx/m.m*h;m.vy+=m.fy/m.m*h;m.vx*=.9985;m.vy*=.9985;
+    m.x+=m.vx*h;m.y+=m.vy*h;
+  }
+}
+function engStepFrame(){
+  var T=S.truck,i;
+  if(T.state==="drive"){
+    T.x+=S.speed||2.6;
+    var s=T.x>S.LX&&T.x<S.RX?engSupport(T.x):null;
+    if(s){T.sup=s;T.y=s.y;var b=s.b;T.ang=Math.atan2(b.B.y-b.A.y,b.B.x-b.A.x);if(T.ang>1.2||T.ang<-1.2)T.ang=0;if(b.B.x<b.A.x)T.ang=Math.atan2(b.A.y-b.B.y,b.A.x-b.B.x)}
+    else if(T.x<=S.LX||T.x>=S.RX){T.sup=null;T.y=S.CY;T.ang=0}
+    else{T.sup=null;T.vy+=.55;T.y+=T.vy;T.ang=Math.min(.5,T.ang+.02);T.state="lost";T.out="fell";SFX.crack()}
+    if(T.state==="drive"&&T.y>S.CY+EU*ESAG){T.state="lost";T.out="sag";T.sup=null;SFX.crack()}
+    if(T.state==="drive"&&T.x>=S.RX+EU*1.6){T.state="won"}
+  }else if(T.state==="lost"){
+    T.sup=null;T.vy+=.55;T.y+=T.vy;
+  }
+  var h=1/60/ESUB;
+  for(i=0;i<ESUB;i++)engSub(h);
+  if(S.snap){S.snap=false;if(sfxRate("snap",6))SFX.crack()}
+  if(T.state==="won"||T.state==="lost"){T.t++;
+    if(T.t===60){engResult(T.state==="won")}}
+}
+function engCheck(){ /* run a whole trip instantly: used by tests */
+  engPrep();var n=0;while(S.truck.t<62&&n<4000){engStepFrame();n++}
+  var T=S.truck;return{won:T.state==="won",out:T.out,dead:S.beams.filter(function(b){return b.dead}).length,maxr:Math.max.apply(null,[0].concat(S.beams.map(function(b){return b.r})))}
+}
+function etick(){
+  S.f++;
+  S.sparks.forEach(function(p){p.x+=p.vx;p.y+=p.vy;p.vy+=.25;p.life--});S.sparks=S.sparks.filter(function(p){return p.life>0});
+  if(S.mode==="test"||S.mode==="result")engStepFrame();
+  else if(S.celebrate>0){S.celebrate--}
+}
+/* ---------- drawing ---------- */
+function engCol(r){r=Math.max(0,Math.min(1,r));return"hsl("+Math.round(205-205*r)+",78%,"+(46+8*(1-r))+"%)"}
+function edraw(){
+  var c=S.ctx;c.setTransform(S.dpr,0,0,S.dpr,0,0);
+  var sky=getComputedStyle(document.documentElement).getPropertyValue("--tile").trim()||"#e3ebfd";
+  c.fillStyle=sky;c.fillRect(0,0,SW,SH);
+  c.fillStyle="#f6c453";c.beginPath();c.arc(730,56,24,0,6.283);c.fill();
+  c.fillStyle="rgba(255,255,255,.8)";
+  [[120,60],[420,40]].forEach(function(p,i){var x=((p[0]+S.f*.12*(i+1))%900)-60;c.beginPath();c.arc(x,p[1],16,0,6.283);c.arc(x+20,p[1]-7,20,0,6.283);c.arc(x+40,p[1],15,0,6.283);c.fill()});
+  var LX=S.LX,RX=S.RX,CY=S.CY,WY=S.WY;
+  c.save();c.translate(SW/2,S.OY);c.scale(S.Z,S.Z);c.translate(-SW/2,-CY);
+  c.fillStyle="#3b82c4";c.fillRect(LX,WY,RX-LX,700);
+  c.strokeStyle="rgba(255,255,255,.55)";c.lineWidth=2;c.lineCap="round";
+  for(var wx=LX+14;wx<RX-14;wx+=36){var wy=WY+18+Math.sin((S.f+wx)*.07)*3;c.beginPath();c.moveTo(wx,wy);c.quadraticCurveTo(wx+9,wy-5,wx+18,wy);c.stroke()}
+  c.fillStyle="#7b5a3c";c.fillRect(-700,CY,LX+700,700);c.fillRect(RX,CY,SW-RX+700,700);
+  c.fillStyle="#5a9b5f";c.fillRect(-700,CY,LX+700,9);c.fillRect(RX,CY,SW-RX+700,9);
+  c.strokeStyle="rgba(0,0,0,.12)";c.lineWidth=2;
+  for(var sy=CY+50;sy<CY+400;sy+=46){c.beginPath();c.moveTo(-700,sy);c.lineTo(LX-6,sy+4);c.moveTo(RX+6,sy+4);c.lineTo(SW+700,sy);c.stroke()}
+  var editing=S.mode==="edit";
+  if(editing){
+    c.fillStyle="rgba(19,32,67,.22)";
+    for(var gi=1;gi<S.G;gi++)for(var gj=EJ0;gj<=EJ1;gj++){c.beginPath();c.arc(LX+gi*EU,CY+gj*EU,2.2,0,6.283);c.fill()}
+  }
+  if(S.hint){
+    c.setLineDash([6,5]);c.strokeStyle="rgba(23,138,76,.75)";c.lineWidth=3;
+    engRef(S.G).forEach(function(b){c.beginPath();c.moveTo(LX+b[0]*EU,CY+b[1]*EU);c.lineTo(LX+b[2]*EU,CY+b[3]*EU);c.stroke()});
+    c.setLineDash([]);
+  }
+  var testing=S.mode==="test"||S.mode==="result";
+  S.beams.forEach(function(b){
+    if(b.dead)return;var m=EMAT[b.type];
+    c.lineCap="butt";c.strokeStyle=m.edge;c.lineWidth=m.wd+3;c.beginPath();c.moveTo(b.A.x,b.A.y);c.lineTo(b.B.x,b.B.y);c.stroke();
+    c.strokeStyle=testing?engCol(b.r):m.col;c.lineWidth=m.wd;c.beginPath();c.moveTo(b.A.x,b.A.y);c.lineTo(b.B.x,b.B.y);c.stroke();
+  });
+  if(S.mode==="edit"&&S.pd&&S.pd.n&&S.pm){
+    var g=S.hoverG,ok=g&&engGridOk(g.i,g.j)&&Math.hypot(g.i-S.pd.n.i,g.j-S.pd.n.j)<=EMAXL+1e-6;
+    c.setLineDash([5,5]);c.lineWidth=4;c.strokeStyle=ok?(S.tool==="steel"?EMAT.steel.edge:EMAT.road.edge):"#c62f3d";
+    c.beginPath();c.moveTo(S.pd.n.x,S.pd.n.y);if(g)c.lineTo(LX+g.i*EU,CY+g.j*EU);else c.lineTo(S.pm.x,S.pm.y);c.stroke();c.setLineDash([]);
+  }
+  S.nodes.forEach(function(n){
+    c.beginPath();
+    if(n.fixed){c.fillStyle="#46527a";c.fillRect(n.x-6,n.y-6,12,12);c.fillStyle="#fff";c.beginPath();c.arc(n.x,n.y,2.2,0,6.283);c.fill()}
+    else{c.fillStyle="#fff";c.strokeStyle="#132043";c.lineWidth=2.5;c.arc(n.x,n.y,6,0,6.283);c.fill();c.stroke()}
+    if(S.sel===n&&editing){c.strokeStyle="#f5a800";c.lineWidth=3.5;c.beginPath();c.arc(n.x,n.y,11,0,6.283);c.stroke()}
+  });
+  if(editing&&S.hoverG&&engGridOk(S.hoverG.i,S.hoverG.j)){c.strokeStyle="rgba(47,91,234,.7)";c.lineWidth=2;c.beginPath();c.arc(LX+S.hoverG.i*EU,CY+S.hoverG.j*EU,9,0,6.283);c.stroke()}
+  etruck(c,S.truck);
+  S.sparks.forEach(function(p){c.globalAlpha=Math.max(0,p.life/30);c.fillStyle=p.c;c.fillRect(p.x-2,p.y-2,4,4)});c.globalAlpha=1;
+  c.restore();
+  if(S.celebrate>0){c.globalAlpha=Math.min(1,S.celebrate/30);c.font="800 44px Fredoka, sans-serif";c.textAlign="center";c.fillStyle="#f5a800";c.strokeStyle="#132043";c.lineWidth=6;c.strokeText("Bridge built!",SW/2,90);c.fillText("Bridge built!",SW/2,90);c.globalAlpha=1;c.textAlign="start"}
+}
+function etruck(c,T){
+  c.save();c.translate(T.x,T.y);c.rotate(T.ang||0);
+  c.fillStyle="#e8503a";c.strokeStyle="#132043";c.lineWidth=2;
+  c.beginPath();c.rect(-28,-30,38,20);c.fill();c.stroke();
+  c.fillStyle="#f58a3a";c.beginPath();c.moveTo(10,-30);c.lineTo(22,-30);c.lineTo(30,-18);c.lineTo(30,-10);c.lineTo(10,-10);c.closePath();c.fill();c.stroke();
+  c.fillStyle="#bfe3ff";c.fillRect(14,-27,8,8);
+  c.fillStyle="#2b2f45";[-16,18].forEach(function(wx){c.beginPath();c.arc(wx,-8,8,0,6.283);c.fill();c.fillStyle="#cfd4e6";c.beginPath();c.arc(wx,-8,3,0,6.283);c.fill();c.fillStyle="#2b2f45"});
+  c.fillStyle="#132043";c.font="800 11px Nunito, sans-serif";c.textAlign="center";c.fillText(S.M.toFixed(0)+" t",-9,-16);c.textAlign="start";
+  c.restore();
+}
+/* ---------- screens ---------- */
+function buildEng(){
+  app.innerHTML='<div class="row"><button class="btn ghost" id="quit">Home</button><span class="pill" id="e-lvl"></span><span class="pill" id="e-bud"></span><span class="pill" id="e-trip"></span><button class="pill" id="snd" aria-pressed="true"></button></div>'+
+   '<div class="arena"><canvas id="cv" aria-label="Bridge Engineer. Build a bridge so the truck can cross the river."></canvas></div><p class="sentence" id="aimhint"></p><div id="qa"></div>';
+  var cv=document.getElementById("cv"),dpr=Math.min(2,window.devicePixelRatio||1);
+  cv.width=SW*dpr;cv.height=SH*dpr;
+  S={kind:"eng",cv:cv,ctx:cv.getContext("2d"),dpr:dpr,cleared:0,mode:"idle",tool:"road",pending:false,trips:0,celebrate:0,last:0,acc:0,stop:false,raf:0,f:0,speed:2.6,sf:{}};
+  engLevel(1);
+  document.getElementById("quit").onclick=function(){stopArena();home()};
+  var sb=document.getElementById("snd");
+  function sbl(){sb.textContent="Sound: "+(soundOn?"On":"Off");sb.setAttribute("aria-pressed",soundOn?"true":"false")}
+  sb.onclick=function(){soundOn=!soundOn;try{localStorage.setItem("sort3_sound",soundOn?"1":"0")}catch(e){}sbl();if(soundOn)SFX.ding()};
+  sbl();
+  function pt(ev){var r=cv.getBoundingClientRect(),sx=(ev.clientX-r.left)*SW/r.width,sy=(ev.clientY-r.top)*SH/r.height;return{x:(sx-SW/2)/S.Z+SW/2,y:(sy-S.OY)/S.Z+S.CY}}
+  function snap(p){var i=Math.round((p.x-S.LX)/EU),j=Math.round((p.y-S.CY)/EU);return engGridOk(i,j)&&Math.hypot(p.x-(S.LX+i*EU),p.y-(S.CY+j*EU))<EU*.55?{i:i,j:j}:null}
+  cv.addEventListener("pointerdown",function(ev){
+    if(!S||S.mode!=="edit")return;ev.preventDefault();var p=pt(ev);
+    try{cv.setPointerCapture(ev.pointerId)}catch(e){}
+    if(S.tool==="erase"){engErase(p.x,p.y);return}
+    var g=snap(p);S.pm=p;S.hoverG=g;
+    S.pd={n:g?engAt(g.i,g.j):null,x:p.x,y:p.y};
+    if(!S.pd.n&&!S.sel)S.msg="Start from a dot or bolt (tap a joint first).";
+    engUI();
+  });
+  cv.addEventListener("pointermove",function(ev){
+    if(!S||S.mode!=="edit")return;var p=pt(ev);S.pm=p;S.hoverG=snap(p);
+  });
+  cv.addEventListener("pointerup",function(ev){
+    if(!S||S.mode!=="edit"||S.tool==="erase")return;ev.preventDefault();
+    var p=pt(ev),g=snap(p),st=S.pd;S.pd=null;S.pm=null;
+    if(!g){S.msg="Let go on a dot.";engUI();return}
+    var nUp=engAt(g.i,g.j);
+    if(st&&st.n&&st.n!==nUp){S.sel=null;engTry(st.n,g.i,g.j,S.tool)}
+    else if(st&&st.n&&st.n===nUp){
+      if(S.sel&&S.sel!==nUp){var a=S.sel;S.sel=null;var nb=engTry(a,g.i,g.j,S.tool);if(nb)S.sel=nb}
+      else S.sel=S.sel===nUp?null:nUp;
+    }else if(S.sel){var a2=S.sel;S.sel=null;var nb2=engTry(a2,g.i,g.j,S.tool);if(nb2)S.sel=nb2}
+    engUI();
+  });
+  cv.addEventListener("pointercancel",function(){if(S){S.pd=null;S.pm=null}});
+  engUI();S.raf=requestAnimationFrame(loop);
+}
+function engUI(){
+  if(!S||S.kind!=="eng")return;
+  var a=function(id,t){var e=document.getElementById(id);if(e)e.textContent=t};
+  a("e-lvl","Level "+S.level+" | Bridges: "+S.cleared);
+  a("e-bud","Money: $"+engLeft()+" / $"+S.budget);
+  a("e-trip",S.mode==="idle"?"Truck trips: 0":"Truck trips: "+S.trips);
+  var h="";
+  if(S.mode==="idle")h=S.pending?"":(S.beams.length?"Your bridge is waiting. Spell a word right to work on it.":"Spell a word right to earn a turn building a bridge.");
+  else if(S.mode==="edit")h=S.msg||(S.beams.length?"Triangles make a bridge strong. Test it when you are ready.":"Join the bolts across the river. Drag from a dot to another dot. Brown road is for the truck to drive on.");
+  else if(S.mode==="test")h="Here comes the "+S.M.toFixed(0)+" ton truck...";
+  else h=S.result||"";
+  a("aimhint",h);
+  document.querySelectorAll(".etool").forEach(function(b){b.classList.toggle("on",b.dataset.t===S.tool)});
+}
+function engWorkshop(){
+  S.mode="edit";S.trips=2;S.msg="";S.result="";engReset();
+  var qa=document.getElementById("qa");
+  qa.innerHTML='<section class="card"><div class="tag">Your turn to build. Make it strong enough for the truck!</div>'+
+   '<div class="etools"><button class="btn etool" data-t="road">Road</button><button class="btn etool" data-t="steel">Steel</button><button class="btn etool" data-t="erase">Erase</button>'+
+   '<button class="btn ghost" id="e-undo">Undo</button><button class="btn ghost" id="e-clear">Clear</button><button class="btn ghost" id="e-hint">Hint</button></div>'+
+   '<p class="sentence" style="margin:10px 0 0">Road is cheap and the truck drives on it. Steel is stronger and costs more. Beams can be about 3 squares long. Green lines in Hint show one way to do it.</p>'+
+   '<div class="row" style="margin-top:12px"><button class="btn" id="e-test">Test the truck</button><button class="btn ghost" id="e-back">Back to spelling</button></div></section>';
+  qa.querySelectorAll(".etool").forEach(function(b){b.onclick=function(){S.tool=b.dataset.t;S.sel=null;S.msg="";engUI()}});
+  document.getElementById("e-undo").onclick=function(){if(S.mode!=="edit"||!S.hist.length)return;engRestore(S.hist.pop());engUI()};
+  document.getElementById("e-clear").onclick=function(){if(S.mode!=="edit"||!S.beams.length)return;S.hist.push(engSnap());S.beams=[];engClean();S.sel=null;engUI()};
+  document.getElementById("e-hint").onclick=function(){S.hint=!S.hint;this.textContent=S.hint?"Hide hint":"Hint"};
+  document.getElementById("e-test").onclick=engTest;
+  document.getElementById("e-back").onclick=engClose;
+  engUI();
+}
+function engTest(){
+  if(S.mode!=="edit")return;
+  if(!S.beams.some(function(b){return b.type==="road"})){S.msg="The truck needs a road. Build some brown road beams across the river.";engUI();return}
+  S.trips--;S.sel=null;S.pd=null;S.mode="test";S.hint=false;
+  engPrep();SFX.pop();
+  var qa=document.getElementById("qa");qa.innerHTML='<section class="card"><div class="tag">Testing</div><p class="sentence">Beams turn from blue to red as they carry more load.</p></section>';
+  engUI();
+}
+function engResult(won){
+  if(!S||S.kind!=="eng")return;
+  S.mode="result";var qa=document.getElementById("qa");
+  if(won){
+    S.cleared++;unlock("eng_win");if(S.cleared>=5)unlock("eng_all");
+    S.celebrate=90;SFX.level();
+    S.result="You did it! The truck made it across.";
+    qa.innerHTML='<section class="card prompt"><div class="tag">Bridge '+S.cleared+' built</div><h2>The truck made it across!</h2><p class="sentence">Next up: a wider river and a heavier truck.</p><div class="row"><button class="btn" id="e-go">Keep going</button></div></section>';
+    document.getElementById("e-go").onclick=function(){S.level++;engLevel(S.level);engClose()};
+  }else{
+    var why=S.truck.out==="sag"?"The bridge sagged too low.":S.truck.out==="fell"?"There was a gap in the road.":"The bridge broke.";
+    var broke=S.beams.filter(function(b){return b.dead}).length;
+    S.result=why;
+    var hint=broke>0?"Red beams were carrying too much. Add triangles near where it broke.":"Make sure brown road beams connect from one cliff bolt to the other.";
+    qa.innerHTML='<section class="card prompt"><div class="tag">Not yet</div><h2>'+why+'</h2><p class="sentence">'+hint+(S.trips>0?" You have "+S.trips+" more truck trip"+(S.trips===1?"":"s")+" for this word.":" Spell the next word to try again.")+'</p><div class="row">'+(S.trips>0?'<button class="btn" id="e-fix">Fix my bridge</button>':'')+'<button class="btn ghost" id="e-back">Back to spelling</button></div></section>';
+    var f=document.getElementById("e-fix");if(f)f.onclick=function(){var t=S.trips;engWorkshop();S.trips=t;engUI()};
+    document.getElementById("e-back").onclick=function(){engReset();engClose()};
+  }
+  engUI();
+}
+function engClose(){
+  S.mode="idle";S.pending=false;S.sel=null;S.pd=null;S.hint=false;engReset();engUI();
+  G.i>=G.items.length?engineerDone():engineerStep();
+}
+function engineerStep(){
+  if(!S)buildEng();
+  if(S.pending&&S.mode==="idle")return engWorkshop();
+  if(G.i>=G.items.length)return engineerDone();
+  S.mode="idle";engUI();
+  var it=G.items[G.i];
+  document.getElementById("qa").innerHTML='<section class="card prompt" id="stage"></section><div id="fb"></div>';
+  if(it.mg==="listen")listen(it.o);else builder(it.o,it.mg==="gaps");
+}
+function engineerDone(){
+  var qa=document.getElementById("qa");if(!qa||!S)return;
+  qa.innerHTML='<section class="card prompt"><div class="tag">Bridge Engineer</div><h2>All words done. You built '+S.cleared+' bridge'+(S.cleared===1?"":"s")+'.</h2><div class="row"><button class="btn" id="fin">Finish game</button></div></section>';
+  document.getElementById("fin").onclick=engineerEnd;
+  engUI();
+}
+function engineerEnd(){
+  var br=S?S.cleared:0,lv=S?S.level:1,n=G.items.length;
+  var uniq=G.missed.filter(function(w,i){return G.missed.indexOf(w)===i});
+  stopArena();
+  app.innerHTML='<section class="card prompt"><div class="tag">Bridge Engineer results</div><div class="score">'+br+' bridge'+(br===1?"":"s")+'</div>'+
+   '<h2>'+(br>=5?"Master Engineer! 5 or more bridges built.":br>0?"Nice engineering! You reached level "+lv+".":"Good try. Triangles make bridges strong. Play again!")+'</h2>'+
+   '<p class="sentence">Spelled right on the first try: <span class="hit">'+G.right+'</span> of '+n+'. Best streak: <b>'+(G.best||0)+'</b>.'+(uniq.length?'<br>Words to practice: <span class="miss">'+uniq.join(", ")+'</span>':'')+'</p>'+
+   '<div class="row"><button class="btn" id="again">Play again</button>'+(uniq.length?'<button class="btn ghost" id="fix">Practice missed words</button>':'')+'<button class="btn ghost" id="hm">Home</button></div></section>';
+  document.getElementById("again").onclick=function(){start("eng")};
+  var fx=document.getElementById("fix");if(fx)fx.onclick=function(){practiceMissed(uniq)};
+  document.getElementById("hm").onclick=home;
+}
+
+/* Arcade Games: every word spelled earns plays in a quick game (shared minigames.js). Pick the game from the list above the word. */
+var MGI=null;
+function arcadeStep(){
+  if(!MGI){
+    app.innerHTML='<div class="row"><button class="btn ghost" id="quit">Home</button><div class="bar" role="progressbar"><div id="ar-bar" style="width:0%"></div></div><span class="tag" id="ar-tag"></span><span class="chip" id="streak"></span></div><div id="mgbox"></div><div id="qa"></div>';
+    document.getElementById("quit").onclick=function(){stopArena();home()};
+    var last="balloon";try{last=localStorage.getItem("sort3_arcade")||"balloon"}catch(e){}
+    try{MGI=MiniGames.mount(document.getElementById("mgbox"),{game:last,select:true,onChange:function(v){try{localStorage.setItem("sort3_arcade",v)}catch(e){}}})}catch(e){MGI=null}
+  }
+  var pct=Math.round(G.i/G.items.length*100);
+  document.getElementById("ar-bar").style.width=pct+"%";
+  document.getElementById("ar-tag").textContent=Math.min(G.i+1,G.items.length)+" / "+G.items.length;
+  if(G.i>=G.items.length)return arcadeDone();
+  var it=G.items[G.i];
+  document.getElementById("qa").innerHTML='<section class="card prompt" id="stage"></section><div id="fb"></div>';
+  if(it.mg==="listen")listen(it.o);else builder(it.o,it.mg==="gaps");
+}
+function arcadeDone(){
+  var qa=document.getElementById("qa");if(!qa)return;
+  qa.innerHTML='<section class="card prompt"><div class="tag">Arcade Games</div><h2>All words done. Great spelling!</h2><div class="row"><button class="btn" id="fin">Finish game</button></div></section>';
+  document.getElementById("fin").onclick=arcadeEnd;
+}
+function arcadeEnd(){
+  var n=G.items.length,uniq=G.missed.filter(function(w,i){return G.missed.indexOf(w)===i});
+  stopArena();
+  app.innerHTML='<section class="card prompt"><div class="tag">Arcade Games results</div><div class="score">'+G.right+' / '+n+'</div>'+
+   '<h2>'+(G.right===n?"Perfect spelling!":G.right>=n*.8?"Great job!":"Nice work. Keep practicing!")+'</h2>'+
+   '<p class="sentence">Spelled right on the first try: <span class="hit">'+G.right+'</span> of '+n+'. Best streak: <b>'+(G.best||0)+'</b>.'+(uniq.length?'<br>Words to practice: <span class="miss">'+uniq.join(", ")+'</span>':'')+'</p>'+
+   '<div class="row"><button class="btn" id="again">Play again</button>'+(uniq.length?'<button class="btn ghost" id="fix">Practice missed words</button>':'')+'<button class="btn ghost" id="hm">Home</button></div></section>';
+  document.getElementById("again").onclick=function(){start("arcade")};
+  var fx=document.getElementById("fix");if(fx)fx.onclick=function(){practiceMissed(uniq)};
+  document.getElementById("hm").onclick=home;
+}
+
+/* Study cards */
+function flash(o){
+  app.innerHTML=header()+'<section class="card prompt"><div class="tag">Study card</div><div class="big">'+o.w+'</div><div class="syl">'+o.s+'</div>'+
+   '<p class="sentence"><b>Meaning:</b> '+esc(o.d)+'</p><p class="sentence">'+esc(o.x)+'</p><div class="row">'+speakBtn(o.w,"Say the word")+speakBtn(o.w.split("").join(", "),"Spell it out loud")+speakBtn(o.x,"Sentence")+speakBtn(o.d,"Meaning")+'</div></section>'+
+   '<div class="row"><button class="btn ghost" id="pv"'+(G.i===0?" disabled":"")+'>Back</button><button class="btn" id="nx">'+(G.i>=G.items.length-1?"Finish":"Next word")+'</button></div>';
+  document.getElementById("quit").onclick=home;wireSpeak(app);speak(o.w);
+  document.getElementById("pv").onclick=function(){G.i=Math.max(0,G.i-1);step()};
+  document.getElementById("nx").onclick=function(){G.i++;step()};
+}
+
+function end(){
+  if(G.kind==="boss")return bossEnd();
+  if(G.kind==="testday")return testEnd();
+  if(G.kind==="flash"){
+    app.innerHTML='<section class="card prompt"><h2>Nice studying!</h2><p class="sentence">Now test yourself. Try Listen and Spell next.</p><div class="row"><button class="btn" id="go">Listen and Spell</button><button class="btn ghost" id="hm">Home</button></div></section>';
+    document.getElementById("go").onclick=function(){start("listen")};document.getElementById("hm").onclick=home;return;
+  }
+  var n=G.items.length,r=G.right,msg=r===n?"Perfect round!":r>=n*.8?"Great work!":r>=n*.5?"Good effort. Keep going!":"Keep practicing. You will get there!";
+  var uniq=G.missed.filter(function(w,i){return G.missed.indexOf(w)===i});
+  if(n>=10&&r===n)unlock("perfect");
+  app.innerHTML='<section class="card prompt"><div class="tag">Round complete</div><div class="score">'+r+' / '+n+'</div><h2>'+msg+'</h2>'+
+   '<p class="sentence">Right on the first try: <span class="hit">'+r+'</span><br>Best streak: <b>'+(G.best||0)+'</b>'+(uniq.length?'<br>Practice these again: <span class="miss">'+uniq.join(", ")+'</span>':'')+'</p>'+
+   '<div class="row"><button class="btn" id="again">Play again</button>'+(uniq.length&&G.kind!=="thenthan"?'<button class="btn ghost" id="fix">Practice missed words</button>':'')+'<button class="btn ghost" id="hm">Home</button></div></section>';
+  var kind=G.kind,missed=uniq;
+  document.getElementById("again").onclick=function(){start(kind)};
+  var fx=document.getElementById("fix");
+  if(fx)fx.onclick=function(){G={kind:kind,items:shuffle(missed).map(function(w){return{o:WORDS.filter(function(o){return o.w===w})[0]}}),i:0,right:0,missed:[]};step()};
+  document.getElementById("hm").onclick=home;
+}
+hub();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Story Studio</title>
+<style>
+:root{--bg:#FBF7EC;--ink:#26304A;--card:#fff;--line:#E4DCC9;--indigo:#2B3A67;--coral:#FF6B4A;--teal:#2A9D8F;--onind:#fff;--tr:#dbeafe;--dl:#dcfce7;--se:#fde7c8}
+@media(prefers-color-scheme:dark){:root{--bg:#1D2233;--ink:#F1ECDD;--card:#262B40;--line:#3A4159;--indigo:#F4C95D;--onind:#1D2233;--tr:#1e3a6e;--dl:#1d4d36;--se:#6b4a1c}}
+*{box-sizing:border-box}html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;line-height:1.5}
+.wrap{max-width:720px;margin:0 auto;padding:18px 14px 50px}
+h1{font-size:26px;margin:0 0 2px;color:var(--indigo)}h2{font-size:19px;margin:6px 0 8px;color:var(--indigo)}h3{font-size:16px;margin:14px 0 6px;color:var(--indigo)}
+.sub{opacity:.7;margin:0 0 10px;font-size:14px}.small{font-size:13px;opacity:.72}.c{text-align:center}
+button{font:inherit;cursor:pointer;color:inherit}
+.pills{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}
+.pill{padding:8px 16px;border-radius:999px;border:2px solid var(--line);background:var(--card);font-weight:700}
+.pill.on{border-color:var(--indigo);background:var(--indigo);color:var(--onind)}
+.tabs{display:flex;gap:6px;margin:10px 0 14px;flex-wrap:wrap}
+.tab{flex:1;min-width:120px;padding:10px 8px;border-radius:12px;border:2px solid var(--line);background:var(--card);font-weight:800;font-size:14px}
+.tab.on{border-color:var(--indigo);box-shadow:0 0 0 2px var(--indigo) inset}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px;margin:10px 0}
+.steps{display:flex;gap:5px;margin:0 0 12px}
+.stp{flex:1;padding:8px 2px;border-radius:10px;border:2px solid var(--line);background:var(--card);font-size:12px;font-weight:800;text-align:center}
+.stp.on{border-color:var(--indigo);background:var(--indigo);color:var(--onind)}.stp.lock{opacity:.4;cursor:not-allowed}.stp.done{border-color:var(--teal)}
+label{display:block;font-weight:700;font-size:14px;margin:10px 0 4px}
+input[type=text],select,textarea{font:inherit;font-size:16px;width:100%;padding:10px 12px;border-radius:10px;border:2px solid var(--line);background:var(--bg);color:var(--ink)}
+textarea{min-height:120px;resize:vertical;line-height:1.55}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}.row3{display:grid;grid-template-columns:130px 1fr;gap:8px;align-items:center;margin:6px 0}
+@media(max-width:520px){.row{grid-template-columns:1fr}.row3{grid-template-columns:1fr}}
+.nb{margin-top:12px;padding:13px 20px;border:none;border-radius:12px;background:var(--indigo);color:var(--onind);font-weight:800;font-size:15px}
+.nb:disabled{opacity:.35;cursor:not-allowed}.nb.alt{background:var(--teal);color:#fff}.nb.ghost{background:transparent;border:2px solid var(--line);color:var(--ink)}
+.btns{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.swbs{background:var(--bg);border:2px dashed var(--indigo);border-radius:12px;padding:10px 12px;font-weight:700;margin-top:10px}
+.swbs .ph{opacity:.45;font-weight:500}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin:4px 0 8px}
+.chip{padding:6px 11px;border-radius:999px;border:1.5px solid var(--line);background:var(--card);font-size:13.5px;font-weight:600}
+.chip.t{background:var(--tr)}.chip.d{background:var(--dl)}.chip.s{background:var(--se)}
+.wc{font-size:12px;opacity:.65;text-align:right}
+.hint{background:var(--bg);border-radius:10px;padding:8px 10px;font-size:13.5px;margin-top:6px}
+mark.tr,mark.dl,mark.se{color:inherit;border-radius:4px;padding:0 2px}
+mark.tr{background:var(--tr)}mark.dl{background:var(--dl)}mark.se{background:var(--se)}
+.legend{display:flex;gap:8px;flex-wrap:wrap;font-size:13px;margin:6px 0}
+.an{display:grid;gap:8px}.ai{display:flex;gap:10px;align-items:flex-start;border:1px solid var(--line);border-radius:12px;padding:9px 11px;background:var(--bg)}
+.ai .ic{font-size:20px}.ai.ok{border-color:var(--teal)}.ai.no{border-color:var(--coral)}
+.ck{display:flex;gap:10px;align-items:flex-start;margin:7px 0;font-size:15px}.ck input{width:20px;height:20px;margin-top:2px;flex:none}
+.story{white-space:pre-wrap;font-size:17px;line-height:1.8}.story h2{font-size:24px;text-align:center}
+.badge{display:inline-block;margin:3px 4px 0 0;padding:4px 10px;border-radius:999px;background:var(--bg);border:1px solid var(--line);font-size:13px;font-weight:700}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px}
+.gc{display:flex;flex-direction:column;align-items:flex-start;gap:3px;text-align:left;padding:14px;border-radius:14px;border:2px solid var(--line);background:var(--card)}
+.gc .ic{font-size:26px}.gc small{opacity:.65;font-size:12.5px;line-height:1.35}.st{color:#F2B705;letter-spacing:2px}
+.opt{display:block;width:100%;text-align:left;margin:8px 0;padding:12px 14px;border-radius:12px;border:2px solid var(--line);background:var(--card);font-size:16px}
+.opt.ok{border-color:var(--teal);background:rgba(42,157,143,.16)}.opt.no{border-color:var(--coral);background:rgba(255,107,74,.16)}
+.num{display:inline-flex;width:26px;height:26px;border-radius:50%;background:var(--indigo);color:var(--onind);font-weight:800;align-items:center;justify-content:center;font-size:13px;margin-right:8px}
+.back{background:none;border:none;color:var(--indigo);font-weight:800;padding:4px 0;font-size:14px}
+.fb{margin-top:10px;font-weight:600;line-height:1.5}.good{color:var(--teal)}.bad{color:var(--coral)}
+details summary{cursor:pointer;font-weight:800;color:var(--indigo)}
+@media print{body *{visibility:hidden}#printme,#printme *{visibility:visible}#printme{position:absolute;left:0;top:0;width:100%}}
+</style></head><body>
+<div class="wrap" id="app"></div>
+<script>
+'use strict';
+const app=document.getElementById('app'),$=s=>document.querySelector(s);
+const esc=t=>String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+const rnd=n=>Math.floor(Math.random()*n),pick=a=>a[rnd(a.length)];
+const shuffle=a=>{const x=a.slice();for(let i=x.length-1;i>0;i--){const j=rnd(i+1);[x[i],x[j]]=[x[j],x[i]]}return x};
+const sample=(a,n)=>shuffle(a).slice(0,n);
+
+/* ---------- saved data (one profile per child) ---------- */
+const NAMES=['Winston','Evelyn'];
+const blank=()=>({title:'',who:'',want:'',but:'',so:'',bw:'',bl:'',bt:'',bp:'',e1:'',e2:'',e3:'',t1:'First',t2:'Next',t3:'Then',fix:'',feel:'',db:'',dm:'',de:'',chk:{},step:1});
+let DB={cur:'Winston',tab:'example',p:{}};
+try{const j=JSON.parse(localStorage.getItem('ss_v1')||'null');if(j&&typeof j==='object')DB=Object.assign(DB,j)}catch(e){}
+DB.p=DB.p||{};NAMES.forEach(n=>{const o=DB.p[n]||{};DB.p[n]={draft:Object.assign(blank(),o.draft||{}),stories:o.stories||[],gym:o.gym||{}}});
+if(!NAMES.includes(DB.cur))DB.cur=NAMES[0];
+const save=()=>{try{localStorage.setItem('ss_v1',JSON.stringify(DB))}catch(e){}};
+const P=()=>DB.p[DB.cur],D=()=>P().draft;
+const words=t=>(String(t).trim().match(/\S+/g)||[]).length;
+const filled=a=>a.every(k=>String(D()[k]).trim());
+
+/* ---------- word lists for the story check (a helper, not a grade) ---------- */
+const TRANS=['first','next','then','after that','suddenly','later','meanwhile','finally','in the end','at last','soon','one day','one morning','one afternoon','one evening','just then','all of a sudden','after a while','before long','the next day','at first','to begin with','at the end','later that day'];
+const SENSES={sight:['red','blue','green','yellow','orange','purple','pink','golden','bright','dark','shiny','sparkling','sparkled','colorful','glowing','glowed','tiny','huge','giant','twinkled','shimmering','gleaming','pale','dim','saw','looked'],
+ hearing:['loud','loudly','quiet','whisper','whispered','crash','crashed','boom','boomed','buzz','buzzed','hum','hummed','squeak','squeaked','creak','creaked','rumble','rumbled','chirp','chirped','thud','bang','banged','roar','roared','giggled','echoed','silent','heard','sounded','crunch','rattled'],
+ smell:['smell','smelled','smelly','scent','stinky','fresh','aroma','sniffed','fragrant','musty','smoky','perfume'],
+ taste:['taste','tasted','sweet','sour','salty','bitter','spicy','juicy','delicious','yummy','creamy','tangy','sugary'],
+ touch:['soft','rough','smooth','sticky','warm','cold','hot','icy','fuzzy','slimy','wet','dry','bumpy','prickly','scratchy','freezing','chilly','tickled','squishy','hard','fluffy','gooey','damp','felt']};
+const SNAME={sight:'👀 sight',hearing:'👂 hearing',smell:'👃 smell',taste:'👅 taste',touch:'✋ touch'};
+function analyze(text){
+ const t=String(text).replace(/[“”]/g,'"').replace(/[‘’]/g,"'"),low=t.toLowerCase(),w=low.match(/[a-z']+/g)||[];
+ const trans=TRANS.filter(p=>new RegExp('\\b'+p+'\\b').test(low));
+ const q=(t.match(/"[^"]*"/g)||[]).filter(s=>s.length>2),badP=q.filter(s=>!/[,.!?]"$/.test(s)).length;
+ const senses={};Object.keys(SENSES).forEach(k=>{const f=[...new Set(w.filter(x=>SENSES[k].includes(x)&&!['saw','looked','felt'].includes(x)))];if(f.length)senses[k]=f});
+ return {words:words(t),trans,dlg:q.length,badP,senses,blanks:/_{2,}/.test(t),oddQuote:(t.match(/"/g)||[]).length%2===1}}
+
+/* ---------- model story (mentor text) ---------- */
+const T=s=>`<mark class="tr">${s}</mark>`,Q=s=>`<mark class="dl">${s}</mark>`,S=s=>`<mark class="se">${s}</mark>`;
+const MODEL={title:'The Day the Kite Got Stuck',swbs:'Max wanted to fly his new kite, but it got stuck in a tree, so he asked Dad to help.',
+ beg:`On a windy Saturday morning, Max carried his new red kite to the hill behind his house. He wanted to make it fly higher than the treetops, but the wind was wild and hard to control.`,
+ mid:`${T('First')}, he ran down the hill, and the kite lifted off the ground. ${S('The string hummed in his fingers like a tiny guitar.')} ${T('Then')} a strong gust yanked it into the tallest oak tree. ${Q('"Oh no!"')} Max shouted. ${Q('"My kite is stuck!"')} ${T('Next')}, he ran to get his dad, ${S('smelling fresh cut grass')} as he went. ${Q('"Don\'t worry,"')} said Dad, grabbing a long stick. ${T('After a few tries')}, the kite came loose.`,
+ end:`${T('Finally')}, the kite floated down into Max's arms, ${S('soft and a little torn')}. Max smiled with relief. ${Q('"Next time, we\'ll tie it tighter!"')} he laughed. He couldn't wait to fly it again.`};
+
+/* ---------- views ---------- */
+function render(){
+ const tabs=[['example','📖 See an example'],['write','✍️ Write a story'],['gym','💪 Skill gym'],['mine','📚 My stories']];
+ app.innerHTML=`<h1>✏️ Story Studio</h1><p class="sub">Pick one idea. Plan it. Write it. Make it better. Share it.</p>
+ <div class="pills">${NAMES.map(n=>`<button class="pill ${n===DB.cur?'on':''}" data-a="prof" data-v="${n}">${n}</button>`).join('')}</div>
+ <div class="tabs">${tabs.map(t=>`<button class="tab ${DB.tab===t[0]?'on':''}" data-a="tab" data-v="${t[0]}">${t[1]}</button>`).join('')}</div><div id="body"></div>`;
+ ({example:vExample,write:vWrite,gym:vGym,mine:vMine})[DB.tab]();
+ bind()}
+function vExample(){
+ $('#body').innerHTML=`<div class="card"><h2>${MODEL.title}</h2>
+ <div class="legend"><mark class="tr">transition words</mark><mark class="dl">dialogue</mark><mark class="se">sensory details</mark></div>
+ <div class="story"><b>Beginning</b>\n${MODEL.beg}\n\n<b>Middle</b>\n${MODEL.mid}\n\n<b>End</b>\n${MODEL.end}</div></div>
+ <div class="card"><h3>How the author planned it</h3>
+ <p><b>One main idea:</b> ${MODEL.swbs}</p>
+ <p><b>Beginning:</b> who (Max), where (the hill), when (a windy Saturday), problem (the wind is wild).<br><b>Middle:</b> 1 the kite lifts off, 2 the kite gets stuck, 3 Max gets Dad and they use a stick.<br><b>End:</b> the kite is saved and Max feels relieved.</p>
+ <p class="small">Notice: every sentence is about the kite. The events happen in an order that makes sense, and the transition words (First, Then, Next, Finally) show the order.</p>
+ <div class="btns"><button class="nb" data-a="tab" data-v="write">✍️ Write my own story</button><button class="nb ghost" data-a="tab" data-v="gym">💪 Practice a skill first</button></div></div>
+ <details class="card"><summary>For parents: why this is built this way</summary>
+ <p class="small">The U.S. Institute of Education Sciences practice guide for elementary writing rates <b>teaching the writing process</b> (planning, drafting, revising and editing) as strong evidence. It recommends planning strategies, imitating model texts, partner revising, and checklists such as COPS (Capitals, Overall look, Punctuation, Spelling), with the adult first modeling and then gradually handing over. This page follows that pattern: a model story, a planning step, a draft, a revise step with checklists, and a partner read.</p>
+ <p class="small">The three skills the teachers named match the 3rd grade narrative writing standard (W.3.3): organize events in order, use dialogue and descriptions, and use time words to signal order. The story check is only a word-spotting helper, not a grade. A grown-up should read the story too.</p></details>`}
+
+/* ----- write wizard ----- */
+const SPARKS=['The day something went wrong at the park','A time I felt brave','When I lost something important','A surprise visit','The day the lights went out','My first time trying something new','When I helped a friend','A funny thing that happened at lunch','The day it snowed too much','A very windy day','When I got lost for a minute','The best birthday moment','A trip to the store that did not go as planned','The day my pet did something silly','When I made something that did not work','A rainy day adventure','When my team won or lost','The day I met someone new','A mystery in my house','The night we camped outside'];
+const STEPS=['1 Idea','2 Plan','3 Draft','4 Revise','5 Publish'];
+function swbsDone(){return filled(['who','want','but','so'])}
+function planDone(){return filled(['bw','bl','bp','e1','e2','e3','fix'])}
+function draftWords(){const d=D();return words(d.db+' '+d.dm+' '+d.de)}
+const UNL=[()=>true,swbsDone,()=>swbsDone()&&planDone(),()=>swbsDone()&&planDone()&&draftWords()>=25,()=>swbsDone()&&planDone()&&draftWords()>=25&&D().title.trim()];
+const cs=s=>s?s.charAt(0).toUpperCase()+s.slice(1):s;
+function vWrite(){
+ const d=D(),n=d.step;
+ let h=`<div class="steps">${STEPS.map((s,i)=>`<button class="stp ${n===i+1?'on':''} ${UNL[i]()?'':'lock'}" data-a="step" data-v="${i+1}">${s}</button>`).join('')}</div>`;
+ const nav=(prev,next,label,why)=>`<div class="btns">${prev?`<button class="nb ghost" data-a="step" data-v="${prev}">← Back</button>`:''}${next?`<button class="nb" id="nxt" data-a="step" data-v="${next}">${label}</button>`:''}</div><div class="small" id="why">${why||''}</div>`;
+ if(n===1)h+=`<div class="card"><h2>Step 1: Pick ONE small idea</h2>
+  <p>Great stories are about <b>one moment</b>, not a whole day or a whole topic. If you can tell it in one sentence, it is focused enough.</p>
+  <div class="btns"><button class="nb alt" data-a="spark">💡 Give me an idea</button></div><div class="hint" id="spark">${esc(d.spark||'Tap the button for a story spark, or use your own idea.')}</div>
+  <h3>Say it in one sentence: Somebody... Wanted... But... So...</h3>
+  <div class="row"><div><label>Somebody (who?)</label><input type="text" data-f="who" placeholder="Max"></div><div><label>wanted (what?)</label><input type="text" data-f="want" placeholder="to fly his new kite"></div>
+  <div><label>but (the problem)</label><input type="text" data-f="but" placeholder="it got stuck in a tree"></div><div><label>so (what happened?)</label><input type="text" data-f="so" placeholder="he asked Dad to help"></div></div>
+  <div class="swbs" id="swbs"></div>
+  <label>Title (you can change it later)</label><input type="text" data-f="title" placeholder="The Day the Kite Got Stuck"></div>`+nav(0,2,'Next: Plan →','');
+ if(n===2)h+=`<div class="card"><h2>Step 2: Plan your story</h2><div class="swbs" id="swbs"></div>
+  <h3>Beginning</h3><div class="row"><div><label>Who is in it?</label><input type="text" data-f="bw"></div><div><label>Where?</label><input type="text" data-f="bl"></div><div><label>When?</label><input type="text" data-f="bt"></div><div><label>What problem starts the story?</label><input type="text" data-f="bp"></div></div>
+  <h3>Middle: three events, in order</h3>
+  ${[1,2,3].map(i=>`<div class="row3"><select data-f="t${i}">${['First','Next','Then','After that','Suddenly','Later','Meanwhile'].map(o=>`<option ${d['t'+i]===o?'selected':''}>${o}</option>`).join('')}</select><input type="text" data-f="e${i}" placeholder="Event ${i}"></div>`).join('')}
+  <h3>End</h3><div class="row"><div><label>How is the problem solved?</label><input type="text" data-f="fix"></div><div><label>How does the character feel?</label><input type="text" data-f="feel"></div></div>
+  <div class="hint">Check your plan: do all three events help tell your one main idea? Do they happen in an order that makes sense?</div></div>`+nav(1,3,'Next: Draft →','');
+ if(n===3)h+=`<div class="card"><h2>Step 3: Write your first draft</h2><div class="swbs" id="swbs"></div>
+  <details open><summary>My plan</summary><p class="small"><b>Beginning:</b> ${esc(d.bw)} · ${esc(d.bl)} · ${esc(d.bt)} · problem: ${esc(d.bp)}<br><b>Middle:</b> ${esc(d.t1)}, ${esc(d.e1)} ${esc(d.t2)}, ${esc(d.e2)} ${esc(d.t3)}, ${esc(d.e3)}<br><b>End:</b> ${esc(d.fix)} ${d.feel?'· feels: '+esc(d.feel):''}</p></details>
+  ${tools()}${areas()}</div>`+nav(2,4,'Next: Revise →','');
+ if(n===4)h+=`<div class="card"><h2>Step 4: Make it better</h2><div class="swbs" id="swbs"></div>
+  <p class="small">Read your story out loud. Fix anything that sounds wrong or confusing. Use the check below to see what to add.</p>
+  <div class="btns"><button class="nb alt" data-a="listen">🔊 Listen to my story</button><button class="nb ghost" data-a="stoplisten">⏹ Stop</button></div>
+  ${tools()}${areas()}<h3>Story check</h3><div class="an" id="an"></div><p class="small">This is a helper that spots words. It is not a grade. You and a grown-up decide.</p>
+  <h3>My checklist</h3>${CK.map(([id,t])=>`<label class="ck"><input type="checkbox" data-chk="${id}" ${d.chk[id]?'checked':''}><span>${t}</span></label>`).join('')}
+  <h3>COPS check</h3>${COPS.map(([id,t])=>`<label class="ck"><input type="checkbox" data-chk="${id}" ${d.chk[id]?'checked':''}><span>${t}</span></label>`).join('')}
+  <div class="hint"><b>Partner read:</b> Read your story to someone. Ask them to mark a <b>?</b> where they got confused and a <b>^</b> where they want more detail. Then fix those spots.</div></div>`+nav(3,5,'Next: Publish →','');
+ if(n===5){const a=analyze([d.db,d.dm,d.de].join(' '));
+  h+=`<div class="card" id="printme"><div class="story" id="story"><h2>${esc(d.title||'My Story')}</h2>${[d.db,d.dm,d.de].filter(x=>x.trim()).map(x=>esc(x.trim())).join('\n\n')}</div>
+  <div style="margin-top:10px"><span class="badge">📝 ${a.words} words</span><span class="badge">🔁 ${a.trans.length} transition words</span><span class="badge">💬 ${a.dlg} dialogue ${a.dlg===1?'line':'lines'}</span><span class="badge">🌈 ${Object.keys(a.senses).length} senses</span></div></div>
+  <div class="btns"><button class="nb" data-a="saveStory">💾 Save to My stories</button><button class="nb ghost" data-a="print">🖨 Print</button><button class="nb ghost" data-a="copy">📋 Copy</button><button class="nb alt" data-a="newStory">✨ Write another story</button></div><div class="small" id="why"></div>
+  <div class="btns"><button class="nb ghost" data-a="step" data-v="4">← Back to revise</button></div>`}
+ $('#body').innerHTML=h;live()}
+const CK=[['focus','Everything in my story helps tell my <b>one main idea</b>.'],['order','My events happen in an <b>order that makes sense</b>.'],['trans','I used <b>transition words</b> to connect events (First, Then, Finally...).'],['dlg','I used <b>dialogue</b> with quotation marks and a comma, period, ? or ! before the closing quote.'],['sense','I added <b>sensory details</b> (what I saw, heard, smelled, tasted or felt).'],['end','My ending solves the problem and shows how the character feels.']];
+const COPS=[['c','<b>C</b>apitals at the start of sentences and for names'],['o','<b>O</b>verall look: neat, spaces between words, new paragraph for a new part'],['p','<b>P</b>unctuation at the end of every sentence'],['s','<b>S</b>pelling: I checked words I was not sure about']];
+function tools(){
+ const ch=(cls,arr)=>arr.map(x=>`<button class="chip ${cls}" data-ins="${esc(x).replace(/"/g,'&quot;')}">${esc(x)}</button>`).join('');
+ return `<details class="card" style="margin:8px 0"><summary>🧰 Writing toolbox (tap to add)</summary>
+ <h3>Transition words</h3><div class="chips">${ch('t',['First, ','Next, ','Then, ','After that, ','Suddenly, ','Later that day, ','Meanwhile, ','Finally, ','In the end, '])}</div>
+ <h3>Dialogue</h3><div class="chips">${ch('d',['"Wow," said ___. ','___ asked, "...?" ','"...!" ___ shouted. ','"...," whispered ___. '])}</div><p class="small">Quotes go around the words people say. A comma, period, ? or ! goes <b>inside</b> the closing quote.</p>
+ <h3>Sensory details</h3>
+ <div class="chips">${ch('s',['I could see ','It looked like ','The ___ was bright and '])}</div><div class="chips">${ch('s',['I heard ','It sounded like ','The ___ went '])}</div>
+ <div class="chips">${ch('s',['It smelled like ','The air smelled '])}</div><div class="chips">${ch('s',['It tasted ','The ___ was sweet and '])}</div><div class="chips">${ch('s',['It felt ','The ___ was soft and '])}</div></details>`}
+function areas(){const d=D();
+ const ta=(f,l,ph)=>`<label>${l}</label><textarea data-f="${f}" placeholder="${ph}"></textarea><div class="wc" data-for="${f}"></div>`;
+ return ta('db','Beginning',`Tell who, where and when. Then show the problem.`)+ta('dm','Middle','Tell your 3 events in order. Add transition words, dialogue, and sensory details.')+ta('de','End','Solve the problem and show how the character feels.')}
+let lastTA=null;
+function live(){
+ const d=D();
+ document.querySelectorAll('[data-f]').forEach(el=>{if(el.dataset.bound!==DB.tab+d.step){el.value=d[el.dataset.f]||'';el.dataset.bound=DB.tab+d.step}});
+ const sw=$('#swbs');if(sw){const ph=(v,t)=>v.trim()?esc(v.trim()):`<span class="ph">${t}</span>`;sw.innerHTML=`${ph(cs(d.who),'Somebody')} wanted ${ph(d.want,'...')}, but ${ph(d.but,'...')}, so ${ph(d.so,'...')}.`}
+ document.querySelectorAll('.wc').forEach(el=>{el.textContent=words(d[el.dataset.for])+' words'});
+ const nx=$('#nxt'),why=$('#why');
+ if(nx&&why){const i=d.step;const ok=UNL[i]();nx.disabled=!ok;why.textContent=ok?'':[ '','Fill in all four boxes (Somebody, wanted, but, so) to continue.','Fill in who, where, when, the problem, all three events, and how it is solved to continue.','Write at least 25 words in your draft to continue.','Add a title in Step 1 and some story text to continue.'][i]}
+ const an=$('#an');if(an){const a=analyze([d.db,d.dm,d.de].join(' '));
+  const it=(ok,ic,t,tip)=>`<div class="ai ${ok?'ok':'no'}"><span class="ic">${ok?'✅':ic}</span><div>${t}<div class="small">${tip}</div></div></div>`;
+  const sk=Object.keys(a.senses);
+  an.innerHTML=it(a.words>=60,'✍️',`<b>${a.words} words.</b> ${a.words>=60?'Nice length.':'Try to add more detail.'}`,'A strong story for 3rd grade is often 80 to 200 words.')
+  +it(a.trans.length>=3,'🔁',`<b>Transition words: ${a.trans.length}</b>${a.trans.length?' ('+a.trans.map(esc).join(', ')+')':''}`,a.trans.length>=3?'These help the reader follow the order of events.':'Aim for at least 3: First, Then, Finally...')
+  +it(a.dlg>=1&&!a.badP&&!a.oddQuote,'💬',`<b>Dialogue lines: ${a.dlg}</b>`,a.dlg===0?'Add what a character says, inside quotation marks.':a.oddQuote?'It looks like a quotation mark is missing. Quotes come in pairs.':a.badP?'Put a comma, period, ? or ! just before each closing quotation mark.':'Great. Check that each quote has punctuation inside it.')
+  +it(sk.length>=2,'🌈',`<b>Senses found: ${sk.length?sk.map(k=>SNAME[k]).join(', '):'none yet'}</b>`,sk.length>=2?'These details help the reader picture the scene.':'Add at least 2 senses: what did it look, sound, smell, taste or feel like?')
+  +(a.blanks?it(false,'⚠️','<b>Blanks left in your story</b>','Replace every ___ with your own words.'):'')}
+}
+function insertAt(text){const el=lastTA||document.querySelector('textarea[data-f]');if(!el)return;const s=el.selectionStart??el.value.length,e=el.selectionEnd??s;el.value=el.value.slice(0,s)+text+el.value.slice(e);el.selectionStart=el.selectionEnd=s+text.length;el.focus();D()[el.dataset.f]=el.value;save();live()}
+
+/* ----- skill gym ----- */
+const FOCUS=[['The morning my dog stole my sandwich','Everything I did last summer','All about my dog'],['The day I learned to ride my bike without training wheels','My favorite things','A whole year at school'],['When the power went out and we had a candle picnic','My whole week','All about my family'],['My first goal in the soccer game','Sports I like','Soccer'],['The time I got lost in the grocery store','Shopping','Our weekend'],['The surprise birthday party for Grandpa','Birthdays','My family traditions'],['Catching my first fish with Dad','Fishing','Things we do on vacation'],['The snowman that came alive in my dream','Winter','Snow'],['When I lost my tooth in an apple','Teeth','My body'],['The rainy day we built a blanket fort','Rainy days','Fun things at home']];
+const TOPIC=[['The day Mia lost her lunch box',['Mia looked in her backpack, but her lunch box was gone.','She checked under her desk and in the hallway.',"Mia's favorite color is purple and she likes dogs.",'At last, she found it in the gym next to her sneakers.'],2],
+ ["Sam's first day on the school bus",['Sam climbed the big steps and looked for a seat.',"Pizza is Sam's favorite food on Fridays.",'The bus smelled like old crayons.','A girl named Ruby waved and saved him a spot.'],1],
+ ['The snowstorm that closed school',['Snow fell all night and covered the street in white.','Nora woke up to a text saying school was closed.','She pulled on her boots and ran outside to build a snowman.','Her brother plays the drums in a band.'],3],
+ ["Leo's trip to the dentist",['Leo sat in the big chair and stared at the bright light.','The dentist counted his teeth one by one.',"Leo's bike is blue and has a bell.",'At the end, Leo got a sticker for being brave.'],2],
+ ['How Ava learned to swim',['The grocery store ran out of bananas.','Ava held the edge of the pool with both hands.','Her coach showed her how to kick her feet.','Soon Ava floated across the pool all by herself.'],0],
+ ['A rainy day at the zoo',['Raindrops tapped on the umbrellas as the class walked in.','The penguins did not mind the rain at all.','Ben collects baseball cards.','They ran to the gift shop to dry off.'],2],
+ ['The big soccer game',['The whistle blew, and the game began.','Omar passed the ball to his teammate Jack.','The library opens at nine on Saturdays.','Jack kicked it into the net, and everyone cheered.'],2],
+ ["Grandpa's surprise party",['Everyone hid behind the couch and stayed quiet.','The door opened, and Grandpa stepped inside.',"Zoe's science project is about volcanoes.",'We all jumped out and yelled, "Surprise!"'],2]];
+const ORDER=[['Dad filled a big pot with water.','The water began to bubble.','Dad dropped in the spaghetti.','Everyone sat down to eat.'],['Mia planted a tiny seed in the soil.','She watered it every morning.','A green sprout poked out of the dirt.','The sprout grew into a tall sunflower.'],['Ben put on his helmet.','He climbed on his bike and pushed off.','The wheels wobbled down the hill.','Ben rolled to a stop at the park.'],['The alarm clock rang loudly.','Ava jumped out of bed.','She brushed her teeth and ate breakfast.','The school bus stopped at her corner.'],['Zoe mixed flour, eggs, and sugar in a bowl.','She poured the batter into a pan.','The cake baked in the oven for thirty minutes.','Zoe covered it with pink frosting.'],['Dark clouds covered the sky.','Thunder boomed over the house.','Rain poured down on the roof.','The sun peeked out and a rainbow appeared.'],['Leo found a stray kitten behind the store.','He carried it home in his jacket.','Mom gave the kitten a bowl of milk.',"The kitten curled up and fell asleep on Leo's bed."],['The class got on the bus for a field trip.','They walked through the museum and saw huge dinosaur bones.','Everyone ate lunch on the grass outside.','The bus took them back to school at the end of the day.']];
+const TRI=[['we put on our coats','we walked to the park','we hurried home for hot cocoa'],['Dad cracked two eggs into a bowl','he whisked them together','he poured them into the hot pan'],['Mia opened the box','she saw a tiny puppy inside','she gave it a big hug'],['Omar packed his backpack','he got on the bus','he arrived at school'],['the sky turned dark','thunder rumbled','the rain started to pour'],['Ava drew a circle for the head','she added two ears','she colored the whole cat orange'],['Ben tied his shoes','he grabbed the soccer ball','he ran out to the field'],['Zoe stirred the paint','she dipped her brush','she painted a bright yellow sun']];
+const DSP=[['Mia','I see a rainbow','said'],['Dad','Time to eat dinner','called'],['Ben','Can I play too','asked',1],['Ava','Watch me jump','shouted'],['Grandma','Please wash your hands','said'],['Leo','Where did my shoe go','asked',1],['Zoe','That was so much fun','laughed'],['Max','We won the game','cheered'],['Nora','I am not scared','whispered'],['Coach','Line up at the door','said'],['Ella','What time is the party','asked',1],['Sam','I found a shell','said']];
+const TELL=[['The soup was good.','The soup smelled like warm garlic and tasted salty and rich.'],['The dog was wet.',"Cold water dripped from the dog's fur as he shook himself on the porch."],['The room was scary.','The dark room creaked, and a cold draft brushed my neck.'],['The cookies were tasty.','The warm cookies were crunchy outside and gooey inside, with sweet chocolate on my tongue.'],['The beach was nice.','Waves crashed on the sand, and the salty air tickled my nose.'],['The storm was loud.','Thunder boomed so loudly that the windows rattled.'],['The blanket felt good.','The soft, fuzzy blanket warmed my cold toes.'],['The park was pretty.','Golden leaves swirled across the green grass in the sunshine.'],['The bus was noisy.','The bus rumbled and squeaked while the kids shouted and laughed.'],['The lemon was sour.','The lemon was so sour that my lips puckered and my eyes squeezed shut.']];
+const WHICH=[['The pie smelled like cinnamon and warm apples.','smell'],['The thunder boomed over the hills.','hearing'],['The sand felt hot and rough under my feet.','touch'],['The cherry tomato tasted sweet and juicy.','taste'],['The fireworks sparkled red and gold in the dark sky.','sight'],['The pickles were sour and salty.','taste'],['Birds chirped in the tall trees.','hearing'],["The kitten's fur was soft and fluffy.",'touch'],['Smoke from the campfire made my nose tingle.','smell'],['A bright rainbow stretched across the sky.','sight']];
+const mcq=(q,right,wrongs,exp)=>{const o=shuffle([right,...wrongs]);return {t:'mc',q,opts:o,a:o.indexOf(right),exp}};
+const GYM=[
+ {id:'focus',emoji:'🎯',name:'Pick the Focused Idea',desc:'Choose one small moment, not a giant topic',gen:n=>sample(FOCUS,n).map(f=>mcq('Which is the best idea for <b>one focused story</b>?',f[0],[f[1],f[2]],'A focused idea is <b>one moment</b> in one place. The other two are too big to cover in one story.'))},
+ {id:'topic',emoji:'🧲',name:'Stay on the Main Idea',desc:'Find the sentence that does not belong',gen:n=>sample(TOPIC,n).map(t=>mcq(`Story idea: <b>${esc(t[0])}</b><br>Which sentence does <b>NOT</b> belong in this story?`,t[1][t[2]],t[1].filter((_,i)=>i!==t[2]),'That sentence is not about the main idea. Cut anything that does not help tell your one story.'))},
+ {id:'order',emoji:'🔢',name:'Put Events in Order',desc:'Tap the sentences in an order that makes sense',gen:n=>sample(ORDER,n).map(o=>({t:'order',q:'Tap the sentences in an order that makes sense.',items:shuffle(o),ans:o,exp:'Think: what must happen first, next, and last? Events should follow a logical order.'}))},
+ {id:'trans',emoji:'🔁',name:'Transition Words',desc:'Pick the word that connects the events',gen:n=>sample(TRI,n).map(t=>{const pos=rnd(3),S1=['First','To begin with'],S2=['Next','Then','After that'],S3=['Finally','At last','In the end'],vis=['First','Next','Finally'];
+  const cats=[S1,S2,S3],right=pick(cats[pos].filter(w=>w!==vis[pos])),wr=pos===0?['At last','In the end']:pos===1?['To begin with','In the end']:['To begin with','At the start'];
+  const sent=t.map((s,i)=>(i===pos?'<b>_____</b>':vis[i])+', '+s+'.');
+  return mcq(`Which word fits the blank?<br><br>${sent.join(' ')}`,right,wr,['<b>'+right+'</b> fits because that event happens '+['at the start','in the middle','at the end'][pos]+'. Transition words show the order of events.'][0])})},
+ {id:'dlg',emoji:'💬',name:'Fix the Dialogue',desc:'Pick the sentence with correct quotation marks and punctuation',gen:n=>sample(DSP,n).map(([N,Sx,v,isQ])=>{const S=Sx,Cc=cs(Sx);let right,wr;const A=Math.random()<.5;
+  if(isQ){right=`"${Cc}?" asked ${N}.`;wr=[`"${Cc}," asked ${N}.`,`"${Cc}", asked ${N}?`,`"${Cc}?" Asked ${N}.`]}
+  else if(A){right=`"${Cc}," ${v} ${N}.`;wr=[`"${Cc}" ${v} ${N}.`,`"${Cc}", ${v} ${N}.`,`${Cc}, ${v} ${N}.`]}
+  else{right=`${N} ${v}, "${Cc}."`;wr=[`${N} ${v} "${Cc}."`,`${N} ${v}, "${Cc}".`,`${N} ${v}, ${Cc}.`]}
+  return mcq('Which sentence uses <b>quotation marks and punctuation</b> correctly?',right,sample(wr,2),'Quotation marks go around the spoken words. The comma, period, ? or ! goes <b>inside</b> the closing quote. Use a comma between the speaker and the quote.')})},
+ {id:'sense',emoji:'🌈',name:'Sensory Details',desc:'Show with the senses instead of just telling',gen:n=>{const out=[];sample(TELL,Math.ceil(n/2)).forEach(p=>out.push(mcq('Which sentence uses the senses to <b>show</b> a picture?',p[1],[p[0]],'Sensory details tell what we see, hear, smell, taste or feel, so the reader can picture it.')));
+  sample(WHICH,n-out.length).forEach(w=>{const all=['sight','hearing','smell','taste','touch'];out.push(mcq(`Which sense is used most in this sentence?<br><br><i>${esc(w[0])}</i>`,w[1],sample(all.filter(x=>x!==w[1]),3),'The key words tell the sense: '+w[1]+'.'))});return shuffle(out)}}];
+let G=null;
+function vGym(){
+ if(!G){$('#body').innerHTML=`<div class="card"><h2>💪 Skill gym</h2><p>Short rounds of 6 questions. These are the three things your teachers asked for: <b>stay on one main idea</b>, <b>put events in order</b>, and <b>use writing techniques</b> like transition words, dialogue, and sensory details.</p></div>
+  <div class="grid">${GYM.map(g=>`<button class="gc" data-a="gym" data-v="${g.id}"><span class="ic">${g.emoji}</span><b>${g.name}</b><small>${g.desc}</small><span class="st">${'★'.repeat(P().gym[g.id]||0)+'☆'.repeat(3-(P().gym[g.id]||0))}</span></button>`).join('')}
+  <button class="gc" data-a="gym" data-v="mix"><span class="ic">🎲</span><b>Mixed round</b><small>One question from each skill</small></button></div>`;return}
+ if(G.i>=G.qs.length){const sc=G.score,st=sc>=5?3:sc>=4?2:sc>=3?1:0;if(G.id!=='mix'&&st>(P().gym[G.id]||0)){P().gym[G.id]=st;save()}
+  $('#body').innerHTML=`<div class="card c"><div style="font-size:52px">${st>=2?'🎉':'💪'}</div><h2>${sc} out of ${G.qs.length}</h2><div class="st" style="font-size:24px">${'★'.repeat(st)+'☆'.repeat(3-st)}</div><p class="small">${st===3?'Excellent! Try writing a story with this skill.':'Good effort. Play again for new questions.'}</p>
+  <div class="btns" style="justify-content:center"><button class="nb" data-a="gym" data-v="${G.id}">Play again (new questions)</button><button class="nb ghost" data-a="gymhome">All skills</button></div></div>`;return}
+ const q=G.qs[G.i];let h=`<div class="card"><button class="back" data-a="gymhome">← All skills</button><div class="small">Question ${G.i+1} of ${G.qs.length} · ${G.name}</div><p style="font-size:17px;margin:8px 0">${q.q}</p>`;
+ if(q.t==='mc')h+=q.opts.map((o,j)=>`<button class="opt" data-a="ans" data-v="${j}">${o}</button>`).join('');
+ else{h+=`<div id="picked">${G.pick.map((j,k)=>`<div class="card" style="margin:6px 0;padding:8px 10px"><span class="num">${k+1}</span>${esc(q.items[j])}</div>`).join('')}</div>`;
+  h+=q.items.map((s,j)=>G.pick.includes(j)?'':`<button class="opt" data-a="pick" data-v="${j}">${esc(s)}</button>`).join('');
+  h+=`<div class="btns"><button class="nb ghost" data-a="undo" ${G.pick.length&&!G.done?'':'disabled'}>↩ Undo</button></div>`}
+ h+='<div id="gfb"></div></div>';$('#body').innerHTML=h}
+function gymNext(){G.i++;G.pick=[];G.done=false;vGym()}
+function gymFeedback(ok,exp){G.done=true;if(ok)G.score++;const last=G.i>=G.qs.length-1;$('#gfb').innerHTML=`<div class="fb ${ok?'good':'bad'}">${ok?'✅ Nice work! ':'❌ Not quite. '}${exp}</div><button class="nb alt" data-a="gnext">${last?'See results':'Next'}</button>`}
+
+/* ----- my stories ----- */
+function vMine(){const L=P().stories;
+ $('#body').innerHTML=L.length?L.map((s,i)=>`<div class="card"><h2>${esc(s.title||'My Story')}</h2><div class="small">${esc(s.date)} · ${s.words} words</div><details><summary>Read it</summary><div class="story" style="margin-top:8px">${esc(s.text)}</div></details><div class="btns"><button class="nb ghost" data-a="delStory" data-v="${i}">Delete</button></div></div>`).join(''):`<div class="card c"><div style="font-size:48px">📚</div><p>No saved stories yet. Finish a story and tap <b>Save to My stories</b>.</p><button class="nb" data-a="tab" data-v="write">✍️ Write a story</button></div>`}
+
+/* ----- events ----- */
+function storyText(){const d=D();return [d.title||'My Story','',...[d.db,d.dm,d.de].filter(x=>x.trim()).map(x=>x.trim()+'\n')].join('\n').trim()}
+function bind(){}
+app.addEventListener('click',e=>{
+ const ins=e.target.closest('[data-ins]');if(ins){insertAt(ins.dataset.ins);return}
+ const b=e.target.closest('[data-a]');if(!b||b.disabled)return;const v=b.dataset.v,d=D();
+ switch(b.dataset.a){
+  case 'prof':DB.cur=v;save();G=null;render();break;
+  case 'tab':DB.tab=v;G=null;save();render();window.scrollTo(0,0);break;
+  case 'step':if(UNL[+v-1]()){d.step=+v;save();render();window.scrollTo(0,0)}break;
+  case 'spark':{const s=pick(SPARKS);d.spark=s;save();$('#spark').textContent='💡 '+s+'. Now find ONE small moment inside that idea.';break}
+  case 'listen':try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(storyText());u.rate=.9;speechSynthesis.speak(u)}catch(x){}break;
+  case 'stoplisten':try{speechSynthesis.cancel()}catch(x){}break;
+  case 'saveStory':{const t=storyText();P().stories.unshift({title:d.title,text:t,words:words(t),date:new Date().toLocaleDateString()});save();$('#why').textContent='Saved! Find it in My stories.';break}
+  case 'print':window.print();break;
+  case 'copy':try{navigator.clipboard.writeText(storyText());$('#why').textContent='Copied.'}catch(x){$('#why').textContent='Select the story text and copy it.'}break;
+  case 'newStory':if(confirm('Start a new story? Save this one first if you want to keep it.')){P().draft=blank();save();render();window.scrollTo(0,0)}break;
+  case 'delStory':if(confirm('Delete this story?')){P().stories.splice(+v,1);save();render()}break;
+  case 'gym':{const g=v==='mix'?{id:'mix',name:'Mixed round',gen:null}:GYM.find(x=>x.id===v);
+   const qs=v==='mix'?GYM.flatMap(x=>x.gen(1)):g.gen(6);G={id:g.id,name:g.name,qs:shuffle(qs),i:0,score:0,pick:[],done:false};vGym();break}
+  case 'gymhome':G=null;vGym();break;
+  case 'ans':{if(G.done)return;const q=G.qs[G.i],j=+v;document.querySelectorAll('.opt').forEach((o,k)=>{o.disabled=true;if(k===q.a)o.classList.add('ok');else if(k===j)o.classList.add('no')});gymFeedback(j===q.a,q.exp);break}
+  case 'pick':{if(G.done)return;const q=G.qs[G.i];G.pick.push(+v);if(G.pick.length<q.items.length){vGym();break}
+   const ok=G.pick.every((j,k)=>q.items[j]===q.ans[k]);vGym();document.querySelectorAll('.opt,.nb[data-a=undo]').forEach(x=>x.disabled=true);
+   gymFeedback(ok,(ok?'':'A good order is: <br>'+q.ans.map((s,k)=>`${k+1}. ${esc(s)}`).join('<br>')+'<br>')+q.exp);break}
+  case 'undo':if(!G.done&&G.pick.length){G.pick.pop();vGym()}break;
+  case 'gnext':gymNext();break}});
+app.addEventListener('input',e=>{const f=e.target.dataset.f;if(f){D()[f]=e.target.value;save();live()}});
+app.addEventListener('change',e=>{const c=e.target.dataset.chk;if(c){D().chk[c]=e.target.checked;save()}else if(e.target.dataset.f){D()[e.target.dataset.f]=e.target.value;save();live()}});
+app.addEventListener('focusin',e=>{if(e.target.matches('textarea[data-f]'))lastTA=e.target});
+if(!draftWords()&&!D().who)DB.tab='example';else if(DB.tab==='example'&&D().step>1)DB.tab='write';
+render();
+</script></body></html>

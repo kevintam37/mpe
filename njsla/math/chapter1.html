@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Chapter 1 Operations and Algebraic Thinking</title>
+<style>
+:root{--bg:#FBF7EC;--ink:#26304A;--card:#fff;--line:#E4DCC9;--indigo:#2B3A67;--coral:#FF6B4A;--teal:#2A9D8F;padding-top:env(safe-area-inset-top,0);padding-bottom:env(safe-area-inset-bottom,0)}
+@media(prefers-color-scheme:dark){:root{--bg:#1D2233;--ink:#F1ECDD;--card:#262B40;--line:#3A4159;--indigo:#F4C95D}}
+*{box-sizing:border-box}html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.wrap{max-width:640px;margin:0 auto;padding:20px 16px 40px}
+h1{font-size:21px;margin:0 0 2px;color:var(--indigo);line-height:1.25}.sub{font-size:14px;opacity:.7;margin:0 0 14px}
+.row{display:flex;gap:8px;margin-bottom:10px}
+button{font:inherit;cursor:pointer}
+.pill{flex:1;padding:12px;border-radius:999px;border:2px solid var(--line);background:var(--card);color:var(--ink);font-weight:600}
+.list{display:flex;flex-direction:column;gap:10px}
+.les{display:flex;flex-direction:column;align-items:flex-start;gap:2px;text-align:left;padding:14px 16px;border-radius:14px;border:2px solid var(--line);background:var(--card);color:var(--ink);font-size:16px;font-weight:600}
+.les small{font-weight:400;opacity:.65;font-size:13px}
+.les:active{transform:scale(.99)}
+.back{background:none;border:none;color:var(--indigo);font-weight:600;font-size:14px;padding:0 0 10px;cursor:pointer}
+.stage{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px;margin-top:12px}
+.track{height:8px;border-radius:9px;background:var(--line);overflow:hidden;margin-bottom:14px}
+.fill{height:100%;background:var(--teal);transition:width .3s}
+.qn{font-size:12px;font-weight:700;color:var(--coral);margin-bottom:6px}
+.qt{font-size:17px;font-weight:600;line-height:1.45;margin:0 0 12px;white-space:pre-line}
+.pics{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 12px}
+.pic{padding:8px 10px;border:1px solid var(--line);border-radius:12px;background:var(--bg);font-size:20px;line-height:1.3}
+.pic b{display:block;font-size:13px;font-family:system-ui;margin-bottom:2px}
+.opts{display:flex;flex-direction:column;gap:9px}
+.opt{display:flex;align-items:center;gap:10px;text-align:left;padding:12px 14px;border-radius:12px;border:2px solid var(--line);background:var(--card);color:var(--ink);font-size:16px}
+.lt{font-size:18px;min-width:26px;white-space:nowrap}
+.opt.sel{border-color:var(--indigo);background:rgba(128,128,128,.14)}
+.opt.ok{border-color:var(--teal);background:rgba(42,157,143,.16)}.opt.no{border-color:var(--coral);background:rgba(255,107,74,.16)}
+input[type=text],select{font:inherit;font-size:16px;padding:10px 12px;border-radius:10px;border:2px solid var(--line);background:var(--bg);color:var(--ink)}
+input[type=text]{width:140px}textarea{font:inherit;font-size:15px;width:100%;min-height:90px;padding:10px;border-radius:10px;border:2px solid var(--line);background:var(--bg);color:var(--ink)}
+.f{display:flex;align-items:center;gap:10px;margin:9px 0;flex-wrap:wrap;font-size:16px}
+table{border-collapse:collapse;width:100%;font-size:14px}td,th{border:1px solid var(--line);padding:8px 6px;text-align:center}
+.nb{margin-top:14px;width:100%;padding:13px;border:none;border-radius:12px;background:var(--indigo);color:#fff;font-weight:700;font-size:15px}
+@media(prefers-color-scheme:dark){.nb{color:#1D2233}}
+.nb.alt{background:var(--teal);color:#fff}.nb:disabled{opacity:.4}
+.nb.ghost{background:transparent;border:2px solid var(--line);color:var(--ink)}
+.fb{margin-top:12px;font-weight:600;font-size:14.5px;line-height:1.45}.good{color:var(--teal)}.bad{color:var(--coral)}
+.model{margin-top:10px;padding:10px 12px;border-radius:10px;background:var(--bg);border:1px dashed var(--line);font-size:14.5px;line-height:1.5}
+.navwrap{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:12px}.navbox{width:28px;height:28px;border-radius:7px;border:2px solid var(--line);background:var(--card);color:var(--ink);font-size:11px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0}.navbox.cur{border-color:var(--indigo);box-shadow:0 0 0 2px var(--indigo) inset}.navbox.done{background:var(--line);color:var(--ink);opacity:.75}.navbox.done.ok{background:rgba(42,157,143,.28);border-color:var(--teal);opacity:1}.navbox.done.no{background:rgba(255,107,74,.28);border-color:var(--coral);opacity:1}.opt.miss{border-color:var(--teal);border-style:dashed}
+.revh{margin:22px 0 8px;font-size:16px;color:var(--indigo)}.rev{text-align:left}.ri{border:1px solid var(--line);border-left:6px solid var(--teal);border-radius:10px;padding:10px 12px;margin-bottom:8px;font-size:14px;line-height:1.45}.ri.nor{border-left-color:var(--coral)}.rh{font-weight:700}.mk{font-size:18px;font-weight:800}.okr .mk{color:var(--teal)}.nor .mk{color:var(--coral)}.rq{opacity:.7;margin:2px 0 4px}.rc{color:var(--teal)}
+.score{font-size:46px;font-weight:800;color:var(--indigo);text-align:center}.c{text-align:center}.small{font-size:13px;opacity:.7}
+</style></head><body><div class="wrap">
+<h1>Chapter 1 Operations and Algebraic Thinking</h1><p class="sub" id="sub">Pick a lesson to practice</p>
+<div class="stage" id="st"></div>
+</div>
+<script>
+const mc=(q,opts,a,exp,pics)=>({t:'mc',q,opts,a,exp,pics});
+
+const TABLE=(headers,rows)=>{const th=headers.map(h=>`<th>${h}</th>`).join('');const trs=rows.map(r=>`<tr>${r.map(c=>`<td>${c}</td>`).join('')}</tr>`).join('');return `<div class="pics"><div class="pic" style="padding:6px"><table style="font-size:12px"><tr>${th}</tr>${trs}</table></div></div>`};
+const TALLYGROUP=()=>`<svg width="26" height="22" viewBox="0 0 26 22" style="margin-right:6px"><line x1="2" y1="2" x2="2" y2="20" stroke="var(--ink)" stroke-width="2"/><line x1="8" y1="2" x2="8" y2="20" stroke="var(--ink)" stroke-width="2"/><line x1="14" y1="2" x2="14" y2="20" stroke="var(--ink)" stroke-width="2"/><line x1="20" y1="2" x2="20" y2="20" stroke="var(--ink)" stroke-width="2"/><line x1="0" y1="19" x2="22" y2="2" stroke="var(--ink)" stroke-width="2"/></svg>`;
+const TALLYSINGLE=()=>`<svg width="10" height="22" viewBox="0 0 10 22" style="margin-right:4px"><line x1="5" y1="2" x2="5" y2="20" stroke="var(--ink)" stroke-width="2"/></svg>`;
+const TALLYMARK=(n)=>{const groups=Math.floor(n/5),rem=n%5;let out='<span style="display:inline-flex;align-items:center">';for(let g=0;g<groups;g++){out+=TALLYGROUP();}for(let r=0;r<rem;r++){out+=TALLYSINGLE();}return out+'</span>'||'—'};
+const TALLYTABLE=(rows)=>{const trs=rows.map(r=>`<tr><td style="text-align:left;padding-right:10px">${r[0]}</td><td style="font-family:monospace;letter-spacing:2px">${TALLYMARK(r[1])}</td><td>(${r[1]})</td></tr>`).join('');return `<div class="pics"><div class="pic" style="padding:8px"><table style="font-size:13px"><tr><th>Category</th><th>Tally</th><th>Count</th></tr>${trs}</table></div></div>`};
+const CUPDIAG=()=>`<div class="pics"><div class="pic" style="padding:8px"><svg width="90" height="130" viewBox="0 0 90 130"><path d="M15,10 L20,120 L70,120 L75,10" fill="none" stroke="var(--ink)" stroke-width="2"/><line x1="15" y1="10" x2="75" y2="10" stroke="var(--ink)" stroke-width="2"/>${[['2 CUP',22],['3/4',38],['1/2',54],['1/4',70],['1 CUP',86],['3/4',96],['1/2',106],['1/4',116]].map(([t,y])=>`<line x1="20" y1="${y}" x2="30" y2="${y}" stroke="var(--ink)"/><text x="34" y="${y+3}" font-size="8">${t}</text>`).join('')}</svg></div></div>`;
+const TOOLROW=()=>`<div class="pics"><div class="pic" style="display:flex;gap:16px;padding:8px;align-items:flex-end"><div style="text-align:center"><svg width="70" height="24" viewBox="0 0 70 24"><rect x="2" y="4" width="66" height="14" fill="none" stroke="var(--ink)" stroke-width="1.5"/>${[10,20,30,40,50,60].map(x=>`<line x1="${x}" y1="4" x2="${x}" y2="10" stroke="var(--ink)"/>`).join('')}</svg><div class="small">Ruler</div></div><div style="text-align:center"><svg width="60" height="30" viewBox="0 0 60 30"><ellipse cx="15" cy="15" rx="12" ry="8" fill="none" stroke="var(--ink)" stroke-width="1.5"/><line x1="27" y1="15" x2="55" y2="15" stroke="var(--ink)" stroke-width="1.5"/></svg><div class="small">1 teaspoon</div></div><div style="text-align:center"><svg width="50" height="55" viewBox="0 0 50 55"><path d="M8,5 L8,45 L42,45 L42,5" fill="none" stroke="var(--ink)" stroke-width="1.5"/><rect x="8" y="25" width="34" height="20" fill="var(--indigo)" opacity=".3"/><line x1="8" y1="15" x2="14" y2="15" stroke="var(--ink)"/><line x1="8" y1="25" x2="14" y2="25" stroke="var(--ink)"/><line x1="8" y1="35" x2="14" y2="35" stroke="var(--ink)"/></svg><div class="small">Beaker</div></div></div></div>`;
+const VENN=(leftOnly,both,rightOnly,leftLabel,rightLabel)=>`<div class="pics"><div class="pic" style="padding:8px"><svg width="220" height="120" viewBox="0 0 220 120"><circle cx="85" cy="60" r="50" fill="none" stroke="var(--ink)" stroke-width="2"/><circle cx="135" cy="60" r="50" fill="none" stroke="var(--ink)" stroke-width="2"/><text x="55" y="30" font-size="11" font-weight="bold">${leftLabel}</text><text x="150" y="30" font-size="11" font-weight="bold">${rightLabel}</text><text x="55" y="65" font-size="11">${leftOnly.join('<tspan x=\"55\" dy=\"13\">')}</tspan></text><text x="105" y="65" font-size="11">${both.join('<tspan x=\"105\" dy=\"13\">')}</tspan></text><text x="160" y="65" font-size="11">${rightOnly.join('<tspan x=\"160\" dy=\"13\">')}</tspan></text></svg></div></div>`;
+const BARFIG=(n,sh)=>{let b='';for(let i=0;i<n;i++){b+=`<div style="width:26px;height:36px;border:1px solid var(--ink);background:${i<sh?'var(--indigo)':'transparent'}"></div>`}return `<div class="pics"><div class="pic" style="display:flex;gap:2px;padding:8px">${b}</div></div>`};
+const G=(r,c,s)=>`<div class="pics"><div class="pic" style="display:grid;grid-template-columns:repeat(${c},auto);gap:2px 6px;justify-content:start">${Array(r*c).fill(`<span>${s}</span>`).join('')}</div></div>`;
+const RECT=(n,sh)=>{let b='';for(let i=0;i<n;i++){b+=`<div style="width:26px;height:40px;border:1px solid var(--ink);background:${i<sh?'var(--indigo)':'transparent'}"></div>`}return `<div class="pics"><div class="pic" style="display:flex;gap:2px;padding:8px">${b}</div></div>`};
+const CIRC=(n,sh)=>{const pct=(sh/n*100).toFixed(2);return `<div class="pics"><div class="pic" style="padding:8px"><div style="width:76px;height:76px;border-radius:50%;background:conic-gradient(var(--indigo) 0% ${pct}%, transparent ${pct}% 100%);border:2px solid var(--ink)"></div></div></div>`};
+const STACK=(n)=>{let b='';for(let i=0;i<n;i++){b+=`<div style="width:60px;height:16px;border:1px solid var(--ink);background:var(--indigo);margin-bottom:2px;color:#fff;font-size:10px;display:flex;align-items:center;justify-content:center">10</div>`}return `<div class="pics"><div class="pic" style="padding:6px">${b}</div></div>`};
+const NL=(n,k)=>{let ticks='';for(let t=0;t<=n;t++){ticks+=`<div style="position:absolute;left:calc(10px + (100% - 20px) * ${t} / ${n});top:22px;bottom:8px;width:1px;background:var(--ink);opacity:.5"></div>`}return `<div class="pics"><div class="pic" style="position:relative;height:46px;width:260px"><div style="position:absolute;left:10px;right:10px;top:26px;height:2px;background:var(--ink)"></div>${ticks}<div style="position:absolute;left:calc(10px + (100% - 20px) * ${k} / ${n});top:20px;width:12px;height:12px;border-radius:50%;background:var(--coral);transform:translateX(-6px)"></div><span style="position:absolute;left:6px;top:30px;font-size:11px">0</span><span style="position:absolute;right:6px;top:30px;font-size:11px">1</span></div></div>`};
+
+const CLOCK=(h,m)=>{const hAngle=(h%12)*30+m*0.5,mAngle=m*6;const hx=50+22*Math.sin(hAngle*Math.PI/180),hy=50-22*Math.cos(hAngle*Math.PI/180);const mx=50+34*Math.sin(mAngle*Math.PI/180),my=50-34*Math.cos(mAngle*Math.PI/180);let ticks='';for(let i=0;i<12;i++){const a=i*30*Math.PI/180,x1=50+38*Math.sin(a),y1=50-38*Math.cos(a),x2=50+44*Math.sin(a),y2=50-44*Math.cos(a);ticks+=`<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="var(--ink)" stroke-width="1.5"/>`}let nums='';for(let i=1;i<=12;i++){const a=i*30*Math.PI/180,nx=50+33*Math.sin(a),ny=50-33*Math.cos(a);nums+=`<text x="${nx}" y="${ny}" font-size="9" font-weight="700" fill="var(--ink)" text-anchor="middle" dominant-baseline="central">${i}</text>`}return `<div class="pics"><div class="pic" style="padding:8px"><svg width="120" height="120" viewBox="0 0 100 100"><circle cx="50" cy="50" r="46" fill="none" stroke="var(--ink)" stroke-width="2"/>${ticks}${nums}<line x1="50" y1="50" x2="${hx}" y2="${hy}" stroke="var(--ink)" stroke-width="4" stroke-linecap="round"/><line x1="50" y1="50" x2="${mx}" y2="${my}" stroke="var(--coral)" stroke-width="3" stroke-linecap="round"/><circle cx="50" cy="50" r="3" fill="var(--ink)"/></svg></div></div>`};
+const GRID2=(rows,cols,shaded)=>{const set=new Set(shaded);let cells='';for(let r=0;r<rows;r++)for(let c=0;c<cols;c++){const idx=r*cols+c;cells+=`<div style="width:24px;height:24px;border:1px solid var(--ink);background:${set.has(idx)?'var(--indigo)':'transparent'}"></div>`}return `<div class="pics"><div class="pic" style="display:grid;grid-template-columns:repeat(${cols},24px);padding:8px">${cells}</div></div>`};
+const BARS=(labels,values,maxV)=>{const w=46;const bars=values.map((v,i)=>`<div style="display:flex;flex-direction:column;align-items:center;gap:3px;width:${w}px"><div style="font-size:10px">${v}</div><div style="width:${w-14}px;height:${Math.round(v/maxV*100)}px;background:var(--indigo)"></div><div style="font-size:9px;text-align:center;line-height:1.1">${labels[i]}</div></div>`).join('');return `<div class="pics"><div class="pic" style="display:flex;align-items:flex-end;gap:6px;padding:8px 8px 4px">${bars}</div></div>`};
+const RULER=(value,maxV)=>{let ticks='';for(let i=0;i<=maxV;i++){ticks+=`<div style="position:absolute;left:${i/maxV*100}%;top:14px;bottom:0;width:1px;background:var(--ink)"></div><div style="position:absolute;left:${i/maxV*100}%;top:24px;font-size:9px;transform:translateX(-3px)">${i}</div>`}return `<div class="pics"><div class="pic" style="padding:8px"><div style="position:relative;width:260px;height:38px"><div style="position:absolute;left:0;top:0;width:${value/maxV*100}%;height:10px;background:var(--coral);opacity:.8"></div><div style="position:absolute;left:0;right:0;top:14px;height:2px;background:var(--ink)"></div>${ticks}</div></div></div>`};
+const LPLOT=(labels,counts)=>{const maxC=Math.max(...counts);const cols=counts.map((c,i)=>{let xs='';for(let k=0;k<c;k++){xs+=`<div style="font-size:12px;line-height:1.1">✕</div>`}return `<div style="display:flex;flex-direction:column-reverse;align-items:center;gap:1px;width:34px"><div style="font-size:9px;margin-top:2px">${labels[i]}</div>${xs}</div>`}).join('');return `<div class="pics"><div class="pic" style="display:flex;align-items:flex-end;gap:2px;padding:8px;border-bottom:2px solid var(--ink)">${cols}</div></div>`};
+const PICT=(labels,counts,per)=>{const rows=labels.map((l,i)=>`<div class="f"><b style="width:90px;display:inline-block">${l}</b>${'●'.repeat(counts[i])}</div>`).join('');return `<div class="pics"><div class="pic" style="padding:8px;text-align:left">${rows}<div class="small" style="margin-top:6px">Key: ● = ${per}</div></div></div>`};
+const RHOMBUS=(side)=>`<div class="pics"><div class="pic" style="padding:14px"><div style="width:60px;height:60px;background:var(--indigo);transform:rotate(45deg);margin:10px"></div><div class="small" style="text-align:center">side = ${side}</div></div></div>`;
+const TRI=(shadedFrac)=>`<div class="pics"><div class="pic" style="padding:8px"><svg width="140" height="100" viewBox="0 0 140 100"><polygon points="70,5 5,95 70,95" fill="${shadedFrac>=1?'var(--indigo)':shadedFrac>0?'var(--indigo)':'transparent'}" stroke="var(--ink)" stroke-width="2"/><polygon points="70,5 135,95 70,95" fill="${shadedFrac>=2?'var(--indigo)':'transparent'}" stroke="var(--ink)" stroke-width="2"/><line x1="70" y1="5" x2="70" y2="95" stroke="var(--ink)" stroke-width="1.5" stroke-dasharray="4,3"/></svg></div></div>`;
+const SQPART=(shaded,total,cols)=>{const rows=Math.ceil(total/cols);let cells='';for(let i=0;i<total;i++){cells+=`<div style="border:1px dashed var(--ink);background:${i<shaded?'var(--indigo)':'transparent'}"></div>`}return `<div class="pics"><div class="pic" style="display:grid;grid-template-columns:repeat(${cols},32px);grid-template-rows:repeat(${rows},32px);padding:8px">${cells}</div></div>`};
+const CIRCPART=(shadedList,total)=>{const step=360/total;const grad=Array.from({length:total},(_,i)=>`${shadedList.includes(i)?'var(--indigo)':'transparent'} ${i*step}deg ${(i+1)*step}deg`).join(',');return `<div class="pics"><div class="pic" style="padding:8px"><div style="width:80px;height:80px;border-radius:50%;background:conic-gradient(${grad});border:2px solid var(--ink)"></div></div></div>`};
+const two=(a,b)=>"Find the number that would complete both of the following number sentences.\n"+a+"\n"+b;
+const L7src=[
+['Find the product.\n6 × 0 = ___',['6','1','0','2'],2,'Any number times 0 is 0.'],
+['Find the product.\n1 × 10 = ___',['0','1','10','11'],2,'Any number times 1 is itself: 10.'],
+['Solve.\n3 × 8 = ___',['24','21','18','28'],0,'3 × 8 = 24.'],
+['Solve.\n___ = 5 × 9',['40','45','50','35'],1,'5 × 9 = 45.'],
+['Find the product of 8 and 6.',['14','42','48','56'],2,'8 × 6 = 48.'],
+['Find the product of 7 and 7.',['42','46','49','56'],2,'7 × 7 = 49.'],
+['Find the product of 4 and 6.',['20','24','28','32'],1,'4 × 6 = 24.'],
+['Find the product.\n6 × 9 = ___',['54','45','48','64'],0,'6 × 9 = 54.'],
+['Find the product.\n___ = 9 × 8',['64','72','81','82'],1,'9 × 8 = 72.'],
+['Which expression below has a product of 48?',['6 × 7','4 × 14','7 × 8','8 × 6'],3,'8 × 6 = 48.'],
+['Find the quotient of 25 and 5.',['20','5','4','15'],1,'25 ÷ 5 = 5.'],
+['What is 32 divided by 4?',['9','8','7','6'],1,'32 ÷ 4 = 8.'],
+['What is 28 divided by 7?',['4','5','3','6'],0,'28 ÷ 7 = 4.'],
+['Find the quotient.\n0 ÷ 5 = ___',['0','1','5','50'],0,'0 divided by any number (except 0) is 0.'],
+['Find the quotient.\n7 ÷ 1 = ___',['1','0','7','8'],2,'A number divided by 1 stays the same: 7.'],
+['Find the quotient.\n___ = 12 ÷ 2',['9','8','7','6'],3,'12 ÷ 2 = 6.'],
+['Divide.\n63 ÷ 9 = ___',['6','7','8','9'],1,'63 ÷ 9 = 7.'],
+['Divide.\n42 ÷ 7 = ___',['5','6','7','8'],1,'42 ÷ 7 = 6.'],
+['Find the quotient of 33 and 3.',['11','12','10','9'],0,'33 ÷ 3 = 11.'],
+['Divide.\n56 ÷ 7 = ___',['6','7','8','9'],2,'56 ÷ 7 = 8.'],
+['Solve.\n4 × 12 = ___',['36','48','42','46'],1,'4 × 12 = 48.'],
+['Solve.\n___ = 75 ÷ 5',['13','15','17','25'],1,'75 ÷ 5 = 15.'],
+['Solve.\n84 ÷ 12 = ___',['7','8','9','12'],0,'84 ÷ 12 = 7.'],
+['Solve.\n12 × 3 = ___',['32','36','39','48'],1,'12 × 3 = 36.'],
+['Solve.\n36 ÷ 3 = ___',['22','12','14','18'],1,'36 ÷ 3 = 12.'],
+['Solve.\n60 ÷ 5 = ___',['8','9','12','14'],2,'60 ÷ 5 = 12.'],
+['Solve.\n11 × 4 = ___',['32','44','39','46'],1,'11 × 4 = 44.'],
+['Solve.\n___ = 80 ÷ 8',['10','9','8','12'],0,'80 ÷ 8 = 10.'],
+['Solve.\n12 × 8 = ___',['72','84','92','96'],3,'12 × 8 = 96.'],
+['Solve.\n50 ÷ 5 = ___',['25','20','10','50'],2,'50 ÷ 5 = 10.']
+];
+
+const L1=[
+mc("Which multiplication fact is being modeled below?",['3 × 10 = 30','4 × 10 = 40','4 × 9 = 36','3 × 9 = 27'],3,'3 rows of 9 boxes: 3 × 9 = 27.',G(3,9,'▢')),
+mc("Which numerical expression describes this array?",['4 + 5','5 + 4','4 × 5','4 × 4'],2,'4 rows of 5 circles: 4 × 5.',G(4,5,'○')),
+mc("Which number sentence describes this array?",['8 × 4 = 32','7 + 5 = 12','5 × 7 = 35','4 × 7 = 28'],3,'4 rows of 7: 4 × 7 = 28.',G(4,7,'○')),
+mc("Which number sentence describes this array?",['2 × 12 = 24','2 + 12 = 14','12 + 2 = 24','10 × 2 = 20'],0,'2 rows of 12: 2 × 12 = 24.',G(2,12,'○')),
+mc("Identify the multiplication sentence for the picture below:",['4 × 4 = 16','4 × 3 = 12','3 × 4 = 12','4 × 2 = 8'],0,'4 rows of 4: 4 × 4 = 16.',G(4,4,'☀️')),
+mc("What multiplication fact does this picture model?",['4 × 6 = 24','4 × 7 = 28','6 × 3 = 18','7 × 4 = 28'],0,'4 rows of 6: 4 × 6 = 24.',G(4,6,'○')),
+mc("Identify the multiplication sentence for the picture below:",['7 × 2 = 14','7 × 3 = 21','7 × 4 = 28','6 × 3 = 18'],3,'3 rows of 6: 6 × 3 = 18.',G(3,6,'🙂')),
+mc("Identify the multiplication sentence for the picture below:",['4 × 4 = 16','3 × 6 = 18','3 × 4 = 12','3 × 5 = 15'],3,'5 rows of 3: 3 × 5 = 15.',G(5,3,'🐱')),
+mc("Identify the multiplication sentence for the picture below:",['3 × 2 = 6','3 × 3 = 9','4 × 2 = 8','3 × 1 = 3'],0,'2 rows of 3: 3 × 2 = 6.',G(2,3,'🔴')),
+mc("Identify the multiplication sentence for the picture below:",['3 × 5 = 15','4 × 4 = 16','5 × 4 = 20','7 × 4 = 28'],2,'4 rows of 5: 5 × 4 = 20.',G(4,5,'⛄')),
+mc("Identify the multiplication sentence for the picture below:",['2 × 5 = 10','4 × 2 = 8','4 × 1 = 4','4 + 2 = 6'],1,'4 rows of 2: 4 × 2 = 8.',G(4,2,'🏈')),
+mc("Identify the multiplication sentence for the picture below:",['6 × 7 = 42','6 × 8 = 48','8 × 9 = 72','8 × 8 = 64'],1,'6 rows of 8: 6 × 8 = 48.',G(6,8,'🎳')),
+mc("Identify the multiplication sentence for the picture below:",['10 × 1 = 10','9 × 2 = 18','2 × 10 = 20','5 × 4 = 20'],2,'2 rows of 10: 2 × 10 = 20. (5 × 4 also makes 20, but it does not match the picture.)',G(2,10,'🚙')),
+mc("Identify the multiplication sentence for the picture below:",['5 × 5 = 25','4 × 4 = 16','4 × 6 = 24','5 × 4 = 20'],0,'5 rows of 5: 5 × 5 = 25.',G(5,5,'🌲')),
+mc("Identify the multiplication sentence for the picture below:",['3 × 1 = 3','5 × 3 = 15','3 × 2 = 6','3 × 3 = 9'],3,'3 rows of 3: 3 × 3 = 9.',G(3,3,'🍓')),
+{t:'txt',q:"Represent the equation below as a multiplication expression. Type your answer.\n8 + 8 + 8 + 8",f:[{l:'Answer',a:['4x8','8x4']}],show:'4 × 8 (or 8 × 4) — four groups of 8.'},
+{t:'sel',q:"Match each multiplication statement to the correct addition statement.",opts:['Column A: 3+3+3+3+3+3','Column B: 3+3+3+3+3+3+3+3','Column C: 3+3+3'],rows:[['3 × 8  []','Column B: 3+3+3+3+3+3+3+3'],['3 × 3  []','Column C: 3+3+3'],['3 × 6  []','Column A: 3+3+3+3+3+3']],show:'3 × 8 → eight 3s, 3 × 3 → three 3s, 3 × 6 → six 3s.'},
+{t:'txt',q:"For each picture, write the correct multiplication expression.",f:[{l:G(2,5,'⚫'),a:['2x5','5x2']},{l:G(3,6,'◆'),a:['3x6','6x3']},{l:G(2,4,'▲'),a:['2x4','4x2']}],show:'2 × 5, 3 × 6, and 2 × 4 (either order works).'},
+{t:'self',q:"John finds the solution for 8 × 6 by solving (8 × 5) + 8. Is John correct? Explain why you think John's strategy is correct or not.",model:'Yes, John is correct. 8 × 6 means 6 groups of 8. (8 × 5) is 5 groups of 8, and adding 8 more makes 6 groups. 40 + 8 = 48.'},
+{t:'self',q:"There are seven boys, and each of them buys 6 pens. How many pens do they buy all together? Write an equation to represent this, and find the total number of pens purchased.",model:'7 × 6 = 42 (or 6 × 7 = 42). They buy 42 pens in all.'},
+{t:'txt',q:"Complete the table. Each lion has 4 legs.",pics:TABLE(['','','','',''],[["Number of lions","5","6","9","?","?"],["Total number of legs","20","?","?","32","16"]]),f:[{l:'6 lions → legs',a:['24']},{l:'9 lions → legs',a:['36']},{l:'32 legs → lions',a:['8']},{l:'16 legs → lions',a:['4']}],show:'6 lions = 24 legs, 9 lions = 36 legs, 32 legs = 8 lions, 16 legs = 4 lions.'}
+];
+const L2=[
+mc("George is canning pears. He has 100 pears and he divides the pears evenly among 10 pots. How many pears does George put in each pot?",['9 pears','5 pears','8 pears','10 pears'],3,'100 ÷ 10 = 10.'),
+mc("Marisa made 15 woolen dolls. She gave the same number of woolen dolls to 3 friends. How many dolls did Marisa give to each friend?",['4 woolen dolls','3 woolen dolls','5 woolen dolls','6 woolen dolls'],2,'15 ÷ 3 = 5.'),
+mc("Lisa bought 50 mangoes. She divided them equally into 5 basins. How many mangoes did Lisa put in each basin?",['10 mangos','8 mangos','5 mangos','7 mangos'],0,'50 ÷ 5 = 10.'),
+mc("Jennifer picked 30 oranges from the basket. If it takes 6 oranges to make a one liter jar of juice, how many one liter jars of juice can Jennifer make?",['4 jars','3 jars','6 jars','5 jars'],3,'30 ÷ 6 = 5.'),
+mc("Miller bought 80 rolls of paper towels. If there are 10 rolls of paper towels in each pack, how many packs of paper towels did Miller buy?",['6 packs','8 packs','7 packs','5 packs'],1,'80 ÷ 10 = 8.'),
+mc("James takes 15 photographs of his school building. He gave the same number of photographs to 5 friends. How many photographs did James give to each friend?",['2 photographs','3 photographs','6 photographs','5 photographs'],1,'15 ÷ 5 = 3.'),
+mc("Ron took 81 playing cards and arranged them into 9 equal piles. How many playing cards did Ron put in each pile?",['5 playing cards','4 playing cards','6 playing cards','9 playing cards'],3,'81 ÷ 9 = 9.'),
+mc("Robert wants to buy 40 ice cream cups from the ice cream parlor. If there are 10 ice cream cups in each box, how many boxes of ice cream cups should Robert buy?",['6 boxes','3 boxes','4 boxes','5 boxes'],2,'40 ÷ 10 = 4.'),
+mc("Marilyn wants to purchase 20 tiles. If the tiles come in packs of 5, how many packs should Marilyn buy?",['3 packs','4 packs','5 packs','6 packs'],1,'20 ÷ 5 = 4.'),
+mc("There are 30 people running around the path. If the runners are evenly divided among the path's 5 lanes, how many people are running in each lane?",['6 runners','5 runners','8 runners','4 runners'],0,'30 ÷ 5 = 6.'),
+mc("Sally is buying goodie bags for her class. She needs 24 bags in all. If the bags come in packs of 3, how many packs does Sally need?",['21 packs','3 packs','24 packs','8 packs'],3,'24 ÷ 3 = 8.'),
+mc("Mr. Johnson is planting a garden. He wants to use all of his 44 seeds and wants to make 4 rows of vegetables. How many seeds should he plant in each row?",['22 seeds','11 seeds','4 seeds','88 seeds'],1,'44 ÷ 4 = 11.'),
+mc("Destiny, Jimmy, and Marcy have 32 marbles all together. Tommy adds 4 marbles to the set. If the group of friends wants to evenly divide the marbles so that each person has the same number, how many marbles should each person receive?",['4 marbles','8 marbles','9 marbles','10 marbles'],2,'32 + 4 = 36 marbles, shared by 4 people: 36 ÷ 4 = 9.'),
+mc("Mr. Baker earned $100 for five days of work. If he made the same amount each day, how much money did he make per day?",['$15 per day','$20 per day','$25 per day','$30 per day'],1,'100 ÷ 5 = 20.'),
+mc("Seth and his brother have collected 26 seashells on the beach. If they want to share them equally, how many seashells will each of them receive?",['6 seashells','9 seashells','26 seashells','13 seashells'],3,'26 ÷ 2 = 13.'),
+{t:'txt',q:"A pizza is cut into 8 slices. Tim and Kira want to share the pizza. If they both eat the same number of slices, how many slices will each person eat?",f:[{l:'Slices each',a:['4','4slices']}],show:'8 ÷ 2 = 4 slices.'},
+{t:'multi',q:"Gabriela has 16 stickers. She wants to find two ways to divide the stickers into equal groups. Which expressions can she use? Mark ALL the correct answers.",opts:['16 ÷ 2','16 ÷ 3','16 ÷ 4','16 ÷ 5'],a:[0,2],exp:'16 ÷ 2 = 8 and 16 ÷ 4 = 4 both come out even.'},
+mc("Circle the picture that shows the expression 10 ÷ 5.",['Picture A','Picture B','Picture C'],0,'Picture A has 10 objects divided into 5 equal groups.',
+ `<div class="pics"><div class="pic"><b>A</b>${'🍎🍎 '.repeat(5)}</div><div class="pic"><b>B</b>${'🍐🍐🍐 '.repeat(3)}</div><div class="pic"><b>C</b>${'🍊🍊 '.repeat(3)}</div></div>`),
+{t:'txt',q:"Miriam has 100 marbles. She wants to divide them into equal groups. List all the ways by filling in the missing divisors, in ascending order.\nDivisors so far: 2, 4, __, __, 20, 25, __",f:[{l:'First missing',a:['5']},{l:'Second missing',a:['10']},{l:'Third missing',a:['50']}],show:'The missing divisors are 5, 10 and 50 (100 divides evenly by 2, 4, 5, 10, 20, 25 and 50).'},
+{t:'sel',q:"For each expression, choose the correct symbol.",opts:['<','>','='],rows:[['30 ÷ 5 [] 42 ÷ 6','<'],['72 ÷ 8 [] 63 ÷ 7','='],['54 ÷ 6 [] 56 ÷ 7','>']],show:'30 ÷ 5 = 6 is less than 42 ÷ 6 = 7. 72 ÷ 8 = 9 equals 63 ÷ 7 = 9. 54 ÷ 6 = 9 is greater than 56 ÷ 7 = 8.'}
+];
+const L3=[
+mc("The product in this number sentence is ______.\n54 × 3 = ?",['54','162','3','54 and 3'],1,'The product is the answer to a multiplication: 54 × 3 = 162. (54 and 3 are the factors.)'),
+mc("A Snack Shop has twice as many popcorn balls as they do cotton candy. If there are 30 popcorn balls, how many cotton candies are there?",['7','450','30','15'],3,'"Twice as many" means divide by 2: 30 ÷ 2 = 15.'),
+mc("Monica has 56 DVDs in her movie collection. This is 8 times as many as Sue has. How many DVDs does Sue have?",['8','6','7','10'],2,'n × 8 = 56, so 56 ÷ 8 = 7.'),
+mc("Jonathan can do 7 jumping jacks. Marcus can do 4 times as many as Jonathan. How many jumping jacks can Marcus do?",['28','8','4','7'],0,'7 × 4 = 28.'),
+mc("Darren has seen 4 movies this year. Marsha has seen 3 times as many movies as Darren. How many movies has Marsha seen?",['7','3','4','12'],3,'3 × 4 = 12.'),
+mc("Sarah is planting a garden. She will plant 4 rows with 9 seeds in each row. How many plants will be in the garden?",['32 plants','36 plants','42 plants','13 plants'],1,'4 × 9 = 36.'),
+mc("Mrs. Huerta's class is having a pizza party. There are 24 students in the class. Each pizza has 12 slices. How many pizzas does Mrs. Huerta need to order for each child to have 1 slice?",['3 pizzas','2 pizzas','1 pizza','4 pizzas'],1,'24 ÷ 12 = 2 pizzas.'),
+mc("There are 27 apples. How many pies can be made if each pie uses 3 apples?",['7 pies','8 pies','9 pies','10 pies'],2,'27 ÷ 3 = 9.'),
+mc("Keegan is planting a garden in even rows. He has 48 seeds. Which layout is NOT possible?",['6 rows of 8 seeds','8 rows of 6 seeds','7 rows of 7 seeds','12 rows of 4 seeds'],2,'7 × 7 = 49, not 48. The other layouts all make 48.'),
+mc("There are 25 students in a gym class. They want to play a game with 5 equal teams. How many students will be on each team?",['4 students','5 students','7 students','3 students'],1,'25 ÷ 5 = 5.'),
+mc("Josie has 7 days to read a book with 21 chapters. How many chapters should she read each day?",['3 chapters','4 chapters','5 chapters','7 chapters'],0,'21 ÷ 7 = 3.'),
+mc("Devon has $40 to spend on fuel. One gallon of fuel costs $5. How many gallons can Devon afford to buy?",['5 gallons','12 gallons','9 gallons','8 gallons'],3,'40 ÷ 5 = 8.'),
+mc("Amanda is using this cake recipe: 4 cups flour, 1 cup sugar, 3 cups milk, 1 egg. If Amanda needs to make three batches, how many cups of flour will she need?",['7 cups','12 cups','10 cups','16 cups'],1,'One batch uses 4 cups of flour, so 3 batches: 4 × 3 = 12 cups.'),
+mc("Kim invited 20 friends to her birthday party. Twice as many friends than she invited showed up. Which number sentence could be used to find how many friends came?",['n + 20 = 2','n × 20 = 2','20 × 2 = n','20 − n = 20'],2,'"Twice as many" means multiply by 2: 20 × 2 = n (so 40 friends).'),
+mc("The product of 9 and a number is 45. Which number sentence models this situation?",['9 + n = 45','45 + 9 = n','9 × n = 45','5 × n = 45'],2,'"Product" means multiply: 9 × n = 45.'),
+{t:'multi',q:"A classroom has 5 rows of desks. There are 6 desks in each row. How many desks are there altogether? Select the number sentences that represent the solution. Choose ALL correct answers.",opts:['6 − 5 = 1','5 × 6 = 30','6 × 5 = 30','5 + 6 = 11'],a:[1,2],exp:'5 × 6 = 30 and 6 × 5 = 30 (the order of factors does not change the product).'},
+mc("Jasmine bought a bouquet of 24 flowers. She plans to give the same number of flowers to her 4 friends, Daniel, Raquel, Elliot and Sue. How many flowers will each friend receive?",['2','5','6','4'],2,'24 ÷ 4 = 6.'),
+{t:'txt',q:"There are 48 cupcakes to be shared equally among 6 boys. How many cupcakes will each boy get?",f:[{l:'Cupcakes each',a:['8','8cupcakes']}],show:'48 ÷ 6 = 8 cupcakes.'},
+{t:'sel',q:"Fill in the blank with the correct operation symbol to make each equation true.",opts:['×','+','−','÷'],rows:[['64 ÷ 8 = 2 [] 4','×'],['2 [] 4 = 42 ÷ 7','+']],show:'64 ÷ 8 = 8 and 2 × 4 = 8. 42 ÷ 7 = 6 and 2 + 4 = 6.'},
+{t:'self',q:"Joseph reads 8 pages every day. In how many days will he be able to complete reading a book which has 56 pages? Write an equation to represent this, and find the number of days.",model:'56 ÷ 8 = n (or 8 × n = 56), so n = 7 days.'}
+];
+const L4=[
+mc("Find the number that makes this equation true.\nn × 6 = 30",['n = 11','n = 7','n = 5','n = 3'],2,'30 ÷ 6 = 5, so n = 5.'),
+mc("Find the number that makes this equation true.\n7 × ___ = 21",['3','4','5','6'],0,'21 ÷ 7 = 3.'),
+mc("Find the number that makes this equation true.\n___ × 4 = 36",['9','8','7','6'],0,'36 ÷ 4 = 9.'),
+mc("Find the number that makes this equation true.\nn ÷ 9 = 8",['n = 81','n = 45','n = 72','n = 63'],2,'To find the dividend, multiply: 9 × 8 = 72.'),
+mc("Find the number that makes this equation true.\n___ ÷ 3 = 10",['27','30','33','60'],1,'3 × 10 = 30.'),
+mc("Find the number that makes this equation true.\n45 ÷ n = 9",['n = 10','n = 7','n = 5','n = 3'],2,'To find the divisor, divide: 45 ÷ 9 = 5.'),
+mc("Find the number that makes this equation true.\n64 = ___ × 8",['6','7','8','9'],2,'64 ÷ 8 = 8.'),
+mc("Find the number that makes this equation true.\n12 ÷ ___ = 2",['7','6','8','4'],1,'12 ÷ 2 = 6.'),
+mc("Find the number that makes this equation true.\n___ ÷ 7 = 11",['63','70','77','78'],2,'7 × 11 = 77.'),
+mc("Find the number that makes this equation true.\n16 = n × 4",['n = 12','n = 4','n = 3','n = 2'],1,'16 ÷ 4 = 4.'),
+mc("For what value of m is this equation true?\nm × 7 = 56",['m = 6','m = 8','m = 7','m = 12'],1,'56 ÷ 7 = 8.'),
+mc("For what value of n is this equation true?\n60 ÷ n = 5",['n = 8','n = 12','n = 14','n = 16'],1,'60 ÷ 5 = 12.'),
+mc("For what value of z is this equation true?\n9 × z = 81",['z = 11','z = 9','z = 12','z = 7'],1,'81 ÷ 9 = 9.'),
+mc("For what value of p is this equation true?\np ÷ 3 = 3",['p = 6','p = 1','p = 9','p = 0'],2,'3 × 3 = 9.'),
+mc("For what value of u is this equation true?\n10 ÷ u = 10",['u = 1','u = 0','u = 10','u = 100'],0,'10 ÷ 10 = 1.'),
+{t:'txt',q:"Which number makes the equation true? Type your answer.\n___ ÷ 6 = 9",f:[{l:'Answer',a:['54']}],show:'6 × 9 = 54.'},
+{t:'multi',q:"Which two numbers will make the equation true? Mark BOTH.\n___ × ___ = 14",opts:['5','7','6','2'],a:[1,3],exp:'7 × 2 = 14.'},
+{t:'txt',q:"Enter the correct answer in each part of the table.",f:[{l:'4 × 8 =',a:['32']},{l:'___ × 7 = 63',a:['9']},{l:'3 × 5 =',a:['15']},{l:'___ × 1 = 7',a:['7']}],show:'4 × 8 = 32, 9 × 7 = 63, 3 × 5 = 15, 7 × 1 = 7.'},
+{t:'self',q:"PART A: A pen costs $7. How much would six pens cost? Write an equation to represent this.\nPART B: Use your equation to find the cost of six pens.",model:'Part A: t = 7 × 6 (t is the total cost; any letter works). Part B: t = 7 × 6 = $42.'},
+{t:'sel',q:"Match the value of n for each equation.",opts:['n=7','n=6'],rows:[['3 × 8 = 4 × n  []','n=6'],['72 ÷ 9 = 56 ÷ n  []','n=7']],show:'3 × 8 = 24 and 4 × 6 = 24, so n = 6. 72 ÷ 9 = 8 and 56 ÷ 7 = 8, so n = 7.'}
+];
+const L5=[
+mc("Which of these statements is NOT true?",['4 × (3 × 6) = (4 × 3) × 6','4 × 3 = 3 × 4','15 × 0 = 0 × 15','12 × 1 = 12 × 12'],3,'12 × 1 = 12 but 12 × 12 = 144, so they are not equal.'),
+mc("Which of these statements is true?",['The product of 11 × 6 is equal to the product of 6 × 11.','The product of 11 × 6 is greater than the product of 6 × 11.','The product of 11 × 6 is less than the product of 6 × 11.','There is no relationship between the product of 11 × 6 and the product of 6 × 11.'],0,'11 × 6 = 66 and 6 × 11 = 66 (Commutative Property).'),
+mc("Which of the following expressions has a value of 0?",['(3 × 4) × 1','50 × 1','3 × 4 × 0','(3 × 1) × 2'],2,'Anything multiplied by 0 is 0.'),
+mc("Which set of two numerical expressions have a value of zero?",['60 × 1 and 1 × 60','10 × 10 and 0 × 10','27 × 0 and 0 × 27','0 ÷ 15 and 15 ÷ 15'],2,'27 × 0 = 0 and 0 × 27 = 0.'),
+mc("Which mathematical property does this equation model?\n6 × 1 = 6",['Commutative Property of Multiplication','Associative Property of Multiplication','Identity Property of Multiplication','Distributive Property'],2,'Any number times 1 equals itself: the Identity Property.'),
+mc("Which mathematical property does this equation model?\n9 × 6 = 6 × 9",['Commutative Property of Multiplication','Associative Property of Multiplication','Identity Property of Multiplication','Distributive Property'],0,'The order of the factors does not change the answer: Commutative Property.'),
+mc("Which mathematical property does this equation model?\n(2 × 10) × 3 = 2 × (10 × 3)",['Commutative Property of Multiplication','Associative Property of Multiplication','Identity Property of Multiplication','Distributive Property'],1,'The grouping of the factors changes but not the answer: Associative Property.'),
+mc("Which mathematical property does this equation model?\n4 × (9 + 6) = (4 × 9) + (4 × 6)",['Commutative Property of Multiplication','Associative Property of Multiplication','Identity Property of Multiplication','Distributive Property'],3,'Multiplying a sum is the same as multiplying each part: Distributive Property.'),
+mc("By the Commutative Property of Multiplication, if you know that 4 × 5 = 20, then you also know that ______.",['20 is an even number','4 × 6 = 24','5 × 4 = 20','5 is greater than 4'],2,'The order of the factors does not change the product: 5 × 4 = 20.'),
+mc("By the Associative Property of Multiplication, if you know that (2 × 3) × 4 = 24, then you also know that ______.",['2 × (3 × 4) = 24','2 × 4 = 8','24 ÷ 6 = 4','(2 × 3) × 5 = 30'],0,'Regrouping the factors gives the same product: 2 × (3 × 4) = 24.'),
+mc("Complete the statement: Multiplication and ______ are inverse operations.",['addition','subtraction','division','distribution'],2,'Division reverses multiplication, so they are inverse operations.'),
+mc("The equation below models the ______.\n32 × 7 = 7 × 32",['Commutative Property of Multiplication','Associative Property of Multiplication','Identity Property of Multiplication','Distributive Property'],0,'The order of the factors changed: Commutative Property.'),
+mc("The equation below models the ______.\n26 × 2 = (20 × 2) + (6 × 2)",['Commutative Property of Multiplication','Associative Property of Multiplication','Identity Property of Multiplication','Distributive Property'],3,'26 was split into 20 + 6 and each part multiplied: Distributive Property.'),
+mc("By the Identity Property of Multiplication, you know that ______.",['2 × 2 = 4','0 × 0 = 0','6 × 1 = 6','5 ÷ 5 = 1'],2,'A number times 1 stays the same: 6 × 1 = 6.'),
+mc("What number belongs in the blank?\n10 × ___ = 10",['1','0','10','5'],0,'10 × 1 = 10 (Identity Property).'),
+{t:'multi',q:"From the 4 options, select the 2 that result in the same product based on the Commutative Property of Multiplication.",opts:['5 + 4','10 × 2','5 × 4','4 × 5'],a:[2,3],exp:'5 × 4 = 4 × 5 = 20 (Commutative Property).'},
+{t:'txt',q:"Make the equation true according to the Identity Property of Multiplication. Type the number.\n7 × ___ = 7",f:[{l:'Answer',a:['1']}],show:'7 × 1 = 7.'},
+mc("(2 × 3) × 4 = 24 and 2 × (3 × 4) = 24\nIdentify the property that is applicable.",['Associative Property of Multiplication','Distributive Property','Commutative Property of Multiplication','Identity Property of Multiplication'],0,'The grouping of the factors changed but the product did not: Associative Property.'),
+{t:'txt',q:"PART A: Which number will make the equation true?\n3 × 7 = 7 × ?\nPART B: Type the name of the property you used in Part A.",f:[{l:'Part A number',a:['3']},{l:'Part B property',a:[],has:'commut'}],show:'Part A: 3 (3 × 7 = 7 × 3). Part B: the Commutative Property.'},
+{t:'sel',q:"Match each example with its property.",opts:['Commutative','Associative','Identity','Distributive'],rows:[['3 × (5 × 7) = (3 × 5) × 7  []','Associative'],['3 × 1 = 3  []','Identity'],['3 × 5 = 5 × 3  []','Commutative'],['3 × (5 + 7) = (3 × 5) + (3 × 7)  []','Distributive']],show:'Associative = regrouping. Identity = times 1. Commutative = swapping the order. Distributive = splitting a sum.'}
+];
+const L6=[
+mc(two("___ × 6 = 30","30 ÷ 6 = ___"),['7','5','6','24'],1,'5 × 6 = 30 and 30 ÷ 6 = 5.'),
+mc(two("7 × ___ = 21","21 ÷ ___ = 7"),['5','14','3','7'],2,'7 × 3 = 21 and 21 ÷ 3 = 7.'),
+mc(two("72 ÷ ___ = 8","8 × ___ = 72"),['8','9','10','64'],1,'72 ÷ 9 = 8 and 8 × 9 = 72.'),
+mc(two("50 ÷ ___ = 5","___ × 5 = 50"),['15','5','45','10'],3,'50 ÷ 10 = 5 and 10 × 5 = 50.'),
+mc(two("36 ÷ ___ = ___","___ × 9 = 36"),['4','5','27','9'],0,'36 ÷ 4 = 9 and 4 × 9 = 36.'),
+{t:'multi',q:"There are 9 students in a group. Each student needs 5 sheets of paper. Which number sentences can be used to find the total sheets of paper needed? Select ALL the correct answers.",opts:['5 × ___ = 9','9 × 5 = ___','___ ÷ 5 = 9','9 ÷ 5 = ___'],a:[1,2],exp:'9 × 5 = 45, or 45 ÷ 5 = 9.'},
+mc("In a football game, Timmy scored 8 touchdowns. Each touchdown was worth 7 points. Which number sentence can be used to find how many points Timmy scored in all?",['56 × ___ = 8','___ ÷ 7 = 8','7 × 56 = ___','8 ÷ 7 = ___'],1,'8 × 7 = 56, so 56 ÷ 7 = 8.'),
+mc("Devon needs to buy 96 pencils for his goodie bags. Pencils are sold in packages of 12. Which number sentence can be used to find how many packages Devon needs to buy?",['12 ÷ 96 = ___','12 × 96 = ___','___ × 12 = 96','12 ÷ ___ = 96'],2,'96 ÷ 12 = 8, or 8 × 12 = 96.'),
+mc("Eighty-four students are attending an awards ceremony. They are to be seated at twelve equal tables. Which number sentence can be used to find how many students should be assigned to each table?",['6 × ___ = 84','12 × ___ = 84','84 × 12 = ___','12 ÷ 84 = ___'],1,'84 ÷ 12 = 7, or 12 × 7 = 84.'),
+mc("Walter has 16 slices of pizza to share among himself and seven friends. He wants each person to get an equal number of slices. Which number sentence can be used to find how many slices each person will get?",['7 ÷ 16 = ___','7 × 16 = ___','7 × ___ = 16','8 × ___ = 16'],3,'There are 8 people, so 16 ÷ 8 = 2, or 8 × 2 = 16.'),
+mc("Which of the following equations would be in the same fact family as 6 × 5 = 30?",['30 ÷ 10 = 3','6 × 30 = 5','30 ÷ 5 = 6','5 ÷ 30 = 6'],2,'A fact family uses the same numbers: 30 ÷ 5 = 6.'),
+mc("Which number sentence is equivalent to the number sentence below?\n4 × n = 32",['4 × 32 = n','n + 4 = 32','32 ÷ 4 = n','4 × 4 = n'],2,'Multiplication and division are inverse operations: 32 ÷ 4 = n.'),
+mc("Which number sentence is equivalent to the number sentence below?\nn × 6 = 48",['48 × n = 6','6 × 4 = n','48 × 6 = n','48 ÷ n = 6'],3,'If n × 6 = 48, then 48 ÷ n = 6.'),
+mc("Which number sentence is equivalent to the number sentence below?\n45 ÷ n = 9",['9 × 45 = n','45 × n = 9','9 × n = 45','n + 9 = 45'],2,'If 45 ÷ n = 9, then 9 × n = 45.'),
+mc("David receives 2 pieces of candy for each chore that he completes each week. This week he earned 32 pieces of candy. Which number sentence can be used to figure out how many chores David completed?",['2 × 32 = ___','___ × 2 = 32','32 + 2 = ___','2 ÷ 32 = ___'],1,'___ × 2 = 32, so 32 ÷ 2 = 16 chores.'),
+{t:'sel',q:"Match each multiplication sentence with the corresponding division sentence. Remember, if a × b = c then c ÷ a = b.",opts:['40÷5=8','36÷6=6','21÷7=3','18÷9=2'],rows:[['6 × 6 = 36  []','36÷6=6'],['9 × 2 = 18  []','18÷9=2'],['5 × 8 = 40  []','40÷5=8'],['7 × 3 = 21  []','21÷7=3']],show:'6 × 6 = 36 ↔ 36 ÷ 6 = 6, 9 × 2 = 18 ↔ 18 ÷ 9 = 2, 5 × 8 = 40 ↔ 40 ÷ 5 = 8, 7 × 3 = 21 ↔ 21 ÷ 7 = 3.'},
+{t:'txt',q:"Complete the table by writing the correct number. Remember, if a × b = c then c ÷ a = b.",pics:TABLE(['','Division Expression','Quotient'],[['If 4 × 4 = 16 then...','16 ÷ 4 =','?'],['If 7 × 6 = 42 then...','42 ÷ ? =','6'],['If 3 × 9 = 27 then...','? ÷ 3 =','9']]),f:[{l:'If 4 × 4 = 16 then 16 ÷ 4 =',a:['4']},{l:'If 7 × 6 = 42 then 42 ÷ ___ = 6',a:['7']},{l:'If 3 × 9 = 27 then ___ ÷ 3 = 9',a:['27']}],show:'16 ÷ 4 = 4, 42 ÷ 7 = 6, 27 ÷ 3 = 9.'},
+{t:'multi',q:"Which multiplication sentences relate to 63 ÷ 9 = 7? Select ALL the correct answers.",opts:['7 × 7 = 49','7 × 9 = 63','9 × 7 = 63','9 × 8 = 72'],a:[1,2],exp:'7 × 9 = 63 and 9 × 7 = 63 both go with 63 ÷ 9 = 7.'},
+mc("Which number sentence is equivalent to the number sentence below?\n65 ÷ n = 5",['65 = 5 × n','65 = 5 ÷ n','65 = n ÷ 5','65 = 5 − n'],0,'If 65 ÷ n = 5, then 5 × n = 65.'),
+{t:'sel',q:"Fill in the blanks with <, > or = to complete the expressions.",opts:['<','>','='],rows:[['40 ÷ 5  []  54 ÷ 9','>'],['35 ÷ 7  []  28 ÷ 4','<'],['18 ÷ 6  []  24 ÷ 8','=']],show:'8 > 6, 5 < 7, and 3 = 3.'}
+];
+const L7=[...L7src.map(r=>mc(...r)),
+{t:'sel',q:"Match each equation to the correct product.",opts:['12','18','32'],rows:[['6 × 3 =  []','18'],['8 × 4 =  []','32'],['4 × 3 =  []','12'],['9 × 2 =  []','18']],show:'6 × 3 = 18, 8 × 4 = 32, 4 × 3 = 12, 9 × 2 = 18.'},
+{t:'txt',q:"Solve. 24 ÷ 4 = ?",f:[{l:'Answer',a:['6']}],show:'24 ÷ 4 = 6.'},
+{t:'multi',q:"Which expressions have a product of 36? Select ALL the correct answers.",opts:['6 × 6','8 × 4','6 × 8','9 × 4'],a:[0,3],exp:'6 × 6 = 36 and 9 × 4 = 36.'},
+mc("Find the quotient.\n27 ÷ 9",['18','4','3','2'],2,'27 ÷ 9 = 3.'),
+{t:'txt',q:"Complete the table by filling in the missing numbers.",pics:TABLE(['Equation','Answer'],[["5 × 8 =","?"],["8 ÷ ? =","8"],["? ÷ 7 =","0"],["6 × ? =","30"]]),f:[{l:'5 × 8 =',a:['40']},{l:'8 ÷ ___ = 8',a:['1']},{l:'___ ÷ 7 = 0',a:['0']},{l:'6 × ___ = 30',a:['5']}],show:'5 × 8 = 40, 8 ÷ 1 = 8, 0 ÷ 7 = 0, 6 × 5 = 30.'}
+];
+const L8=[
+mc("Danny has 47 baseball cards. He gives his brother 11 cards. Danny then divides the remaining cards between 3 of his classmates. How many cards does each classmate receive?",['15','3','12','11'],2,'47 − 11 = 36, then 36 ÷ 3 = 12.'),
+mc("Two classes of grade three students are lined up outside. One class is lined up in 3 rows of 7. The other class is lined up in 4 rows of 5. How many total third graders are lined up outside?",['19 third graders','21 third graders','41 third graders','20 third graders'],2,'3 × 7 = 21 and 4 × 5 = 20, then 21 + 20 = 41.'),
+mc("Jessica earns 10 dollars per hour for babysitting. She has saved 60 dollars so far. How many more hours will she need to babysit to buy something that costs 100 dollars?",['40 hours','6 hours','10 hours','4 hours'],3,'$100 − $60 = $40, then $40 ÷ $10 = 4 hours.'),
+mc("George started with 2 bags of 10 cookies. He gave 12 cookies to his parents. How many cookies does George have now?",['8 cookies','10 cookies','12 cookies','20 cookies'],0,'2 × 10 = 20, then 20 − 12 = 8.'),
+mc("Renae has 60 minutes to do her chores and do her homework. She has 3 chores to complete and each chore takes 15 minutes. After completing her chores, how many minutes does Renae have left to do her homework?",['15 minutes','45 minutes','30 minutes','0 minutes'],0,'3 × 15 = 45, then 60 − 45 = 15.'),
+mc("Anna and Jamie want to buy a new board game. The original cost was 28 dollars. It is on sale for 4 dollars off. How much money should each girl pay if they buy the game on sale and pay equal amounts?",['$24','$2','$12','$14'],2,'$28 − $4 = $24, then $24 ÷ 2 = $12.'),
+mc("100 students went on a field trip. Ten students rode with their parents in a car while the remaining students were divided equally into 5 buses. How many students rode on each bus?",['9 students','18 students','50 students','90 students'],1,'100 − 10 = 90, then 90 ÷ 5 = 18.'),
+mc("Julia has 32 books. Her sister has twice the number of books that Julia has. How many books do the girls have altogether?",['66 books','32 books','64 books','96 books'],3,'32 × 2 = 64, then 64 + 32 = 96.'),
+mc("Alicia bought 5 crates of apples. Each crate had 8 apples. She divided the apples equally into 10 bags. How many apples were in each bag?",['40 apples','4 apples','10 apples','5 apples'],1,'5 × 8 = 40, then 40 ÷ 10 = 4.'),
+mc("Janeth went to the store and spent 4 dollars on markers. She also bought 3 copies of the same book. If she spent a total of 19 dollars, how much did each book cost?",['5 dollars','4 dollars','3 dollars','6 dollars'],0,'$19 − $4 = $15, then $15 ÷ 3 = $5.'),
+mc("Brian won 24 candy bars in a contest. He gave 2 candy bars to each of his 7 friends. How many candy bars does Brian have left?",['14 candy bars','12 candy bars','10 candy bars','17 candy bars'],2,'7 × 2 = 14, then 24 − 14 = 10.'),
+mc("Jenine gave 3 mini cupcakes to each of her three sisters. She then had 4 left for herself. How many mini cupcakes did Jenine start with?",['13 mini cupcakes','9 mini cupcakes','10 mini cupcakes','7 mini cupcakes'],0,'3 × 3 = 9, then 9 + 4 = 13.'),
+mc("Twenty-two people visited the art exhibit at the museum on Friday. Twice as many people visited on Saturday. How many people combined visited the art exhibit on Friday and Saturday?",['88 people','66 people','22 people','44 people'],1,'22 × 2 = 44 on Saturday, then 44 + 22 = 66.'),
+mc("Audrey can watch 5 hours of TV a week. She has already watched 4 shows that are each 1 hour long. How many more hours can she watch TV this week?",['3 hours','2 hours','1 hour','4 hours'],2,'4 × 1 = 4 hours watched, then 5 − 4 = 1.'),
+mc("Greg had 3 books. His older brother gave him 15 more books. Greg wants to divide his total number of books equally onto 6 shelves. How many books should he place on each shelf?",['3 books','12 books','18 books','6 books'],0,'3 + 15 = 18, then 18 ÷ 6 = 3.'),
+{t:'multi',q:"Sarah bought 2 boxes of doughnuts. Each box contained 12 donuts. She shared a total of 7 donuts with her friends. How many doughnuts does she have now? Identify which equations can be used to find the answer. (Choose ALL correct answers)",opts:['12 × 2 = 24','12 + 2 = 14','24 − 7 = 17','2 + 12 + 7 = 21'],a:[0,2],exp:'12 × 2 = 24 doughnuts, then 24 − 7 = 17.'},
+{t:'sel',q:"Freddy has a collection of 32 baseball cards. He wants to share the cards with 4 classmates. One of the classmates brings 8 more cards to add to the collection. If Freddy and his classmates share all the cards, each receiving the same number, how many cards does each person have? Put the steps in the correct order.",opts:['32 − 6 = 26','4 + 1 = 5','32 + 8 = 40','40 ÷ 5 = 8'],rows:[['Step 1  []','32 + 8 = 40'],['Step 2  []','4 + 1 = 5'],['Step 3  []','40 ÷ 5 = 8']],show:'32 + 8 = 40 cards, 4 + 1 = 5 people, then 40 ÷ 5 = 8 cards each.'},
+mc("A farmer collected 22 pints of milk from his cows. He put all the milk into bottles. Each bottle holds 2 pints of milk. He accidentally spilled 6 bottles of milk. How many bottles are left with the farmer now?",['11','24','16','5'],3,'22 ÷ 2 = 11 bottles, then 11 − 6 = 5 bottles.'),
+{t:'sel',q:"For each problem, select the correct answer.",opts:['$50','$5','$10','$4'],rows:[['Karen had 86 dollars. She bought 7 books. After buying them she had 16 dollars. How much did each book cost?  []','$10'],['Jose and his four friends bought a new board game. It was on sale for 20 dollars off. If each of the 5 of them paid $6, what was the original cost of the game?  []','$50'],['A shopkeeper buys 5 pens for $35 and sells them at $8 per pen. If he sells all five pens, how much profit will he get?  []','$5'],['Jeffrey bought 8 action figures which cost 3 dollars each from John. John bought 6 books from the amount he received. If each book cost the same, what is the cost of each book?  []','$4']],show:'(86 − 16) ÷ 7 = $10. 20 + 5 × 6 = $50. 5 × 8 − 35 = $5. 8 × 3 ÷ 6 = $4.'}
+];
+const L9=[
+mc("Which of the following is an even number?",['764,723','90,835','5,862','609'],2,'Even numbers end in 0, 2, 4, 6 or 8. Only 5,862 does.'),
+mc("Which of these sets contains no odd numbers?",['13, 15, 81, 109, 199','123, 133, 421, 412, 600','34, 46, 48, 106, 88','12, 37, 6, 14, 144'],2,'Every number in 34, 46, 48, 106, 88 is even.'),
+mc("The sum of two even numbers will always be ______.",['greater than 10','less than 100','even','odd'],2,'Even + even is always even. For example, 34 + 12 = 46.'),
+mc("The product of two even numbers will always be ______.",['even','odd','a multiple of 10','a square number'],0,'Even × even is always even. For example, 34 × 4 = 136.'),
+mc("A number has a nine in its ones place. The number must be a multiple of ______.",['9','3','7','None of the above'],3,'Not enough information. For example, 19 is not a multiple of 3, 7 or 9.'),
+mc("Numbers that are multiples of 8 are all ______.",['even','multiples of 2','multiples of 4','All of the above'],3,'Multiples of 8 are even, and are also multiples of 2 and 4.'),
+mc("If this pattern continues, what will the next 3 numbers be?\n7, 14, 21, 28, 35, ......",['41, 47, 53','49, 56, 63','77, 84, 91','42, 49, 56'],3,'The pattern adds 7 each time: 42, 49, 56.'),
+mc("All multiples of ______ can be decomposed into two equal addends.",['6','9','3','5'],0,'Even numbers split into two equal parts, and all multiples of 6 are even.'),
+mc("If this pattern continues, what will the next 3 numbers be?\n9, 18, 27, 36, ......",['54, 63, 72','45, 54, 63','44, 52, 60','44, 53, 62'],1,'The pattern adds 9 each time: 45, 54, 63.'),
+mc("A number is multiplied by 7 and the resulting product is even. Which of these could have been the number?",['7','17','34','99'],2,'Odd × even = even, so the number must be even: 34.'),
+mc("The multiples of 4 will always ______.",['have a 2 in the ones place','be even','be divisible by 8','None of these'],1,'Multiples of an even number are always even.'),
+mc("The sum of an even number and an odd number will always be ______.",['even','odd','divisible by 3','None of the above'],1,'Even + odd is always odd. For example, 45 + 18 = 63.'),
+mc("A multiple of 4 can have a ______ in its ones place.",['2','8','6','All of the above'],3,'Multiples of 4: 4, 8, 12, 16, 20, 24 ... the ones digit can be 2, 8 or 6.'),
+mc("A multiple of 5 can have a ______ as its ones digit.",['0','3','9','All of the above'],0,'Multiples of 5 always end in 0 or 5.'),
+mc("Which of the following would produce an even product?",['an even number times an even number','an even number times an odd number','an odd number times an even number','All of the above'],3,'Any number times an even number gives an even product.'),
+{t:'sel',q:"Select the number that will come next if the pattern continues.",opts:['10','35','24'],rows:[['2, 4, 6, 8, ...  []','10'],['40, 36, 32, 28, ...  []','24'],['7, 14, 21, 28, ...  []','35']],show:'2, 4, 6, 8 adds 2 → 10. 40, 36, 32, 28 subtracts 4 → 24. 7, 14, 21, 28 adds 7 → 35.'},
+{t:'txt',q:"Type the numbers that complete the table if the pattern is multiples of 3.",pics:TABLE(['IN','OUT'],[["3","9"],["4","?"],["5","15"],["?","18"],["7","?"],["?","?"]]),f:[{l:'IN 4 → OUT',a:['12']},{l:'IN ? → OUT 18',a:['6']},{l:'IN 7 → OUT',a:['21']},{l:'Next row: IN',a:['8']},{l:'Next row: OUT',a:['24']}],show:'The pattern multiplies by 3: 4 → 12, 6 → 18, 7 → 21, and the next row is 8 → 24.'},
+{t:'multi',q:"If the pattern continues, which of the following numbers will appear? More than one option may be correct.\n100, 90, 80, 70, ...",opts:['50','110','80','60'],a:[0,3],exp:'The pattern goes down by 10: 60, 50, ... (80 and 110 are not next; 80 already appeared).'},
+mc("If you subtract an odd number from an even number, the difference will always be a(n) ______.",['Multiple of 3','Even number','Odd number','Odd number or Even number'],2,'Even − odd is always odd.'),
+{t:'grid',q:"For each statement, choose ALL the correct answers.",cols:['2','4','5','7'],rows:[['A number has a four in its ones place. The number can be a multiple of ...',[0,1,3]],['A number has a five in its ones place. The number can be a multiple of ...',[2,3]],['A number has a zero in its ones place. The number can be a multiple of ...',[0,1,2,3]],['A number has a three in its ones place. The number can be a multiple of ...',[3]]],show:'Ones digit 4: 2, 4 or 7 (like 14, 24, 14). Ones digit 5: 5 or 7 (like 35). Ones digit 0: all of them (like 20, 40, 50, 70). Ones digit 3: only 7 (like 63).'}
+];
+const LES=[
+{name:'Lesson 1: Understanding Multiplication',qs:L1},
+{name:'Lesson 2: Understand Division',qs:L2},
+{name:'Lesson 3: Apply Multiplication &amp; Division',qs:L3},
+{name:'Lesson 4: Finding Unknown Values',qs:L4},
+{name:'Lesson 5: Multiplication &amp; Division Properties',qs:L5},
+{name:'Lesson 6: Relating Multiplication &amp; Division',qs:L6},
+{name:'Lesson 7: Multiplication &amp; Division Facts',qs:L7},
+{name:'Lesson 8: Two-Step Problems',qs:L8},
+{name:'Lesson 9: Number Patterns',qs:L9}
+];
+const LT=['Ⓐ','Ⓑ','Ⓒ','Ⓓ'];
+let timerInt=null;
+function stopTimer(){if(timerInt){clearInterval(timerInt);timerInt=null}}
+function startTimer(){stopTimer();let t=300;const tick=()=>{const node=$('timer');if(!node){stopTimer();return}const m=Math.floor(t/60),sec=t%60;node.textContent=m+':'+(sec<10?'0':'')+sec;node.style.color=t<=60?'var(--coral)':'var(--indigo)';if(t<=0){stopTimer();return}t--};tick();timerInt=setInterval(tick,1000)}
+let lesson=null,i=0,answered={},pending=null,lastGiven='';
+const picked=new Set();
+const $=id=>document.getElementById(id);
+const esc=t=>String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+const correctText=q=>q.t==='mc'?LT[q.a]+' '+q.opts[q.a]:q.t==='multi'?q.a.map(j=>LT[j]+' '+q.opts[j]).join('; '):q.t==='self'?q.model:(q.show||'');
+const norm=s=>s.toLowerCase().replace(/\s+/g,'').replace(/[×*]/g,'x');
+function home(){stopTimer();lesson=null;$('sub').textContent='Pick a lesson to practice';
+ $('st').innerHTML=`<div class="list">${LES.map((l,k)=>`<button class="les" onclick="start(${k})"><span>${l.name}</span><small>${l.qs.length} questions</small></button>`).join('')}</div>`}
+function start(k){lesson=k;i=0;answered={};pending=null;lastGiven='';picked.clear();show()}
+function goTo(k){if(lesson===null)return;i=k;show()}
+function contFromReview(){const Q=LES[lesson].qs;i=Math.min(i+1,Q.length);show()}
+function navBar(Q){let b='';for(let k=0;k<Q.length;k++){const a=answered[k];let cls='navbox';if(k===i)cls+=' cur';if(a)cls+=' done '+(a.ok?'ok':'no');b+=`<button class="${cls}" onclick="goTo(${k})">${k+1}</button>`}return `<div class="navwrap">${b}</div>`}
+function next(ok){answered[i]=Object.assign({ok,given:lastGiven},pending||{});lastGiven='';pending=null;i++;show()}
+function show(){
+ if(lesson===null){home();return}
+ const L=LES[lesson],Q=L.qs,s=$('st');
+ $('sub').innerHTML=L.name;
+ if(i>=Q.length){
+  stopTimer();
+  let score=0;const missArr=[];
+  for(let k=0;k<Q.length;k++){const a=answered[k];if(a&&a.ok)score++;else missArr.push(k+1);}
+  const pct=Math.round(score/Q.length*100);
+  const rows=Q.map((q,k)=>{const r=answered[k]||{ok:false,given:'(no answer)'};return `<div class="ri ${r.ok?'okr':'nor'}"><div class="rh"><span class="mk">${r.ok?'✓':'✗'}</span> Question ${k+1}</div><div class="rq">${esc(q.q.replace(/\n/g,' ').slice(0,110))}${q.q.length>110?'…':''}</div><div class="ra"><b>Your answer:</b> ${esc(r.given||'(no answer)')}</div>${r.ok?'':`<div class="rc"><b>Correct answer:</b> ${esc(correctText(q))}</div>`}</div>`}).join('');
+  s.innerHTML=`<div class="c"><div class="score">${score}/${Q.length}</div><p><b>Test score: ${pct}%</b><br>${score} correct · ${Q.length-score} wrong</p><p class="small">${L.name}</p><button class="nb" onclick="start(lesson)">Try again</button>${lesson<LES.length-1?`<button class="nb alt" onclick="start(${lesson+1})">Next lesson →</button>`:''}<button class="nb ghost" onclick="home()">All lessons</button></div><h3 class="revh">Review of your answers</h3><div class="rev">${rows}</div>`;return}
+ const q=Q[i];
+ const locked=answered[i];
+ let h=`<button class="back" onclick="home()">← All lessons</button>${navBar(Q)}<div class="track"><div class="fill" style="width:${i/Q.length*100}%"></div></div><div class="qn">QUESTION ${i+1} OF ${Q.length}${locked?'':'<span class="timer" id="timer" style="float:right;font-weight:700;color:var(--indigo)">5:00</span>'}</div><p class="qt">${q.q}</p>${q.pics||''}`;
+ if(q.t==='mc')h+=`<div class="opts">${q.opts.map((o,j)=>`<button class="opt" id="m${j}" onclick="selectMC(${j})"><b class="lt" id="lt${j}">${LT[j]}</b><span>${o}</span></button>`).join('')}</div><button class="nb" id="chk" onclick="confirmMC()" disabled>OK</button>`;
+ if(q.t==='multi')h+=`<div class="opts">${q.opts.map((o,j)=>`<button class="opt" id="m${j}" onclick="tog(${j})"><b class="lt" id="lt${j}">☐ ${LT[j]}</b><span>${o}</span></button>`).join('')}</div><button class="nb" id="chk" onclick="chkMulti()">Check</button>`;
+ if(q.t==='txt')h+=q.f.map((f,j)=>`<div class="f">${f.l.startsWith('<')?f.l:`<b>${f.l}:</b>`}<input type="text" id="in${j}" autocomplete="off"></div>`).join('')+`<button class="nb" id="chk" onclick="chkTxt()">Check</button>`;
+ if(q.t==='sel')h+=q.rows.map((r,j)=>`<div class="f">${r[0].replace('[]',`<select id="s${j}"><option value="">?</option>${q.opts.map(o=>`<option>${o}</option>`).join('')}</select>`)}</div>`).join('')+`<button class="nb" id="chk" onclick="chkSel()">Check</button>`;
+ if(q.t==='grid')h+=`<table><tr><th></th>${q.cols.map(c=>`<th>${c}</th>`).join('')}</tr>${q.rows.map((r,k)=>`<tr><td style="text-align:left">${r[0]}</td>${q.cols.map((c,j)=>`<td><input type="checkbox" id="g${k}_${j}"></td>`).join('')}</tr>`).join('')}</table><button class="nb" id="chk" onclick="chkGrid()">Check</button>`;
+ if(q.t==='self')h+=`<textarea id="ta" placeholder="Write your answer here..."></textarea><button class="nb" id="chk" onclick="showModel()">Show model answer</button>`;
+ s.innerHTML=h+'<div id="fb"></div>';
+ if(locked){applyLock(q,locked)}else{startTimer()}
+}
+function fin(ok,msg){$('fb').innerHTML=`<div class="fb ${ok?'good':'bad'}">${ok?'Nice work! ':'Not quite — '}${msg}</div><button class="nb alt" onclick="next(${ok})">Next</button>`;const c=$('chk');if(c)c.disabled=true}
+function applyLock(q,a){
+ stopTimer();
+ if(q.t==='mc'){document.querySelectorAll('.opts .opt').forEach((o,k)=>{o.disabled=true;if(k===q.a)o.classList.add('ok');else if(k===a.sel)o.classList.add('no')})}
+ else if(q.t==='multi'){document.querySelectorAll('.opts .opt').forEach((o,k)=>{o.disabled=true;const picked=(a.sel||[]).includes(k),correct=q.a.includes(k);if(picked&&correct)o.classList.add('ok');else if(picked&&!correct)o.classList.add('no');else if(!picked&&correct)o.classList.add('miss');$('lt'+k).textContent=(picked?'☑ ':'☐ ')+LT[k]})}
+ else if(q.t==='txt'){q.f.forEach((f,j)=>{const el=$('in'+j);if(el){el.value=(a.vals&&a.vals[j])||'';el.disabled=true}})}
+ else if(q.t==='sel'){q.rows.forEach((r,j)=>{const el=$('s'+j);if(el){el.value=(a.vals&&a.vals[j])||'';el.disabled=true}})}
+ else if(q.t==='grid'){q.rows.forEach((r,k)=>q.cols.forEach((c,j)=>{const el=$('g'+k+'_'+j);if(el){el.checked=!!(a.grid&&a.grid[k]&&a.grid[k][j]);el.disabled=true}}))}
+ else if(q.t==='self'){const el=$('ta');if(el){el.value=a.written||'';el.disabled=true}}
+ const chkBtn=$('chk');if(chkBtn)chkBtn.style.display='none';
+ const msg=q.t==='self'?q.model:(q.exp||q.show||'');
+ $('fb').innerHTML=`<div class="fb ${a.ok?'good':'bad'}">${a.ok?'✓ You answered this correctly. ':'✗ Not quite. '}${msg}</div><div class="row" style="margin-top:10px"><button class="nb alt" onclick="contFromReview()">Continue →</button></div>`;
+}
+const cur=()=>LES[lesson].qs[i];
+let selMC=null;
+function selectMC(j){selMC=j;document.querySelectorAll('.opts .opt').forEach((o,k)=>o.classList.toggle('sel',k===j));$('chk').disabled=false}
+function confirmMC(){if(selMC===null)return;const q=cur(),j=selMC;lastGiven=LT[j]+' '+q.opts[j];pending={sel:j};document.querySelectorAll('.opts .opt').forEach((o,k)=>{o.disabled=true;o.classList.remove('sel');if(k===q.a)o.classList.add('ok');else if(k===j)o.classList.add('no')});selMC=null;fin(j===q.a,q.exp)}
+function tog(j){const b=$('m'+j);if(picked.has(j)){picked.delete(j);b.classList.remove('sel')}else{picked.add(j);b.classList.add('sel')}$('lt'+j).textContent=(picked.has(j)?'☑ ':'☐ ')+LT[j]}
+function chkMulti(){const q=cur();const selArr=[...picked];const ok=selArr.length===q.a.length&&q.a.every(x=>picked.has(x));lastGiven=selArr.sort((a,b)=>a-b).map(j=>LT[j]+' '+q.opts[j]).join('; ')||'(none selected)';pending={sel:selArr};picked.clear();fin(ok,q.exp)}
+function chkTxt(){const q=cur();const vals=q.f.map((f,j)=>$('in'+j).value);lastGiven=q.f.map((f,j)=>{const v=(vals[j]||'').trim()||'—';return q.f.length>1?(f.l.startsWith('<')?'('+(j+1)+') ':f.l.replace(/<[^>]*>/g,'')+': ')+v:v}).join('; ');pending={vals};fin(q.f.every((f,j)=>{const v=norm(vals[j]);return f.a.includes(v)||(f.has&&v.includes(f.has))}),q.show)}
+function chkSel(){const q=cur();const vals=q.rows.map((r,j)=>$('s'+j).value);lastGiven=q.rows.map((r,j)=>(j+1)+') '+(vals[j]||'—')).join('; ');pending={vals};fin(q.rows.every((r,j)=>vals[j]===r[1]),q.show)}
+function chkGrid(){const q=cur();const grid=q.rows.map((r,k)=>q.cols.map((c,j)=>$('g'+k+'_'+j).checked));lastGiven=q.rows.map((r,k)=>(k+1)+') '+(q.cols.filter((c,j)=>grid[k][j]).join(', ')||'—')).join('; ');pending={grid};const ok=q.rows.every((r,k)=>q.cols.every((c,j)=>grid[k][j]===r[1].includes(j)));fin(ok,q.show)}
+function showModel(){const q=cur();const written=($('ta').value||'').trim();lastGiven=written||'(nothing written)';pending={written};$('fb').innerHTML=`<div class="model"><b>Model answer:</b> ${q.model}</div><p class="small">Did your answer match?</p><div class="row"><button class="pill" onclick="next(true)">I got it ✅</button><button class="pill" onclick="next(false)">Not yet</button></div>`;$('chk').disabled=true}
+home();
+
+</script><script src="../njsla-shared/sling.js"></script>
+<script>Sling.attach();</script>
+</body></html>

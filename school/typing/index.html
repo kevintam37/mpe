@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Typing Quest</title>
+<style>
+:root{--bg:#FBF7EC;--ink:#26304A;--card:#fff;--line:#E4DCC9;--indigo:#2B3A67;--coral:#FF6B4A;--teal:#2A9D8F;--onind:#fff;
+--f0:#e76f8a;--f1:#f4a340;--f2:#e9c46a;--f3:#2fb49f;--f4:#4c8df6;--f5:#9b6bd6;--f6:#e0605a;--f7:#8a8f9c}
+@media(prefers-color-scheme:dark){:root{--bg:#1D2233;--ink:#F1ECDD;--card:#262B40;--line:#3A4159;--indigo:#F4C95D;--onind:#1D2233}}
+*{box-sizing:border-box}html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.wrap{max-width:760px;margin:0 auto;padding:18px 14px 40px}
+h1{font-size:26px;margin:0 0 2px;color:var(--indigo)}h2{font-size:17px;margin:22px 0 8px;color:var(--indigo)}
+.sub{opacity:.7;margin:0 0 12px;font-size:14px}.small{font-size:13px;opacity:.7}.c{text-align:center}
+button{font:inherit;cursor:pointer;color:inherit}
+.pills{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}
+.pill{padding:9px 16px;border-radius:999px;border:2px solid var(--line);background:var(--card);font-weight:700}
+.pill.on{border-color:var(--indigo);background:var(--indigo);color:var(--onind)}
+.tip{background:var(--card);border:1px dashed var(--line);border-radius:12px;padding:10px 12px;font-size:14px;line-height:1.5;margin:10px 0}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px}
+.card{display:flex;flex-direction:column;align-items:flex-start;gap:3px;text-align:left;padding:14px;border-radius:14px;border:2px solid var(--line);background:var(--card)}
+.card:active{transform:scale(.99)}.card .ic{font-size:26px}.card small{opacity:.65;font-size:12.5px;line-height:1.35}
+.card.lock{opacity:.45;cursor:not-allowed}.card.game{border-color:var(--indigo)}
+.st,.stars{color:#F2B705;letter-spacing:2px;font-size:18px}
+.top{display:flex;align-items:center;gap:10px;justify-content:space-between;margin-bottom:10px}
+.back{background:none;border:none;color:var(--indigo);font-weight:700;font-size:14px;padding:4px 0}
+.stage{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;margin-top:10px}
+.line{font:600 clamp(20px,4.6vw,30px)/1.7 ui-monospace,Menlo,Consolas,monospace;white-space:pre-wrap;word-break:break-word;text-align:center}
+.c0,.line span{border-radius:4px}.line span.ok{color:var(--teal)}.line span.cur{background:var(--indigo);color:var(--onind)}
+.line span.no{background:var(--coral);color:#fff;animation:sh .25s}
+@keyframes sh{25%{transform:translateX(-3px)}75%{transform:translateX(3px)}}
+.hint{min-height:26px;text-align:center;font-size:15px;margin-top:6px}.dot{display:inline-block;width:12px;height:12px;border-radius:50%;margin-right:6px;vertical-align:-1px}
+.kb{margin-top:12px;padding:10px 8px 6px;background:var(--card);border:1px solid var(--line);border-radius:14px;user-select:none}
+.kr{display:flex;gap:4px;margin-bottom:4px}
+.k{flex:0 1 8%;aspect-ratio:1/1;max-height:44px;display:flex;align-items:center;justify-content:center;border-radius:7px;font-size:clamp(10px,2.4vw,15px);font-weight:700;text-transform:uppercase;
+background:color-mix(in srgb,var(--fc,#888) 28%,var(--card));border:1px solid color-mix(in srgb,var(--fc,#888) 60%,var(--line))}
+.k.mod{--fc:#999;aspect-ratio:auto;text-transform:none;font-size:11px;flex:0 1 12%;max-height:none}
+.k.space{flex:0 1 44%;aspect-ratio:auto;height:32px}
+.k.on{background:var(--fc);color:#111;box-shadow:0 0 0 3px var(--indigo);transform:scale(1.1);z-index:2;animation:pl .7s infinite alternate}
+.k.bad{background:var(--coral);color:#fff}
+@keyframes pl{to{transform:scale(1.2)}}
+.nb{margin-top:10px;padding:13px 20px;border:none;border-radius:12px;background:var(--indigo);color:var(--onind);font-weight:800;font-size:15px}
+.nb.alt{background:var(--teal);color:#fff}.nb.ghost{background:transparent;border:2px solid var(--line);color:var(--ink)}
+.btns{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:8px}
+.big{font-size:56px}
+canvas{display:block;width:100%;border-radius:14px;background:#0b1030;touch-action:none}
+.hud{display:flex;justify-content:space-between;font-weight:800;margin-bottom:6px;font-size:15px}
+.lane{display:flex;align-items:center;gap:8px;margin:6px 0}.lane .ln{width:56px;font-size:12px;font-weight:700;opacity:.75}
+.lane.you .ln{opacity:1;color:var(--indigo)}
+.road{position:relative;flex:1;height:34px;border-radius:8px;background:repeating-linear-gradient(90deg,var(--line) 0 18px,transparent 18px 36px) center/100% 2px no-repeat,var(--bg);border:1px solid var(--line)}
+.car{position:absolute;left:0;top:0;font-size:26px;line-height:34px;transform:scaleX(1);transition:left .08s linear}
+.flag{position:absolute;right:2px;top:0;font-size:22px;line-height:34px}
+.cd{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:72px;font-weight:900;color:var(--indigo);background:color-mix(in srgb,var(--card) 70%,transparent);border-radius:18px}
+.note{font-size:12.5px;opacity:.65;line-height:1.45;margin-top:18px}
+</style></head><body>
+<div class="wrap" id="app"></div>
+<script>
+'use strict';
+const app=document.getElementById('app'),$=s=>document.querySelector(s);
+const esc=t=>String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+const rnd=n=>Math.floor(Math.random()*n),pick=a=>a[rnd(a.length)];
+const stars=n=>'★'.repeat(n)+'☆'.repeat(3-n);
+
+/* ---------- saved progress (one profile per child) ---------- */
+const NAMES=['Winston','Evelyn','Levin'];
+let DB={cur:'Winston',sound:true,kb:true,p:{}};
+try{const j=JSON.parse(localStorage.getItem('ty_v1')||'null');if(j&&typeof j==='object')DB=Object.assign(DB,j)}catch(e){}
+DB.p=DB.p||{};NAMES.forEach(n=>{DB.p[n]=Object.assign({stars:{},best:{},unlock:false},DB.p[n]||{})});if(!NAMES.includes(DB.cur))DB.cur=NAMES[0];
+const save=()=>{try{localStorage.setItem('ty_v1',JSON.stringify(DB))}catch(e){}};
+const P=()=>DB.p[DB.cur];
+
+/* ---------- sound ---------- */
+let AC=null;
+function beep(f,d,type,v,when){if(!DB.sound)return;try{AC=AC||new(window.AudioContext||window.webkitAudioContext)();const o=AC.createOscillator(),g=AC.createGain(),t=AC.currentTime+(when||0);o.type=type||'sine';o.frequency.value=f;g.gain.setValueAtTime(v||.04,t);g.gain.exponentialRampToValueAtTime(.0001,t+d);o.connect(g);g.connect(AC.destination);o.start(t);o.stop(t+d+.02)}catch(e){}}
+const tick=()=>beep(700,.04,'triangle',.02),bad=()=>beep(150,.12,'sawtooth',.03);
+const win=()=>[523,659,784,1047].forEach((f,i)=>beep(f,.18,'triangle',.05,i*.11));
+
+/* ---------- fingers and keyboard ---------- */
+const FCOL=['#e76f8a','#f4a340','#e9c46a','#2fb49f','#4c8df6','#9b6bd6','#e0605a','#8a8f9c'];
+const FNAME=['left pinky','left ring finger','left middle finger','left pointer finger','right pointer finger','right middle finger','right ring finger','right pinky'];
+const FR={};[['qaz1',0],['wsx2',1],['edc3',2],['rfvtgb45',3],['yhnujm67',4],['ik,8',5],['ol.9',6],["p;/0'",7]].forEach(([s,f])=>[...s].forEach(c=>FR[c]=f));
+const SHIFTED={'!':'1','?':'/'};
+let KE={};
+function kbHTML(){
+ const key=c=>`<span class="k" data-k="${c}" style="--fc:var(--f${FR[c]})">${c}</span>`;
+ const row=(m,keys,extra)=>`<div class="kr" style="margin-left:${m}%">${extra||''}${[...keys].map(key).join('')}</div>`;
+ return '<div class="kb">'+row(0,'1234567890')+row(4,'qwertyuiop')+row(6,`asdfghjkl;'`)+
+  row(0,'zxcvbnm,./','<span class="k mod" data-k="ShiftL">shift</span>').replace(/<\/div>$/,'<span class="k mod" data-k="ShiftR">shift</span></div>')+
+  '<div class="kr" style="margin-left:22%"><span class="k mod space" data-k=" ">space</span></div></div>'}
+function mapKeys(){KE={};document.querySelectorAll('.kb .k').forEach(k=>KE[k.dataset.k]=k)}
+function hintFor(ch){
+ document.querySelectorAll('.k.on').forEach(k=>k.classList.remove('on'));
+ if(ch===undefined)return '';
+ if(ch===' '){if(KE[' '])KE[' '].classList.add('on');return 'Press the <b>space bar</b> with your thumb'}
+ let base=ch,shift=false;
+ if(/[A-Z]/.test(ch)){base=ch.toLowerCase();shift=true}else if(SHIFTED[ch]){base=SHIFTED[ch];shift=true}
+ const f=FR[base];let txt='';
+ if(f!==undefined){txt=`<i class="dot" style="background:var(--f${f})"></i>Use your <b>${FNAME[f]}</b>`;if(shift)txt+=` and hold <b>shift</b> with your ${f>=4?'left':'right'} pinky`}
+ if(KE[base])KE[base].classList.add('on');
+ if(shift&&f!==undefined){const s=KE[f>=4?'ShiftL':'ShiftR'];if(s)s.classList.add('on')}
+ return txt}
+function badKey(ch){bad();const k=KE[String(ch).toLowerCase()];if(k){k.classList.add('bad');later(()=>k.classList.remove('bad'),250)}}
+function paint(el,str){el.innerHTML=[...str].map(c=>`<span>${esc(c)}</span>`).join('')}
+function curAt(el,i){const cs=el.children;if(i>0&&cs[i-1])cs[i-1].className='ok';if(cs[i])cs[i].className='cur'}
+
+/* ---------- word and sentence banks ---------- */
+const BANK=[...new Set(`add ads dad dads fad fads sad ask asks all alas fall falls flask salad lad lads lass glass glad flag flags half hall halls hash dash gash lash shall flash slash gas has had gal gals sag sags lag lags
+the and for you are but not can her was one our out day get him his how man new now old see two way who boy did let put say she too use mom sun run fun big dog cat pig hat bat red bed top toy pot cup bus car box fox pen ten hen men yes yet wet net jet map cap lap nap zip zoo van vet web win wig sit hit kid lid pit rip sip tip lip hip dip fix mix six jam ham yam ram dam gum sum hum bug rug mug hug jug tub cub rub fan pan tan ran ant arm art egg ear eat end ice ink air aim
+that with have this will your from they know want been good much some time very when come here just like long make many more only over such take than them well were what jump play look book cook hook rock sock lock fish dish wish wash cash rush push bush bike kite lake cake game name same home hope rope nose rose road boat coat goat moon soon room food pool cool tool fool tree free seen green queen rain train plane paint happy puppy funny sunny bunny jelly berry cherry lemon melon apple grape peach pizza bread water juice candy cookie
+house mouse horse zebra tiger panda koala snake whale shark eagle robin frog duck bird bear lion wolf deer crab ship truck robot space star comet earth planet friend family school teacher reading writing`.split(/\s+/))];
+const SENT=['The cat sat on the mat.','I like to play outside.','Max has a red kite.','We can run and jump.','Is it time for lunch?','What a fun day!','My dog likes to swim.','Look at the big moon.','The sun is very hot.','Can you see the stars?','Mom made a tasty pizza.',"Let's go to the park!",'Ava and Ben ride bikes.',
+'The quick brown fox jumps over the lazy dog.','Our class has a small garden behind the school.','After lunch, we played tag on the field.','Typing is a skill that gets better with practice.','Do you want to build a snowman with me?','The brave turtle walked slowly up the hill.','My family went to the beach on Saturday.','A little bird sang a song in the tall tree.','Please put your books on the shelf, then wash up.','Dinosaurs lived on Earth millions of years ago.','The rocket zoomed past the moon and the stars.','Which pizza topping do you like the best?','We saw a huge whale jump out of the water!','Winter is cold, but hot cocoa makes it better.'];
+const SHORT=SENT.filter(s=>s.length<=36),LONG=SENT.filter(s=>s.length>36);
+const LETTERS={home:'asdfghjkl',top:'qwertyuiop',bottom:'zxcvbnm',all:'abcdefghijklmnopqrstuvwxyz'};
+const wordsFor=set=>{const ok=set==='home'?'asdfghjkl':set==='top'?'asdfghjkleiruqwtyop':LETTERS.all;return BANK.filter(w=>w.length>=3&&w.length<=7&&[...w].every(c=>ok.includes(c)))};
+
+/* ---------- lessons ---------- */
+const LESSONS=[
+ {id:'L1',name:'Home Row: Left Hand',emoji:'🏠',desc:'Rest fingers on A S D F',keys:'asdf',all:'asdf'},
+ {id:'L2',name:'Home Row: Right Hand',emoji:'🏡',desc:'Add J K L ;',keys:'jkl;',all:'asdfjkl;'},
+ {id:'L3',name:'Home Row: G and H',emoji:'🎯',desc:'Reach your pointer fingers',keys:'gh',all:'asdfghjkl;'},
+ {id:'L4',name:'Top Row: E I R U',emoji:'⬆️',desc:'Reach up and come back home',keys:'eiru',all:'asdfghjkl;eiru'},
+ {id:'L5',name:'Top Row: T Y W O Q P',emoji:'🚀',desc:'The rest of the top row',keys:'tywoqp',all:'asdfghjkl;eiruqwtyop'},
+ {id:'L6',name:'Bottom Row',emoji:'⬇️',desc:'Z X C V B N M',keys:'zxcvbnm',all:LETTERS.all+';'},
+ {id:'L7',name:'Capitals and Punctuation',emoji:'✨',desc:'Shift key, periods, commas, ? and !',type:'short'},
+ {id:'L8',name:'Sentence Sprint',emoji:'🏁',desc:'Longer sentences, all keys',type:'long'}];
+function drill(keys){const k=[...keys],out=[];let len=0;for(let t=0;t<40;t++){let w='';const n=2+rnd(2);for(let i=0;i<n;i++)w+=pick(k);if(len+w.length*2+2>28)break;out.push(w,w);len+=w.length*2+2}return out.join(' ')}
+function makeLines(L){
+ const take=(a,n)=>{const x=a.slice(),o=[];while(o.length<n&&x.length)o.push(x.splice(rnd(x.length),1)[0]);return o};
+ if(L.type==='short')return take(SHORT,6);
+ if(L.type==='long')return take(LONG,5);
+ const cand=BANK.filter(w=>[...w].every(c=>L.all.includes(c))),pool=cand.filter(w=>[...w].some(c=>L.keys.includes(c)));
+ const lines=[drill(L.keys),drill(L.keys)];
+ for(let i=0;i<5;i++){const src=pool.length>=4?pool:cand,line=[];let len=0;
+  for(let t=0;t<60;t++){const w=pick(src);if(line.includes(w)&&src.length>8)continue;if(len+w.length+(len?1:0)>30)continue;line.push(w);len+=w.length+(len?1:0);if(line.length>=5||len>=22)break}
+  lines.push(line.length>=3?line.join(' '):drill(L.keys))}
+ return lines}
+
+/* ---------- screen control ---------- */
+let handler=null,raf=0,timers=[],mode='menu',S=null,R=null,RN=null,PB=null;
+const later=(fn,ms)=>{const t=setTimeout(fn,ms);timers.push(t);return t};
+function stop(){cancelAnimationFrame(raf);raf=0;timers.forEach(clearTimeout);timers=[];handler=null}
+addEventListener('keydown',e=>{
+ if(e.ctrlKey||e.metaKey||e.altKey)return;
+ if(e.key==='Escape'&&mode!=='menu'){menu();return}
+ if(!handler)return;
+ if(e.key.length===1)e.preventDefault();
+ if(e.repeat)return;
+ handler(e)});
+
+/* ---------- menu ---------- */
+const OPT={rain:{set:'home',speed:'normal'},pop:{set:'home'},race:{lvl:'rookie'}};
+function menu(){
+ stop();mode='menu';const p=P(),total=Object.values(p.stars).reduce((a,b)=>a+b,0);
+ const bestRain=Math.max(0,...Object.keys(p.best).filter(k=>k.startsWith('rain_')).map(k=>p.best[k])),
+  bestPop=Math.max(0,...Object.keys(p.best).filter(k=>k.startsWith('pop_')).map(k=>p.best[k])),
+  bestRace=Math.min(9,...Object.keys(p.best).filter(k=>k.startsWith('race_')).map(k=>p.best[k]));
+ let h=`<h1>⌨️ Typing Quest</h1><p class="sub">Learn to type with all ten fingers. Needs a real keyboard (a laptop or desktop works best).</p>
+ <div class="pills">${NAMES.map(n=>`<button class="pill ${n===DB.cur?'on':''}" data-a="prof" data-v="${n}">${n}</button>`).join('')}</div>
+ <div class="tip">🧘 <b>Before you start:</b> sit tall, keep your wrists floating, rest your pointer fingers on the bumps on <b>F</b> and <b>J</b>, and look at the screen, not your hands. A little every day (10 to 15 minutes) beats one long session. <b>Accuracy first, speed later.</b> ⭐ ${total} stars so far.</div>
+ <h2>Learn the keys</h2><div class="grid">`;
+ LESSONS.forEach((L,i)=>{const s=p.stars[L.id]||0,lock=i>0&&!(p.stars[LESSONS[i-1].id]>0)&&!p.unlock;
+  h+=`<button class="card ${lock?'lock':''}" data-a="lesson" data-v="${i}" ${lock?'disabled':''}><span class="ic">${lock?'🔒':L.emoji}</span><b>${i+1}. ${L.name}</b><small>${L.desc}</small><span class="st">${stars(s)}</span></button>`});
+ h+=`</div><h2>Play games</h2><div class="grid">
+ <button class="card game" data-a="setup" data-v="pop"><span class="ic">🎈</span><b>Balloon Pop</b><small>Pop letter balloons. Colors show which finger to use. Great for beginners.</small><small>${bestPop?'Best: '+stars(bestPop):''}</small></button>
+ <button class="card game" data-a="setup" data-v="rain"><span class="ic">🚀</span><b>Word Rain</b><small>Zap falling words before they land. Gets faster each level.</small><small>${bestRain?'Best score: '+bestRain:''}</small></button>
+ <button class="card game" data-a="setup" data-v="race"><span class="ic">🏎️</span><b>Turbo Race</b><small>Type a sentence to drive your car and beat the bots.</small><small>${bestRace<9?'Best place: '+bestRace:''}</small></button></div>
+ <div class="pills" style="margin-top:20px"><button class="pill" data-a="sound">Sound: ${DB.sound?'on':'off'}</button><button class="pill" data-a="kb">Keyboard guide: ${DB.kb?'on':'off'}</button><button class="pill" data-a="unlock">${p.unlock?'Lock lessons again':'Parent: unlock all lessons'}</button></div>
+ <p class="note">Each lesson unlocks the next one when you earn at least 1 star (85% accuracy). Press Esc any time to go back to this menu. Progress is saved in this browser for each child.</p>`;
+ app.innerHTML=h}
+
+function setup(g){
+ stop();mode='setup';const D=SETUPS[g],o=OPT[g];
+ app.innerHTML=`<div class="top"><button class="back" data-a="menu">← Menu</button><b>${D.title}</b><span></span></div><div class="stage"><p>${D.blurb}</p>
+ ${D.groups.map(gr=>`<div class="small" style="margin-top:8px">${gr.label}</div><div class="pills">${gr.o.map(x=>`<button class="pill ${o[gr.k]===x[0]?'on':''}" data-a="opt" data-g="${g}" data-k="${gr.k}" data-v="${x[0]}">${x[1]}</button>`).join('')}</div>`).join('')}
+ <div class="c"><button class="nb" data-a="start" data-v="${g}">▶ Play</button></div></div>`}
+
+/* ---------- lesson play ---------- */
+function lesson(i){
+ stop();mode='lesson';const L=LESSONS[i];S={i,L,lines:makeLines(L),li:0,ci:0,good:0,err:0,total:0,t0:0,line:''};
+ app.innerHTML=`<div class="top"><button class="back" data-a="menu">← Menu</button><b>${i+1}. ${esc(L.name)}</b><span id="prog" class="small"></span></div>
+ <div class="stage"><div id="line" class="line"></div><div id="hint" class="hint"></div><div id="stat" class="small c"></div></div>${DB.kb?kbHTML():''}
+ <p class="small c" style="margin-top:12px">Start typing. Wrong keys do not move you on, so just try again.</p>`;
+ mapKeys();setLine();handler=lessonKey}
+function setLine(){S.line=S.lines[S.li];S.ci=0;const el=$('#line');paint(el,S.line);curAt(el,0);$('#hint').innerHTML=hintFor(S.line[0]);$('#prog').textContent=`Line ${S.li+1} of ${S.lines.length}`}
+function liveStat(o){const m=Math.max(.05,(performance.now()-o.t0)/60000);$('#stat').textContent=o.total?`${Math.round(o.good/o.total*100)}% accuracy · ${Math.round(o.good/5/m)} words per minute`:''}
+function lessonKey(e){
+ const ch=e.key;if(ch.length!==1)return;if(!S.t0)S.t0=performance.now();S.total++;const want=S.line[S.ci],el=$('#line');
+ if(ch===want){S.good++;S.ci++;tick();
+  if(S.ci>=S.line.length){S.li++;if(S.li>=S.lines.length)return finishLesson();setLine()}
+  else{curAt(el,S.ci);$('#hint').innerHTML=hintFor(S.line[S.ci])}}
+ else{S.err++;badKey(ch);const c=el.children[S.ci];c.classList.add('no');later(()=>c.classList.remove('no'),250);
+  if(e.getModifierState&&e.getModifierState('CapsLock'))$('#hint').innerHTML='⚠️ <b>Caps Lock</b> is on. Press it once to turn it off.'}
+ liveStat(S)}
+function finishLesson(){
+ stop();const m=Math.max(.05,(performance.now()-S.t0)/60000),wpm=Math.round(S.good/5/m),acc=Math.round(S.good/S.total*100);
+ const st=acc>=97?3:acc>=92?2:acc>=85?1:0,p=P();if(st>(p.stars[S.L.id]||0))p.stars[S.L.id]=st;save();
+ st?win():bad();
+ const msg=st===3?'Super accurate! Try a game next.':st===2?'Great job! A few slips. Aim for 97% or more for 3 stars.':st===1?'Nice! You passed. Slow down a bit to get more stars.':'Slow down a little. Hitting the right key matters more than going fast.';
+ const hasNext=st>0&&S.i+1<LESSONS.length;
+ app.innerHTML=`<div class="stage c"><div class="big">${st?'🎉':'💪'}</div><h2>${st?'Lesson complete!':'Almost there!'}</h2><div class="stars">${stars(st)}</div>
+ <p><b>${acc}%</b> accuracy · <b>${wpm}</b> words per minute</p><p class="small">${msg}</p>
+ <div class="btns">${hasNext?`<button class="nb" data-a="lesson" data-v="${S.i+1}">Next lesson →</button>`:''}<button class="nb ${hasNext?'ghost':''}" data-a="lesson" data-v="${S.i}">Try again</button><button class="nb ghost" data-a="menu">Menu</button></div></div>`}
+
+/* ---------- Turbo Race ---------- */
+const BOTS={rookie:[['Zippy','🚙',5],['Turbo','🚕',7],['Blaze','🚓',9]],racer:[['Zippy','🚙',10],['Turbo','🚕',14],['Blaze','🚓',18]],pro:[['Zippy','🚙',18],['Turbo','🚕',25],['Blaze','🚓',32]]};
+function passage(max){for(let t=0;t<300;t++){const a=pick(SENT),b=pick(SENT);if(a===b)continue;const s=a+' '+b;if(s.length>=55&&s.length<=max)return s}return pick(SHORT)+' '+pick(SHORT)}
+const carLeft=p=>`calc((100% - 34px) * ${p})`;
+function race(){
+ stop();mode='race';const lvl=OPT.race.lvl,bots=BOTS[lvl].map(b=>({n:b[0],e:b[1],cps:b[2]*5/60,p:0})),text=passage(lvl==='rookie'?75:95);
+ R={text,i:0,good:0,err:0,total:0,go:false,done:false,t0:0,bots,lvl};
+ const lane=(n,e,id,you)=>`<div class="lane ${you?'you':''}"><span class="ln">${n}</span><div class="road"><span class="car" id="${id}">${e}</span><span class="flag">🏁</span></div></div>`;
+ app.innerHTML=`<div class="top"><button class="back" data-a="menu">← Menu</button><b>🏎️ Turbo Race</b><span></span></div>
+ <div class="stage" style="position:relative">${lane('You','🏎️','cy',1)}${bots.map((b,i)=>lane(b.n,b.e,'cb'+i)).join('')}<div id="cd" class="cd">3</div></div>
+ <div class="stage"><div id="line" class="line"></div><div id="hint" class="hint"></div><div id="stat" class="small c"></div></div>${DB.kb?kbHTML():''}`;
+ mapKeys();paint($('#line'),text);curAt($('#line'),0);$('#hint').innerHTML=hintFor(text[0]);
+ let n=3;const cd=()=>{if(n>0){$('#cd').textContent=n;beep(440,.12,'square',.03);n--;later(cd,800)}else{$('#cd').textContent='GO!';beep(880,.3,'square',.04);R.go=true;R.t0=performance.now();later(()=>{$('#cd').style.display='none'},600);raf=requestAnimationFrame(rloop)}};
+ cd();handler=raceKey}
+function rloop(){
+ if(R.done)return;const el=(performance.now()-R.t0)/1000;
+ R.bots.forEach((b,i)=>{b.p=Math.min(1,el*b.cps/R.text.length);$('#cb'+i).style.left=carLeft(b.p)});
+ liveStat(R);raf=requestAnimationFrame(rloop)}
+function raceKey(e){
+ if(!R.go||R.done)return;const ch=e.key;if(ch.length!==1)return;R.total++;const want=R.text[R.i],el=$('#line');
+ if(ch===want){R.good++;R.i++;tick();$('#cy').style.left=carLeft(R.i/R.text.length);
+  if(R.i>=R.text.length)return raceEnd();
+  curAt(el,R.i);$('#hint').innerHTML=hintFor(R.text[R.i])}
+ else{R.err++;badKey(ch);const c=el.children[R.i];c.classList.add('no');later(()=>c.classList.remove('no'),250)}}
+function raceEnd(){
+ R.done=true;cancelAnimationFrame(raf);const secs=(performance.now()-R.t0)/1000,wpm=Math.round(R.text.length/5/(secs/60)),acc=Math.round(R.good/R.total*100);
+ const el=secs;R.bots.forEach(b=>b.p=Math.min(1,el*b.cps/R.text.length));
+ const place=1+R.bots.filter(b=>b.p>=1).length,p=P(),k='race_'+R.lvl;if(!p.best[k]||place<p.best[k])p.best[k]=place;save();
+ place===1?win():bad();
+ later(()=>{app.innerHTML=`<div class="stage c"><div class="big">${['','🥇','🥈','🥉','4️⃣'][place]}</div><h2>${['','You won!','2nd place!','3rd place!','4th place'][place]}</h2>
+ <p><b>${wpm}</b> words per minute · <b>${acc}%</b> accuracy · ${Math.round(secs)} seconds</p><p class="small">${place===1?'Try a harder set of opponents next time!':'Keep your accuracy high. Every mistake slows your car down.'}</p>
+ <div class="btns"><button class="nb" data-a="start" data-v="race">Race again</button><button class="nb ghost" data-a="setup" data-v="race">Change opponents</button><button class="nb ghost" data-a="menu">Menu</button></div></div>`},700)}
+
+/* ---------- shared canvas bits ---------- */
+const CW=720,CH=420;
+function burst(arr,x,y,col,n){for(let i=0;i<(n||14);i++){const a=Math.random()*6.283,s=40+Math.random()*120;arr.push({x,y,vx:Math.cos(a)*s,vy:Math.sin(a)*s,l:.6+Math.random()*.3,c:col})}}
+function drawParts(g,arr,dt){for(let i=arr.length-1;i>=0;i--){const p=arr[i];p.l-=dt;if(p.l<=0){arr.splice(i,1);continue}p.x+=p.vx*dt;p.y+=p.vy*dt;p.vy+=200*dt;g.globalAlpha=Math.max(0,p.l);g.fillStyle=p.c;g.fillRect(p.x,p.y,4,4)}g.globalAlpha=1}
+const dummyStars=()=>Array.from({length:50},()=>[Math.random()*CW,Math.random()*CH,.2+Math.random()*.6]);
+
+/* ---------- Word Rain ---------- */
+function rain(){
+ stop();mode='rain';const o=OPT.rain,pool=wordsFor(o.set),sp={chill:.7,normal:1,fast:1.4}[o.speed];
+ app.innerHTML=`<div class="top"><button class="back" data-a="menu">← Menu</button><b>🚀 Word Rain</b><span class="small">Esc to quit</span></div>
+ <div class="hud"><span id="hs">Score 0</span><span id="hl"></span><span id="hv">Level 1</span></div><canvas id="cv" width="${CW}" height="${CH}"></canvas>
+ <p class="small c">Type a word letter by letter. Wrong keys never cost you a life, only words that land do.</p>`;
+ const g=$('#cv').getContext('2d');g.font='bold 26px ui-monospace,Menlo,Consolas,monospace';
+ RN={g,pool,sp,words:[],parts:[],lasers:[],bg:dummyStars(),score:0,lives:5,level:1,cleared:0,lock:null,good:0,total:0,t:0,spawn:.4,over:false,streak:0,last:0,cw:g.measureText('M').width,key:'rain_'+o.set+'_'+o.speed};
+ hud();handler=rainKey;raf=requestAnimationFrame(rloop2)}
+function hud(){$('#hs').textContent='Score '+RN.score;$('#hl').textContent='❤️'.repeat(Math.max(0,RN.lives))+'🖤'.repeat(Math.max(0,5-RN.lives));$('#hv').textContent='Level '+RN.level}
+function spawnWord(){
+ const live=RN.words.map(w=>w.txt);let txt=pick(RN.pool),t=0;while(live.includes(txt)&&t++<20)txt=pick(RN.pool);
+ const w=txt.length*RN.cw+16;for(let t=0;t<12;t++){const x=10+Math.random()*(CW-w-20);if(RN.words.every(o=>o.y>80||x+w<o.x-8||x>o.x+o.w+8)){RN.words.push({txt,x,y:-20,w,n:0});return}}}
+function rloop2(ts){
+ if(RN.over)return;const dt=Math.min(.05,((ts-RN.last)/1000)||0);RN.last=ts;RN.t+=dt;
+ const vy=26*RN.sp*(1+.1*(RN.level-1));RN.spawn-=dt;
+ if(RN.spawn<=0){spawnWord();RN.spawn=Math.max(1.2,3.2-.15*RN.level)/Math.sqrt(RN.sp)}
+ for(let i=RN.words.length-1;i>=0;i--){const w=RN.words[i];w.y+=vy*dt;
+  if(w.y>CH-62){RN.words.splice(i,1);if(RN.lock===w)RN.lock=null;RN.lives--;RN.streak=0;burst(RN.parts,w.x+w.w/2,CH-50,'#ff6b4a',18);beep(120,.25,'sawtooth',.05);hud();if(RN.lives<=0)return rainOver()}}
+ rdraw(dt);raf=requestAnimationFrame(rloop2)}
+function rdraw(dt){
+ const g=RN.g,gr=g.createLinearGradient(0,0,0,CH);gr.addColorStop(0,'#0b1030');gr.addColorStop(1,'#25306a');g.fillStyle=gr;g.fillRect(0,0,CW,CH);
+ RN.bg.forEach(s=>{g.fillStyle='rgba(255,255,255,'+s[2]+')';g.fillRect(s[0],s[1],2,2)});
+ g.fillStyle='#161c47';g.fillRect(0,CH-46,CW,46);g.strokeStyle='rgba(255,107,74,.5)';g.setLineDash([8,8]);g.beginPath();g.moveTo(0,CH-62);g.lineTo(CW,CH-62);g.stroke();g.setLineDash([]);
+ g.font='34px serif';g.textAlign='center';g.textBaseline='alphabetic';g.fillText('🚀',CW/2,CH-10);
+ g.font='bold 26px ui-monospace,Menlo,Consolas,monospace';g.textBaseline='middle';g.textAlign='left';
+ RN.words.forEach(w=>{g.fillStyle=RN.lock===w?'rgba(94,234,212,.22)':'rgba(255,255,255,.1)';g.fillRect(w.x,w.y-18,w.w,36);
+  const a=w.txt.slice(0,w.n),b=w.txt.slice(w.n);g.fillStyle='#5eead4';g.fillText(a,w.x+8,w.y);g.fillStyle='#fff';g.fillText(b,w.x+8+a.length*RN.cw,w.y)});
+ for(let i=RN.lasers.length-1;i>=0;i--){const l=RN.lasers[i];l.t-=dt;if(l.t<=0){RN.lasers.splice(i,1);continue}g.strokeStyle='rgba(94,234,212,'+l.t/.15+')';g.lineWidth=3;g.beginPath();g.moveTo(CW/2,CH-34);g.lineTo(l.x,l.y);g.stroke()}
+ drawParts(g,RN.parts,dt)}
+function rainKey(e){
+ if(RN.over)return;const ch=e.key.toLowerCase();if(!/^[a-z]$/.test(ch))return;RN.total++;
+ const kill=w=>{RN.words.splice(RN.words.indexOf(w),1);RN.lock=null;RN.streak++;RN.score+=w.txt.length*10+Math.min(5,RN.streak)*5;RN.cleared++;RN.level=1+Math.floor(RN.cleared/8);
+  RN.lasers.push({x:w.x+w.w/2,y:w.y,t:.15});burst(RN.parts,w.x+w.w/2,w.y,'#5eead4',16);beep(900,.12,'triangle',.05);hud()};
+ if(RN.lock){const w=RN.lock;if(w.txt[w.n]===ch){w.n++;RN.good++;tick();if(w.n>=w.txt.length)kill(w)}else{bad();RN.streak=0}}
+ else{const c=RN.words.filter(w=>w.txt[0]===ch);
+  if(c.length){const w=c.sort((a,b)=>b.y-a.y)[0];RN.lock=w;w.n=1;RN.good++;tick();if(w.txt.length===1)kill(w)}else{bad();RN.streak=0}}}
+function rainOver(){
+ RN.over=true;cancelAnimationFrame(raf);const p=P(),isBest=RN.score>(p.best[RN.key]||0);if(isBest)p.best[RN.key]=RN.score;save();
+ const wpm=Math.round(RN.good/5/Math.max(.05,RN.t/60)),acc=RN.total?Math.round(RN.good/RN.total*100):0;bad();
+ app.innerHTML=`<div class="stage c"><div class="big">💥</div><h2>Game over</h2><p class="stars" style="font-size:24px">Score ${RN.score}</p>${isBest?'<p><b>🎉 New best score!</b></p>':''}
+ <p><b>${RN.cleared}</b> words · level <b>${RN.level}</b> · <b>${acc}%</b> accuracy · <b>${wpm}</b> words per minute</p>
+ <div class="btns"><button class="nb" data-a="start" data-v="rain">Play again</button><button class="nb ghost" data-a="setup" data-v="rain">Change settings</button><button class="nb ghost" data-a="menu">Menu</button></div></div>`}
+
+/* ---------- Balloon Pop ---------- */
+function pop(){
+ stop();mode='pop';const set=OPT.pop.set;
+ app.innerHTML=`<div class="top"><button class="back" data-a="menu">← Menu</button><b>🎈 Balloon Pop</b><span class="small">Esc to quit</span></div>
+ <div class="hud"><span id="ps">Popped 0 / 30</span><span id="pe">Escaped 0</span></div><canvas id="cv" width="${CW}" height="${CH}"></canvas><div id="hint" class="hint"></div>
+ <p class="small c">Balloon colors match fingers. Same color, same finger!</p>`;
+ const g=$('#cv').getContext('2d');
+ PB={g,set,letters:[...LETTERS[set]],balloons:[],parts:[],popped:0,esc:0,goal:30,spawn:.3,last:0,over:false,good:0,total:0,t:0};
+ handler=popKey;raf=requestAnimationFrame(ploop)}
+function ploop(ts){
+ if(PB.over)return;const dt=Math.min(.05,((ts-PB.last)/1000)||0);PB.last=ts;PB.t+=dt;const g=PB.g;
+ PB.spawn-=dt;
+ if(PB.spawn<=0&&PB.balloons.length<7){const ch=pick(PB.letters),r=30;PB.balloons.push({ch,x:50+Math.random()*(CW-100),y:CH+40,vy:-(34+Math.random()*18)*(1+PB.popped*.012),r,sway:Math.random()*6});PB.spawn=1.1+Math.random()*.7}
+ for(let i=PB.balloons.length-1;i>=0;i--){const b=PB.balloons[i];b.y+=b.vy*dt;if(b.y<-50){PB.balloons.splice(i,1);PB.esc++;beep(160,.15,'sawtooth',.03);$('#pe').textContent='Escaped '+PB.esc}}
+ const gr=g.createLinearGradient(0,0,0,CH);gr.addColorStop(0,'#7cc6ff');gr.addColorStop(1,'#d8f1ff');g.fillStyle=gr;g.fillRect(0,0,CW,CH);
+ g.textAlign='center';g.textBaseline='middle';
+ PB.balloons.forEach(b=>{const x=b.x+Math.sin(PB.t*1.5+b.sway)*10,col=FCOL[FR[b.ch]];g.strokeStyle='rgba(60,60,80,.5)';g.lineWidth=1.5;g.beginPath();g.moveTo(x,b.y+b.r*1.2);g.lineTo(x+Math.sin(PB.t*2+b.sway)*6,b.y+b.r*2.4);g.stroke();
+  g.fillStyle=col;g.beginPath();g.ellipse(x,b.y,b.r,b.r*1.2,0,0,6.283);g.fill();g.fillStyle='rgba(255,255,255,.35)';g.beginPath();g.ellipse(x-b.r*.35,b.y-b.r*.45,b.r*.2,b.r*.35,.5,0,6.283);g.fill();
+  g.fillStyle='#111';g.font='bold 30px ui-monospace,Menlo,Consolas,monospace';g.fillText(b.ch.toUpperCase(),x,b.y+2);b.dx=x});
+ drawParts(g,PB.parts,dt);
+ const top=PB.balloons.slice().sort((a,b)=>a.y-b.y)[0];$('#hint').innerHTML=top?`<i class="dot" style="background:var(--f${FR[top.ch]})"></i>${top.ch.toUpperCase()}: use your <b>${FNAME[FR[top.ch]]}</b>`:'';
+ raf=requestAnimationFrame(ploop)}
+function popKey(e){
+ if(PB.over)return;const ch=e.key.toLowerCase();if(!/^[a-z]$/.test(ch))return;PB.total++;
+ const c=PB.balloons.filter(b=>b.ch===ch).sort((a,b)=>a.y-b.y);
+ if(!c.length){bad();return}
+ const b=c[0];PB.balloons.splice(PB.balloons.indexOf(b),1);PB.good++;PB.popped++;burst(PB.parts,b.dx||b.x,b.y,FCOL[FR[ch]],18);beep(500+rnd(400),.1,'triangle',.05);
+ $('#ps').textContent=`Popped ${PB.popped} / ${PB.goal}`;if(PB.popped>=PB.goal)popEnd()}
+function popEnd(){
+ PB.over=true;cancelAnimationFrame(raf);const st=PB.esc<=3?3:PB.esc<=8?2:1,p=P(),k='pop_'+PB.set;if(st>(p.best[k]||0))p.best[k]=st;save();win();
+ const acc=Math.round(PB.good/PB.total*100);
+ app.innerHTML=`<div class="stage c"><div class="big">🎈</div><h2>You popped them all!</h2><div class="stars">${stars(st)}</div><p><b>${PB.esc}</b> escaped · <b>${acc}%</b> accuracy · <b>${Math.round(PB.t)}</b> seconds</p>
+ <p class="small">${st===3?'Amazing! Try a bigger set of letters.':'Fewer than 4 escapes earns 3 stars.'}</p>
+ <div class="btns"><button class="nb" data-a="start" data-v="pop">Play again</button><button class="nb ghost" data-a="setup" data-v="pop">Change letters</button><button class="nb ghost" data-a="menu">Menu</button></div></div>`}
+
+/* ---------- setup definitions and click routing ---------- */
+const SETUPS={
+ pop:{title:'🎈 Balloon Pop',blurb:'Press the letter on each balloon to pop it. Pop 30 balloons to win. Fewer than 4 escapes earns 3 stars.',groups:[{k:'set',label:'Letters',o:[['home','Home row'],['top','Top row'],['bottom','Bottom row'],['all','All letters']]}],go:pop},
+ rain:{title:'🚀 Word Rain',blurb:'Type the falling words before they land. You have 5 lives, and it speeds up every level.',groups:[{k:'set',label:'Words use',o:[['home','Home row'],['top','Home + top row'],['all','All letters']]},{k:'speed',label:'Speed',o:[['chill','Chill'],['normal','Normal'],['fast','Fast']]}],go:rain},
+ race:{title:'🏎️ Turbo Race',blurb:'Type the sentences to drive your car. Each correct key moves you forward. Mistakes do not move you, so accuracy wins races.',groups:[{k:'lvl',label:'Opponents',o:[['rookie','Rookie (5 to 9 words per minute)'],['racer','Racer (10 to 18)'],['pro','Pro (18 to 32)']]}],go:race}};
+app.addEventListener('click',e=>{
+ const b=e.target.closest('[data-a]');if(!b||b.disabled)return;const d=b.dataset;
+ switch(d.a){
+  case 'menu':menu();break;
+  case 'prof':DB.cur=d.v;save();menu();break;
+  case 'lesson':lesson(+d.v);break;
+  case 'setup':setup(d.v);break;
+  case 'opt':OPT[d.g][d.k]=d.v;setup(d.g);break;
+  case 'start':SETUPS[d.v].go();break;
+  case 'sound':DB.sound=!DB.sound;save();menu();break;
+  case 'kb':DB.kb=!DB.kb;save();menu();break;
+  case 'unlock':P().unlock=!P().unlock;save();menu();break}});
+menu();
+</script></body></html>

@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>4th Grade NJSLA Practice</title>
+<style>
+:root{--bg:#FBF7EC;--ink:#26304A;--card:#fff;--line:#E4DCC9;--indigo:#2B3A67;--coral:#FF6B4A;--teal:#2A9D8F;padding-top:env(safe-area-inset-top,0);padding-bottom:env(safe-area-inset-bottom,0)}
+@media(prefers-color-scheme:dark){:root{--bg:#1D2233;--ink:#F1ECDD;--card:#262B40;--line:#3A4159;--indigo:#F4C95D}}
+*{box-sizing:border-box}html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.wrap{max-width:640px;margin:0 auto;padding:20px 16px 40px}
+h1{font-size:21px;margin:0 0 2px;color:var(--indigo);line-height:1.25}.sub{font-size:14px;opacity:.7;margin:0 0 14px}
+button{font:inherit;cursor:pointer}
+.list{display:flex;flex-direction:column;gap:10px}
+.les{display:flex;flex-direction:column;align-items:flex-start;gap:2px;text-align:left;padding:14px 16px;border-radius:14px;border:2px solid var(--line);background:var(--card);color:var(--ink);font-size:16px;font-weight:600;width:100%}
+.les small{font-weight:400;opacity:.65;font-size:13px;line-height:1.35}
+.les:active{transform:scale(.99)}
+.les.big{border-color:var(--indigo)}
+.back{background:none;border:none;color:var(--indigo);font-weight:600;font-size:14px;padding:0 0 10px;cursor:pointer;text-decoration:none;display:inline-block}
+.stage{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px;margin-top:12px}
+.track{height:8px;border-radius:9px;background:var(--line);overflow:hidden;margin-bottom:14px}
+.fill{height:100%;background:var(--teal);transition:width .3s}
+.qn{font-size:12px;font-weight:700;color:var(--coral);margin-bottom:6px}
+.qt{font-size:17px;font-weight:600;line-height:1.45;margin:0 0 12px;white-space:pre-line}
+.pics{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 12px}
+.pic{padding:8px 10px;border:1px solid var(--line);border-radius:12px;background:var(--bg);font-size:20px;line-height:1.3}
+.pass{background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin:0 0 14px;font-size:15px;line-height:1.6;white-space:pre-line}
+.pass h4{margin:0 0 6px;font-size:15px;color:var(--indigo);white-space:normal}
+.opts{display:flex;flex-direction:column;gap:9px}
+.opt{display:flex;align-items:center;gap:10px;text-align:left;padding:12px 14px;border-radius:12px;border:2px solid var(--line);background:var(--card);color:var(--ink);font-size:16px;line-height:1.4}
+.lt{font-size:18px;min-width:26px;white-space:nowrap}
+.opt.sel{border-color:var(--indigo);background:rgba(128,128,128,.14)}
+.opt.ok{border-color:var(--teal);background:rgba(42,157,143,.16)}.opt.no{border-color:var(--coral);background:rgba(255,107,74,.16)}.opt.miss{border-color:var(--teal);border-style:dashed}
+input[type=text]{font:inherit;font-size:18px;padding:10px 12px;border-radius:10px;border:2px solid var(--line);background:var(--bg);color:var(--ink);width:100%;max-width:260px}
+textarea{font:inherit;font-size:15px;width:100%;min-height:110px;padding:10px;border-radius:10px;border:2px solid var(--line);background:var(--bg);color:var(--ink)}
+.f{display:flex;align-items:center;gap:10px;margin:9px 0;flex-wrap:wrap}
+.nb{margin-top:14px;width:100%;padding:13px;border:none;border-radius:12px;background:var(--indigo);color:#fff;font-weight:700;font-size:15px}
+@media(prefers-color-scheme:dark){.nb{color:#1D2233}}
+.nb.alt{background:var(--teal);color:#fff}.nb:disabled{opacity:.4}
+.nb.ghost{background:transparent;border:2px solid var(--line);color:var(--ink)}
+.fb{margin-top:12px;font-weight:600;font-size:14.5px;line-height:1.5}.good{color:var(--teal)}.bad{color:var(--coral)}
+.model{margin-top:10px;padding:10px 12px;border-radius:10px;background:var(--bg);border:1px dashed var(--line);font-size:14.5px;line-height:1.55}
+.row{display:flex;gap:8px;margin-top:10px}.pill{flex:1;padding:12px;border-radius:999px;border:2px solid var(--line);background:var(--card);color:var(--ink);font-weight:600}
+.navwrap{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:12px}.navbox{width:28px;height:28px;border-radius:7px;border:2px solid var(--line);background:var(--card);color:var(--ink);font-size:11px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0}.navbox.cur{border-color:var(--indigo);box-shadow:0 0 0 2px var(--indigo) inset}.navbox.done{background:var(--line);color:var(--ink);opacity:.75}.navbox.done.ok{background:rgba(42,157,143,.28);border-color:var(--teal);opacity:1}.navbox.done.no{background:rgba(255,107,74,.28);border-color:var(--coral);opacity:1}
+.revh{margin:22px 0 8px;font-size:16px;color:var(--indigo)}.rev{text-align:left}.ri{border:1px solid var(--line);border-left:6px solid var(--teal);border-radius:10px;padding:10px 12px;margin-bottom:8px;font-size:14px;line-height:1.45}.ri.nor{border-left-color:var(--coral)}.rh{font-weight:700}.mk{font-size:18px;font-weight:800}.okr .mk{color:var(--teal)}.nor .mk{color:var(--coral)}.rq{opacity:.7;margin:2px 0 4px}.rc{color:var(--teal)}
+.score{font-size:46px;font-weight:800;color:var(--indigo);text-align:center}.c{text-align:center}.small{font-size:13px;opacity:.7}
+.newbox{border:2px dashed var(--line);border-radius:14px;padding:12px;margin-bottom:6px;text-align:center}
+.newbox .nb{margin-top:0}
+.grp{margin:20px 0 8px;font-size:13px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--coral)}
+details.subj{margin-top:14px;border:2px solid var(--line);border-radius:14px;padding:0 12px 12px;background:var(--bg)}
+details.subj>summary{list-style:none;cursor:pointer;padding:14px 4px 12px;font-weight:800;font-size:17px;color:var(--indigo)}
+details.subj>summary::-webkit-details-marker{display:none}
+details.subj>summary::after{content:"▾";float:right;opacity:.6}
+details.subj[open]>summary::after{content:"▴"}
+details.subj>summary small{display:block;font-weight:400;font-size:13px;color:var(--ink);opacity:.65;margin-top:2px}
+.note{font-size:12.5px;opacity:.65;line-height:1.45;margin-top:18px}
+.fr{display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;line-height:1.15;font-size:.95em;margin:0 2px}
+.fr>span:first-child{border-bottom:2px solid currentColor;padding:0 3px}.fr>span:last-child{padding:0 3px}
+.opts svg,.pics svg{max-width:100%;height:auto}
+</style></head><body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><pattern id="stripe" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="8" stroke="var(--indigo)" stroke-width="3"/></pattern></defs></svg>
+<div class="wrap">
+<a class="back" id="up" href="../../">← Study Practice</a>
+<h1>4th Grade NJSLA Practice</h1><p class="sub" id="sub"></p>
+<div class="stage" id="st"></div>
+</div>
+<script src="../njsla-shared/core.js"></script>
+<script src="../njsla-shared/lib.js"></script>
+<script src="../njsla-shared/svg.js"></script>
+<script src="math.js"></script>
+<script src="ela.js"></script>
+<script src="science.js"></script>
+<script>
+/* ---------- test sets ---------- */
+function buildSets(seed){
+ const T=NJ.topics,L=[];
+ const mix=(li,id,name,pick)=>{const qs=[];T.forEach((t,ti)=>{const n=pick(t);if(n>0){const R=makeRng(seed*7919+li*131+ti*17+12345);t.gen(R,n).forEach(q=>{q.sec=t.name;qs.push(q)})}});return {id,name,qs}};
+ L.push(mix(0,'daily','Daily Mix (all subjects)',t=>t.daily));
+ NJ.subjects.forEach((s,si)=>L.push(mix(1+si,'full_'+s.id,s.name+': Full Practice Test',t=>t.subj===s.id?t.full:0)));
+ T.forEach((t,ti)=>L.push(mix(10+ti,t.id,t.name,x=>x===t?t.n:0)));
+ return L;
+}
+function ls(k,v){try{if(v===undefined)return localStorage.getItem('njsla4_'+k);localStorage.setItem('njsla4_'+k,v)}catch(e){return null}}
+function loadScores(){try{return JSON.parse(ls('scores')||'{}')||{}}catch(e){return {}}}
+function saveScore(id,p){const s=loadScores();s[id]=p;ls('scores',JSON.stringify(s))}
+const newSeed=()=>1+Math.floor(Math.random()*999999);
+
+/* ---------- quiz engine ---------- */
+const LT=['Ⓐ','Ⓑ','Ⓒ','Ⓓ','Ⓔ'];
+const $=id=>document.getElementById(id);
+const esc=t=>String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+const plain=h=>String(h).replace(/<span class="fr"><span>([^<]*)<\/span><span>([^<]*)<\/span><\/span>/g,'$1/$2').replace(/<br\s*\/?>/g,' ').replace(/<[^>]*>/g,'').replace(/&amp;/g,'&');
+let seed=0,LES=[],lesson=null,i=0,answered={},pending=null,lastGiven='',selMC=null;const picked=new Set();
+function normA(s){s=String(s).trim().toLowerCase().replace(/[,$]/g,'').replace(/\s*\/\s*/g,'/').replace(/\s+/g,' ');if(/^[\d.\-]/.test(s))s=s.replace(/[\s a-z²³.]+$/,'');return s}
+const isNum=s=>/^-?\d*\.?\d+$/.test(s);
+function txtOK(q,v){const n=normA(v);if(!n)return false;return q.acc.some(a=>{const m=normA(a);return m===n||(q.num&&isNum(n)&&isNum(m)&&Math.abs(parseFloat(n)-parseFloat(m))<1e-9)})}
+const correctText=q=>q.t==='mc'?LT[q.a]+' '+plain(q.opts[q.a]):q.t==='multi'?q.a.map(j=>LT[j]+' '+plain(q.opts[j])).join('; '):q.t==='txt'?q.acc[0]:'(compare with the checklist)';
+
+function home(){lesson=null;$('up').style.display='';
+ $('sub').textContent='Math, ELA and Science practice · Set #'+seed;
+ const sc=loadScores();
+ const card=(k,big)=>{const l=LES[k],s=sc[l.id];return `<button class="les${big?' big':''}" onclick="start(${k})"><span>${l.name}</span><small>${l.qs.length} questions${s!=null?' · last score '+s+'%':''}</small></button>`};
+ let h=`<div class="newbox"><button class="nb" onclick="newSet()">🔄 New questions</button><div class="small" style="margin-top:8px">Tap for a fresh set of questions any time (daily or weekly). The set stays the same until you tap it again.</div></div>`;
+ h+=`<div class="grp">Start here</div><div class="list">${card(0,1)}</div>`;
+ NJ.subjects.forEach((s,si)=>{
+  const tps=NJ.topics.map((t,ti)=>({t,ti})).filter(x=>x.t.subj===s.id);
+  h+=`<details class="subj"><summary>${s.name}<small>${s.blurb} · ${tps.length} topics</small></summary><div class="list">${card(1+si,1)}${tps.map(x=>{const l=LES[4+x.ti-0+0],sv=sc[x.t.id];return `<button class="les" onclick="start(${4+x.ti})"><span>${x.t.name}</span><small>${x.t.desc} · ${LES[4+x.ti].qs.length} questions${sv!=null?' · last score '+sv+'%':''}</small></button>`}).join('')}</div></details>`;
+ });
+ h+=`<p class="note">These practice questions are original and written in the style of the New Jersey Student Learning Assessments (NJSLA) for Grade 4. They are not official test items. Use the topic lists to practice one skill at a time, or take a full practice test.</p>`;
+ $('st').innerHTML=h;}
+function newSet(){let s=newSeed();while(s===seed)s=newSeed();seed=s;ls('seed',String(seed));LES=buildSets(seed);home();window.scrollTo(0,0)}
+function start(k){lesson=k;i=0;answered={};pending=null;lastGiven='';selMC=null;picked.clear();$('up').style.display='none';show();window.scrollTo(0,0)}
+function goTo(k){if(lesson===null)return;i=k;show()}
+function contFromReview(){const Q=LES[lesson].qs;i=Math.min(i+1,Q.length);show()}
+function navBar(Q){let b='';for(let k=0;k<Q.length;k++){const a=answered[k];let cls='navbox';if(k===i)cls+=' cur';if(a)cls+=' done '+(a.ok?'ok':'no');b+=`<button class="${cls}" onclick="goTo(${k})">${k+1}</button>`}return `<div class="navwrap">${b}</div>`}
+function next(ok){answered[i]=Object.assign({ok,given:lastGiven},pending||{});lastGiven='';pending=null;picked.clear();i++;show();window.scrollTo(0,0)}
+function show(){
+ if(lesson===null){home();return}
+ const L=LES[lesson],Q=L.qs,s=$('st');selMC=null;
+ $('sub').innerHTML=L.name;
+ if(i>=Q.length){
+  let score=0;for(let k=0;k<Q.length;k++){const a=answered[k];if(a&&a.ok)score++}
+  const pct=Math.round(score/Q.length*100);saveScore(L.id,pct);
+  const rows=Q.map((q,k)=>{const r=answered[k]||{ok:false,given:'(no answer)'};return `<div class="ri ${r.ok?'okr':'nor'}"><div class="rh"><span class="mk">${r.ok?'✓':'✗'}</span> Question ${k+1} · ${esc(q.sec)}</div><div class="rq">${esc(plain(q.q).replace(/\n/g,' ').slice(0,120))}</div><div class="ra"><b>Your answer:</b> ${esc(r.given||'(no answer)')}</div>${r.ok?'':`<div class="rc"><b>Correct answer:</b> ${esc(correctText(q))}<br>${esc(plain(q.exp||''))}</div>`}</div>`}).join('');
+  s.innerHTML=`<div class="c"><div class="score">${score}/${Q.length}</div><p><b>Test score: ${pct}%</b><br>${score} correct · ${Q.length-score} to review</p><p class="small">${L.name}</p><button class="nb" onclick="start(lesson)">Try again</button><button class="nb alt" onclick="var l=lesson;newSet();start(l)">New questions, same test</button><button class="nb ghost" onclick="home()">All tests</button></div><h3 class="revh">Review of your answers</h3><div class="rev">${rows}</div>`;return}
+ const q=Q[i],locked=answered[i];
+ let h=`<button class="back" onclick="home()">← All tests</button>${navBar(Q)}<div class="track"><div class="fill" style="width:${i/Q.length*100}%"></div></div><div class="qn">QUESTION ${i+1} OF ${Q.length} · ${esc(q.sec)}</div>${q.pass?`<div class="pass">${q.pass}</div>`:''}<p class="qt">${q.q}</p>${q.pics||''}`;
+ if(q.t==='mc')h+=`<div class="opts">${q.opts.map((o,j)=>`<button class="opt" id="m${j}" onclick="selectMC(${j})"><b class="lt" id="lt${j}">${LT[j]}</b><span>${o}</span></button>`).join('')}</div><button class="nb" id="chk" onclick="confirmMC()" disabled>OK</button>`;
+ if(q.t==='multi')h+=`<p class="small" style="margin:-4px 0 8px">Select ALL correct answers.</p><div class="opts">${q.opts.map((o,j)=>`<button class="opt" id="m${j}" onclick="tog(${j})"><b class="lt" id="lt${j}">☐</b><span>${o}</span></button>`).join('')}</div><button class="nb" id="chk" onclick="chkMulti()">Check</button>`;
+ if(q.t==='txt')h+=`<div class="f"><input type="text" id="in0" autocomplete="off" inputmode="text" placeholder="Type your answer" onkeydown="if(event.key==='Enter')chkTxt()"></div><button class="nb" id="chk" onclick="chkTxt()">Check</button>`;
+ if(q.t==='self')h+=`<textarea id="ta" placeholder="Write your answer here (or on paper)..."></textarea><button class="nb" id="chk" onclick="showModel()">Show checklist</button>`;
+ s.innerHTML=h+'<div id="fb"></div>';
+ if(locked)applyLock(q,locked);
+}
+function fin(ok,msg){const last=i>=LES[lesson].qs.length-1;$('fb').innerHTML=`<div class="fb ${ok?'good':'bad'}">${ok?'Nice work! ':'Not quite. '}${msg}</div><button class="nb alt" onclick="next(${ok})">${last?'See results':'Next'}</button>`;const c=$('chk');if(c)c.disabled=true}
+function applyLock(q,a){
+ if(q.t==='mc')document.querySelectorAll('.opts .opt').forEach((o,k)=>{o.disabled=true;if(k===q.a)o.classList.add('ok');else if(k===a.sel)o.classList.add('no')});
+ else if(q.t==='multi')document.querySelectorAll('.opts .opt').forEach((o,k)=>{o.disabled=true;const p=(a.sel||[]).includes(k),c=q.a.includes(k);if(p&&c)o.classList.add('ok');else if(p&&!c)o.classList.add('no');else if(!p&&c)o.classList.add('miss');$('lt'+k).textContent=p?'☑':'☐'});
+ else if(q.t==='txt'){const el=$('in0');if(el){el.value=a.val||'';el.disabled=true}}
+ else if(q.t==='self'){const el=$('ta');if(el){el.value=a.written||'';el.disabled=true}}
+ const c=$('chk');if(c)c.style.display='none';
+ const msg=q.t==='self'?q.model:(q.exp||'');
+ $('fb').innerHTML=`<div class="fb ${a.ok?'good':'bad'}">${a.ok?'✓ You answered this correctly. ':'✗ Not quite. '}${msg}</div><button class="nb alt" onclick="contFromReview()">Continue →</button>`;
+}
+const cur=()=>LES[lesson].qs[i];
+function selectMC(j){selMC=j;document.querySelectorAll('.opts .opt').forEach((o,k)=>o.classList.toggle('sel',k===j));$('chk').disabled=false}
+function confirmMC(){if(selMC===null)return;const q=cur(),j=selMC;lastGiven=LT[j]+' '+plain(q.opts[j]);pending={sel:j};document.querySelectorAll('.opts .opt').forEach((o,k)=>{o.disabled=true;o.classList.remove('sel');if(k===q.a)o.classList.add('ok');else if(k===j)o.classList.add('no')});selMC=null;fin(j===q.a,q.exp)}
+function tog(j){const b=$('m'+j);if(picked.has(j)){picked.delete(j);b.classList.remove('sel')}else{picked.add(j);b.classList.add('sel')}$('lt'+j).textContent=picked.has(j)?'☑':'☐'}
+function chkMulti(){const q=cur(),sel=[...picked].sort((a,b)=>a-b);const ok=sel.length===q.a.length&&q.a.every(x=>picked.has(x));lastGiven=sel.map(j=>LT[j]+' '+plain(q.opts[j])).join('; ')||'(none selected)';pending={sel};document.querySelectorAll('.opts .opt').forEach((o,k)=>{o.disabled=true;o.classList.remove('sel');const p=picked.has(k),c=q.a.includes(k);if(p&&c)o.classList.add('ok');else if(p&&!c)o.classList.add('no');else if(!p&&c)o.classList.add('miss')});fin(ok,q.exp)}
+function chkTxt(){const q=cur(),el=$('in0');if(!el||el.disabled)return;const v=el.value;if(!v.trim()){el.focus();return}const ok=txtOK(q,v);lastGiven=v.trim();pending={val:v};el.disabled=true;fin(ok,(ok?'':`The correct answer is <b>${q.acc[0]}</b>. `)+q.exp)}
+function showModel(){const q=cur(),w=($('ta').value||'').trim();lastGiven=w||'(nothing typed)';pending={written:w};$('fb').innerHTML=`<div class="model"><b>Checklist:</b><br>${q.model}</div><p class="small">Did your writing do these things?</p><div class="row"><button class="pill" onclick="next(true)">Yes ✅</button><button class="pill" onclick="next(false)">Not yet</button></div>`;$('chk').disabled=true;$('ta').disabled=true}
+
+if(typeof document!=='undefined'&&document.getElementById('st')){
+ seed=parseInt(ls('seed'),10)||0;if(!seed){seed=newSeed();ls('seed',String(seed))}
+ LES=buildSets(seed);home();
+}
+</script><script src="../njsla-shared/sling.js"></script>
+<script>Sling.attach();</script>
+</body></html>
