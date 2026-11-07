@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>My Scores</title>
+<style>
+:root{--bg:#FBF7EC;--ink:#26304A;--card:#fff;--line:#E4DCC9;--indigo:#2B3A67;--good:#2A9D8F;--mid:#E9A23B;--low:#E76F51}
+@media(prefers-color-scheme:dark){:root{--bg:#1D2233;--ink:#F1ECDD;--card:#262B40;--line:#3A4159;--indigo:#F4C95D}}
+*{box-sizing:border-box}html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;line-height:1.4}
+.w{max-width:760px;margin:0 auto;padding:20px 16px 60px}
+h1{font-size:26px;margin:0 0 4px;color:var(--indigo)}
+.sub{font-size:14px;opacity:.7;margin:0 0 16px}
+a.home{display:inline-block;margin-bottom:10px;color:var(--indigo);font-weight:700;text-decoration:none}
+.tabs{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 16px}
+.tabs button{flex:1 1 90px;padding:12px 8px;font-size:16px;font-weight:800;border-radius:12px;border:3px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer}
+.tabs button.on{border-color:var(--indigo);background:var(--indigo);color:#fff}
+@media(prefers-color-scheme:dark){.tabs button.on{color:#1D2233}}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:18px}
+.stat{background:var(--card);border:2px solid var(--line);border-radius:14px;padding:12px;text-align:center}
+.stat b{display:block;font-size:26px;color:var(--indigo)}.stat span{font-size:12px;opacity:.7}
+h2{font-size:18px;margin:22px 0 8px}
+.card{background:var(--card);border:2px solid var(--line);border-radius:14px;overflow:hidden}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{padding:9px 10px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:12px;text-transform:uppercase;letter-spacing:.04em;opacity:.65}
+tr:last-child td{border-bottom:0}
+.pct{font-weight:800;white-space:nowrap}.g{color:var(--good)}.m{color:var(--mid)}.l{color:var(--low)}
+.small{font-size:12px;opacity:.65}
+.note{font-size:13px;opacity:.75;margin:10px 0}
+.empty{padding:24px;text-align:center;opacity:.7}
+.scroll{overflow-x:auto}
+</style></head><body><div class="w">
+<a class="home" href="../">&larr; Home</a>
+<h1>My Scores</h1>
+<p class="sub">Pick a name to see test results.</p>
+<div class="tabs" id="tabs"></div>
+<div id="out"></div>
+<p class="note" id="src"></p>
+</div>
+<script src="../mpe-track.js"></script>
+<script>
+var KIDS=MPE.kids.concat(['Everyone']);
+var cur=null;try{cur=localStorage.getItem('mpe_child')}catch(e){}
+if(KIDS.indexOf(cur)<0)cur=KIDS[0];
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+function cls(p){return p>=80?'g':p>=60?'m':'l'}
+function tabs(){document.getElementById('tabs').innerHTML=KIDS.map(function(k){return '<button class="'+(k===cur?'on':'')+'" data-k="'+k+'">'+k+'</button>'}).join('');
+ document.querySelectorAll('#tabs button').forEach(function(b){b.onclick=function(){cur=b.dataset.k;tabs();load()}})}
+function localRows(child){
+ var seen={};var all=MPE.log().concat(MPE.queued());
+ return all.filter(function(r){if(seen[r.id])return false;seen[r.id]=1;return child==='Everyone'||r.child===child}).map(function(r){
+  var d=new Date(r.ts);function z(n){return n<10?'0'+n:n}
+  return {date:d.getFullYear()+'-'+z(d.getMonth()+1)+'-'+z(d.getDate()),time:z(d.getHours())+':'+z(d.getMinutes()),child:r.child,test:r.test,section:r.section,score:r.score,total:r.total,percent:r.total?Math.round(r.score/r.total*100):'',minutes:Math.round(r.seconds/6)/10}}).reverse()}
+function render(rows,from){
+ var out=document.getElementById('out');
+ if(!rows.length){out.innerHTML='<div class="card"><div class="empty">No test results yet for '+esc(cur)+'.<br>Finish a test and it will show up here.</div></div>';return}
+ var withPct=rows.filter(function(r){return r.percent!==''&&r.percent!=null});
+ var avg=withPct.length?Math.round(withPct.reduce(function(a,r){return a+Number(r.percent)},0)/withPct.length):0;
+ var mins=Math.round(rows.reduce(function(a,r){return a+(Number(r.minutes)||0)},0));
+ var best={};rows.forEach(function(r){var k=r.child+'|'+r.test+'|'+r.section;if(r.percent==='')return;var b=best[k];if(!b||Number(r.percent)>Number(b.percent))best[k]=r});
+ var counts={};rows.forEach(function(r){var k=r.child+'|'+r.test+'|'+r.section;counts[k]=(counts[k]||0)+1});
+ var bl=Object.keys(best).map(function(k){return best[k]}).sort(function(a,b){return String(b.date+b.time).localeCompare(a.date+a.time)}).slice(0,25);
+ var ev=cur==='Everyone';
+ out.innerHTML='<div class="stats"><div class="stat"><b>'+rows.length+'</b><span>tests taken</span></div><div class="stat"><b>'+avg+'%</b><span>average score</span></div><div class="stat"><b>'+mins+'</b><span>minutes spent</span></div></div>'+
+ '<h2>Best score on each test</h2><div class="card scroll"><table><tr>'+(ev?'<th>Name</th>':'')+'<th>Test</th><th>Best</th><th>Tries</th></tr>'+bl.map(function(r){var k=r.child+'|'+r.test+'|'+r.section;return '<tr>'+(ev?'<td>'+esc(r.child)+'</td>':'')+'<td><b>'+esc(r.test)+'</b><div class="small">'+esc(r.section)+'</div></td><td class="pct '+cls(r.percent)+'">'+r.percent+'%<div class="small">'+r.score+'/'+r.total+'</div></td><td>'+counts[k]+'</td></tr>'}).join('')+'</table></div>'+
+ '<h2>Latest tests</h2><div class="card scroll"><table><tr><th>When</th>'+(ev?'<th>Name</th>':'')+'<th>Test</th><th>Score</th><th>Min</th></tr>'+rows.slice(0,40).map(function(r){return '<tr><td>'+esc(r.date)+'<div class="small">'+esc(r.time)+'</div></td>'+(ev?'<td>'+esc(r.child)+'</td>':'')+'<td>'+esc(r.test)+'<div class="small">'+esc(r.section)+'</div></td><td class="pct '+cls(r.percent)+'">'+(r.percent===''?'':r.percent+'%')+'<div class="small">'+r.score+'/'+r.total+'</div></td><td>'+esc(r.minutes)+'</td></tr>'}).join('')+'</table></div>'}
+function load(){
+ var src=document.getElementById('src'),out=document.getElementById('out');
+ var url=MPE.url();
+ if(!url){render(localRows(cur));src.textContent='Showing results saved on this device only.';return}
+ out.innerHTML='<div class="card"><div class="empty">Loading&hellip;</div></div>';
+ var q=url+(cur==='Everyone'?'':'?child='+encodeURIComponent(cur));
+ var mine=cur;
+ fetch(q).then(function(r){return r.json()}).then(function(j){
+  if(mine!==cur)return;
+  var rows=(j.rows||[]);
+  // add results from this device that have not reached the sheet yet
+  var q2=MPE.queued().filter(function(r){return mine==='Everyone'||r.child===mine});
+  if(q2.length)rows=localRows(mine).filter(function(r){return q2.some(function(x){return x.test===r.test&&x.section===r.section&&x.score===r.score})}).concat(rows);
+  render(rows);src.textContent='All devices combined. Updated just now.'
+ }).catch(function(){if(mine!==cur)return;render(localRows(cur));src.textContent='Could not reach the shared sheet. Showing results saved on this device only.'})}
+tabs();load();
+</script></body></html>

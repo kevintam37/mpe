@@ -56,6 +56,7 @@ table{border-collapse:collapse;width:100%;font-size:14px}td,th{border:1px solid 
 <h1>Chapter 1 Reading Literature</h1><p class="sub" id="sub">Pick a lesson to practice</p>
 <div class="stage" id="st"></div>
 </div>
+<script src="../../mpe-track.js"></script>
 <script src="passages.js"></script>
 <script>
 // ---- Chapter 1 data (new format) ----
@@ -313,7 +314,7 @@ function home() {
   $('st').innerHTML = '<div class="list">' + LES.map((l, k) =>
     '<button class="les" onclick="start(' + k + ')"><span>' + l.name + '</span><small>' + l.qs.length + ' questions</small></button>').join('') + '</div>';
 }
-function start(k) { lesson = k; i = 0; answered = {}; selMC = null; show(); }
+function start(k) { MPE.begin({}); lesson = k; i = 0; answered = {}; selMC = null; show(); }
 function goTo(k) { if (lesson === null) return; i = k; show(); }
 function navBar(Q) {
   let b = '';
@@ -331,7 +332,7 @@ function advance() { i++; show(); }
 function reviewScreen(L, Q) {
   stopTimer();
   const score = Q.filter((q, k) => answered[k] && answered[k].ok).length;
-  const pct = Math.round(score / Q.length * 100);
+  const pct = Math.round(score / Q.length * 100);MPE.finish({section:L.name,score:score,total:Q.length});
   const rows = Q.map((q, k) => {
     const r = answered[k] || { ok: false, given: '(no answer)' };
     return '<div class="ri ' + (r.ok ? 'okr' : 'nor') + '"><div><span class="mk">' + (r.ok ? '✓' : '✗') + '</span> <b>Question ' + esc(q.n) + '</b></div>' +

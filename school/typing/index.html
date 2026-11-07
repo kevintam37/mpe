@@ -54,6 +54,7 @@ canvas{display:block;width:100%;border-radius:14px;background:#0b1030;touch-acti
 .note{font-size:12.5px;opacity:.65;line-height:1.45;margin-top:18px}
 </style></head><body>
 <div class="wrap" id="app"></div>
+<script src="../../mpe-track.js"></script>
 <script>
 'use strict';
 const app=document.getElementById('app'),$=s=>document.querySelector(s);
@@ -195,7 +196,7 @@ function lessonKey(e){
 function finishLesson(){
  stop();const m=Math.max(.05,(performance.now()-S.t0)/60000),wpm=Math.round(S.good/5/m),acc=Math.round(S.good/S.total*100);
  const st=acc>=97?3:acc>=92?2:acc>=85?1:0,p=P();if(st>(p.stars[S.L.id]||0))p.stars[S.L.id]=st;save();
- st?win():bad();
+ st?win():bad();MPE.finish({child:DB.cur,test:'Typing Quest',section:'Lesson: '+S.L.name+' ('+wpm+' words/min)',score:acc,total:100,seconds:m*60});
  const msg=st===3?'Super accurate! Try a game next.':st===2?'Great job! A few slips. Aim for 97% or more for 3 stars.':st===1?'Nice! You passed. Slow down a bit to get more stars.':'Slow down a little. Hitting the right key matters more than going fast.';
  const hasNext=st>0&&S.i+1<LESSONS.length;
  app.innerHTML=`<div class="stage c"><div class="big">${st?'🎉':'💪'}</div><h2>${st?'Lesson complete!':'Almost there!'}</h2><div class="stars">${stars(st)}</div>
@@ -229,7 +230,7 @@ function raceKey(e){
 function raceEnd(){
  R.done=true;cancelAnimationFrame(raf);const secs=(performance.now()-R.t0)/1000,wpm=Math.round(R.text.length/5/(secs/60)),acc=Math.round(R.good/R.total*100);
  const el=secs;R.bots.forEach(b=>b.p=Math.min(1,el*b.cps/R.text.length));
- const place=1+R.bots.filter(b=>b.p>=1).length,p=P(),k='race_'+R.lvl;if(!p.best[k]||place<p.best[k])p.best[k]=place;save();
+ const place=1+R.bots.filter(b=>b.p>=1).length,p=P(),k='race_'+R.lvl;if(!p.best[k]||place<p.best[k])p.best[k]=place;save();MPE.finish({child:DB.cur,test:'Typing Quest',section:'Turbo Race ('+wpm+' words/min, place '+place+')',score:acc,total:100,seconds:secs});
  place===1?win():bad();
  later(()=>{app.innerHTML=`<div class="stage c"><div class="big">${['','🥇','🥈','🥉','4️⃣'][place]}</div><h2>${['','You won!','2nd place!','3rd place!','4th place'][place]}</h2>
  <p><b>${wpm}</b> words per minute · <b>${acc}%</b> accuracy · ${Math.round(secs)} seconds</p><p class="small">${place===1?'Try a harder set of opponents next time!':'Keep your accuracy high. Every mistake slows your car down.'}</p>
@@ -280,7 +281,7 @@ function rainKey(e){
   if(c.length){const w=c.sort((a,b)=>b.y-a.y)[0];RN.lock=w;w.n=1;RN.good++;tick();if(w.txt.length===1)kill(w)}else{bad();RN.streak=0}}}
 function rainOver(){
  RN.over=true;cancelAnimationFrame(raf);const p=P(),isBest=RN.score>(p.best[RN.key]||0);if(isBest)p.best[RN.key]=RN.score;save();
- const wpm=Math.round(RN.good/5/Math.max(.05,RN.t/60)),acc=RN.total?Math.round(RN.good/RN.total*100):0;bad();
+ const wpm=Math.round(RN.good/5/Math.max(.05,RN.t/60)),acc=RN.total?Math.round(RN.good/RN.total*100):0;bad();MPE.finish({child:DB.cur,test:'Typing Quest',section:'Word Rain ('+RN.cleared+' words, '+wpm+' words/min)',score:acc,total:100,seconds:RN.t});
  app.innerHTML=`<div class="stage c"><div class="big">💥</div><h2>Game over</h2><p class="stars" style="font-size:24px">Score ${RN.score}</p>${isBest?'<p><b>🎉 New best score!</b></p>':''}
  <p><b>${RN.cleared}</b> words · level <b>${RN.level}</b> · <b>${acc}%</b> accuracy · <b>${wpm}</b> words per minute</p>
  <div class="btns"><button class="nb" data-a="start" data-v="rain">Play again</button><button class="nb ghost" data-a="setup" data-v="rain">Change settings</button><button class="nb ghost" data-a="menu">Menu</button></div></div>`}
@@ -315,7 +316,7 @@ function popKey(e){
  $('#ps').textContent=`Popped ${PB.popped} / ${PB.goal}`;if(PB.popped>=PB.goal)popEnd()}
 function popEnd(){
  PB.over=true;cancelAnimationFrame(raf);const st=PB.esc<=3?3:PB.esc<=8?2:1,p=P(),k='pop_'+PB.set;if(st>(p.best[k]||0))p.best[k]=st;save();win();
- const acc=Math.round(PB.good/PB.total*100);
+ const acc=Math.round(PB.good/PB.total*100);MPE.finish({child:DB.cur,test:'Typing Quest',section:'Balloon Pop ('+PB.esc+' escaped)',score:acc,total:100,seconds:PB.t});
  app.innerHTML=`<div class="stage c"><div class="big">🎈</div><h2>You popped them all!</h2><div class="stars">${stars(st)}</div><p><b>${PB.esc}</b> escaped · <b>${acc}%</b> accuracy · <b>${Math.round(PB.t)}</b> seconds</p>
  <p class="small">${st===3?'Amazing! Try a bigger set of letters.':'Fewer than 4 escapes earns 3 stars.'}</p>
  <div class="btns"><button class="nb" data-a="start" data-v="pop">Play again</button><button class="nb ghost" data-a="setup" data-v="pop">Change letters</button><button class="nb ghost" data-a="menu">Menu</button></div></div>`}

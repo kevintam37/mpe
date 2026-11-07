@@ -108,6 +108,7 @@ input.type{width:100%;font-family:var(--display);font-size:1.7rem;font-weight:60
 </style>
 </head>
 <body>
+<script src="../mpe-track.js"></script>
 <script src="minigames.js?v=1"></script>
 
 
@@ -379,7 +380,7 @@ function start(kind){
     return step();
   }
   if(kind==="testday"){
-    G={kind:"testday",items:shuffle(WORDS).map(function(o){return{o:o}}),i:0,right:0,missed:[],answers:[]};
+    MPE.begin({kids:['Winston','Evelyn']});G={kind:"testday",items:shuffle(WORDS).map(function(o){return{o:o}}),i:0,right:0,missed:[],answers:[]};
     return step();
   }
   var items=kind==="thenthan"?shuffle(TT).map(function(t){return{t:t}}):shuffle(WORDS).map(function(o){return{o:o}});
@@ -530,6 +531,7 @@ function testEnd(){
     bump(it.o.w,ok);
     rows+='<div class="rep"><b>'+it.o.w+'</b><span class="'+(ok?"hit":"miss")+'">'+(ok?"Correct":"You wrote: "+esc(a||"(blank)"))+'</span></div>';
   });
+  MPE.finish({test:"Twins Spelling",section:(typeof label==="function"&&CUR?label(CUR):""),score:r,total:n});
   if(r>=Math.ceil(n*.9))unlock("testday:"+CUR.id);
   if(CUR.words.every(function(o){return(prog[o.w]||0)>=3}))unlock("master:"+CUR.id);
   var pct=Math.round(r/n*100),msg=r===n?"Perfect score!":pct>=90?"Test day ace!":pct>=70?"Good job. A little more practice.":"Keep practicing. Try Study Cards, then test again.";

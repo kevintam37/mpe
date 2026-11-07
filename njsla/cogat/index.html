@@ -51,6 +51,7 @@ button{font:inherit;cursor:pointer}
 <h1>CogAT Practice - 3rd Grade</h1><p class="sub" id="sub"></p>
 <div class="stage" id="st"></div>
 </div>
+<script src="../../mpe-track.js"></script>
 <script>
 /* ---------- random helpers (seeded so a set stays the same until "New questions") ---------- */
 function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
@@ -382,7 +383,7 @@ function home(){stopTimer();lesson=null;$('up').style.display='';
  h+=`<p class="note">The CogAT checks reasoning in three areas: Verbal, Quantitative, and Nonverbal (Grade 3 is Level 9). These practice questions are made up in the same style and are not official test items. There is nothing to memorize: the goal is to get comfortable with each question type.</p>`;
  $('st').innerHTML=h;}
 function newSet(){let s=newSeed();while(s===seed)s=newSeed();seed=s;ls('seed',String(seed));LES=buildSets(seed);home();window.scrollTo(0,0)}
-function start(k){lesson=k;i=0;answered={};pending=null;lastGiven='';selMC=null;$('up').style.display='none';show();window.scrollTo(0,0)}
+function start(k){MPE.begin({});lesson=k;i=0;answered={};pending=null;lastGiven='';selMC=null;$('up').style.display='none';show();window.scrollTo(0,0)}
 function goTo(k){if(lesson===null)return;i=k;show()}
 function contFromReview(){const Q=LES[lesson].qs;i=Math.min(i+1,Q.length);show()}
 function navBar(Q){let b='';for(let k=0;k<Q.length;k++){const a=answered[k];let cls='navbox';if(k===i)cls+=' cur';if(a)cls+=' done '+(a.ok?'ok':'no');b+=`<button class="${cls}" onclick="goTo(${k})">${k+1}</button>`}return `<div class="navwrap">${b}</div>`}
@@ -394,7 +395,7 @@ function show(){
  if(i>=Q.length){
   stopTimer();
   let score=0;for(let k=0;k<Q.length;k++){const a=answered[k];if(a&&a.ok)score++}
-  const pct=Math.round(score/Q.length*100);saveScore(L.id,pct);
+  const pct=Math.round(score/Q.length*100);saveScore(L.id,pct);MPE.finish({section:L.name,score:score,total:Q.length});
   const rows=Q.map((q,k)=>{const r=answered[k]||{ok:false,given:'(no answer)'};return `<div class="ri ${r.ok?'okr':'nor'}"><div class="rh"><span class="mk">${r.ok?'✓':'✗'}</span> Question ${k+1} · ${esc(q.sec)}</div><div class="rq">${esc(plain(q.q).replace(/\n/g,' ').slice(0,110))}</div><div class="ra"><b>Your answer:</b> ${esc(r.given||'(no answer)')}</div>${r.ok?'':`<div class="rc"><b>Correct answer:</b> ${esc(optTxt(q,q.a))}<br>${esc(q.exp)}</div>`}</div>`}).join('');
   s.innerHTML=`<div class="c"><div class="score">${score}/${Q.length}</div><p><b>Test score: ${pct}%</b><br>${score} correct · ${Q.length-score} wrong</p><p class="small">${L.name}</p><button class="nb" onclick="start(lesson)">Try again</button><button class="nb alt" onclick="newSet();start(${lesson})">New questions, same test</button><button class="nb ghost" onclick="home()">All tests</button></div><h3 class="revh">Review of your answers</h3><div class="rev">${rows}</div>`;return}
  const q=Q[i],locked=answered[i];

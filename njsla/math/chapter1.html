@@ -48,6 +48,7 @@ table{border-collapse:collapse;width:100%;font-size:14px}td,th{border:1px solid 
 <h1>Chapter 1 Operations and Algebraic Thinking</h1><p class="sub" id="sub">Pick a lesson to practice</p>
 <div class="stage" id="st"></div>
 </div>
+<script src="../../mpe-track.js"></script>
 <script>
 const mc=(q,opts,a,exp,pics)=>({t:'mc',q,opts,a,exp,pics});
 
@@ -317,7 +318,7 @@ const correctText=q=>q.t==='mc'?LT[q.a]+' '+q.opts[q.a]:q.t==='multi'?q.a.map(j=
 const norm=s=>s.toLowerCase().replace(/\s+/g,'').replace(/[×*]/g,'x');
 function home(){stopTimer();lesson=null;$('sub').textContent='Pick a lesson to practice';
  $('st').innerHTML=`<div class="list">${LES.map((l,k)=>`<button class="les" onclick="start(${k})"><span>${l.name}</span><small>${l.qs.length} questions</small></button>`).join('')}</div>`}
-function start(k){lesson=k;i=0;answered={};pending=null;lastGiven='';picked.clear();show()}
+function start(k){MPE.begin({});lesson=k;i=0;answered={};pending=null;lastGiven='';picked.clear();show()}
 function goTo(k){if(lesson===null)return;i=k;show()}
 function contFromReview(){const Q=LES[lesson].qs;i=Math.min(i+1,Q.length);show()}
 function navBar(Q){let b='';for(let k=0;k<Q.length;k++){const a=answered[k];let cls='navbox';if(k===i)cls+=' cur';if(a)cls+=' done '+(a.ok?'ok':'no');b+=`<button class="${cls}" onclick="goTo(${k})">${k+1}</button>`}return `<div class="navwrap">${b}</div>`}
@@ -330,7 +331,7 @@ function show(){
   stopTimer();
   let score=0;const missArr=[];
   for(let k=0;k<Q.length;k++){const a=answered[k];if(a&&a.ok)score++;else missArr.push(k+1);}
-  const pct=Math.round(score/Q.length*100);
+  const pct=Math.round(score/Q.length*100);MPE.finish({section:L.name,score:score,total:Q.length});
   const rows=Q.map((q,k)=>{const r=answered[k]||{ok:false,given:'(no answer)'};return `<div class="ri ${r.ok?'okr':'nor'}"><div class="rh"><span class="mk">${r.ok?'✓':'✗'}</span> Question ${k+1}</div><div class="rq">${esc(q.q.replace(/\n/g,' ').slice(0,110))}${q.q.length>110?'…':''}</div><div class="ra"><b>Your answer:</b> ${esc(r.given||'(no answer)')}</div>${r.ok?'':`<div class="rc"><b>Correct answer:</b> ${esc(correctText(q))}</div>`}</div>`}).join('');
   s.innerHTML=`<div class="c"><div class="score">${score}/${Q.length}</div><p><b>Test score: ${pct}%</b><br>${score} correct · ${Q.length-score} wrong</p><p class="small">${L.name}</p><button class="nb" onclick="start(lesson)">Try again</button>${lesson<LES.length-1?`<button class="nb alt" onclick="start(${lesson+1})">Next lesson →</button>`:''}<button class="nb ghost" onclick="home()">All lessons</button></div><h3 class="revh">Review of your answers</h3><div class="rev">${rows}</div>`;return}
  const q=Q[i];

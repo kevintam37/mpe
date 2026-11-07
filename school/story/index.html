@@ -57,6 +57,7 @@ details summary{cursor:pointer;font-weight:800;color:var(--indigo)}
 @media print{body *{visibility:hidden}#printme,#printme *{visibility:visible}#printme{position:absolute;left:0;top:0;width:100%}}
 </style></head><body>
 <div class="wrap" id="app"></div>
+<script src="../../mpe-track.js"></script>
 <script>
 'use strict';
 const app=document.getElementById('app'),$=s=>document.querySelector(s);
@@ -230,7 +231,7 @@ function vGym(){
  if(!G){$('#body').innerHTML=`<div class="card"><h2>💪 Skill gym</h2><p>Short rounds of 6 questions. These are the three things your teachers asked for: <b>stay on one main idea</b>, <b>put events in order</b>, and <b>use writing techniques</b> like transition words, dialogue, and sensory details.</p></div>
   <div class="grid">${GYM.map(g=>`<button class="gc" data-a="gym" data-v="${g.id}"><span class="ic">${g.emoji}</span><b>${g.name}</b><small>${g.desc}</small><span class="st">${'★'.repeat(P().gym[g.id]||0)+'☆'.repeat(3-(P().gym[g.id]||0))}</span></button>`).join('')}
   <button class="gc" data-a="gym" data-v="mix"><span class="ic">🎲</span><b>Mixed round</b><small>One question from each skill</small></button></div>`;return}
- if(G.i>=G.qs.length){const sc=G.score,st=sc>=5?3:sc>=4?2:sc>=3?1:0;if(G.id!=='mix'&&st>(P().gym[G.id]||0)){P().gym[G.id]=st;save()}
+ if(G.i>=G.qs.length){const sc=G.score,st=sc>=5?3:sc>=4?2:sc>=3?1:0;MPE.finish({test:'Story Studio',section:'Skill practice: '+G.name,score:sc,total:G.qs.length});if(G.id!=='mix'&&st>(P().gym[G.id]||0)){P().gym[G.id]=st;save()}
   $('#body').innerHTML=`<div class="card c"><div style="font-size:52px">${st>=2?'🎉':'💪'}</div><h2>${sc} out of ${G.qs.length}</h2><div class="st" style="font-size:24px">${'★'.repeat(st)+'☆'.repeat(3-st)}</div><p class="small">${st===3?'Excellent! Try writing a story with this skill.':'Good effort. Play again for new questions.'}</p>
   <div class="btns" style="justify-content:center"><button class="nb" data-a="gym" data-v="${G.id}">Play again (new questions)</button><button class="nb ghost" data-a="gymhome">All skills</button></div></div>`;return}
  const q=G.qs[G.i];let h=`<div class="card"><button class="back" data-a="gymhome">← All skills</button><div class="small">Question ${G.i+1} of ${G.qs.length} · ${G.name}</div><p style="font-size:17px;margin:8px 0">${q.q}</p>`;
@@ -259,13 +260,13 @@ app.addEventListener('click',e=>{
   case 'spark':{const s=pick(SPARKS);d.spark=s;save();$('#spark').textContent='💡 '+s+'. Now find ONE small moment inside that idea.';break}
   case 'listen':try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(storyText());u.rate=.9;speechSynthesis.speak(u)}catch(x){}break;
   case 'stoplisten':try{speechSynthesis.cancel()}catch(x){}break;
-  case 'saveStory':{const t=storyText();P().stories.unshift({title:d.title,text:t,words:words(t),date:new Date().toLocaleDateString()});save();$('#why').textContent='Saved! Find it in My stories.';break}
+  case 'saveStory':{const t=storyText();{const dd=D(),a=analyze([dd.db,dd.dm,dd.de].join(' ')),sk=[a.trans.length>=1,a.dlg>=1,Object.keys(a.senses).length>=1,a.words>=50].filter(Boolean).length;MPE.ask(['Winston','Evelyn'],c=>MPE.finish({child:c,useSession:true,test:'Story Studio',section:'Story: '+(d.title||'My Story')+' ('+a.words+' words)',score:sk,total:4}))}P().stories.unshift({title:d.title,text:t,words:words(t),date:new Date().toLocaleDateString()});save();$('#why').textContent='Saved! Find it in My stories.';break}
   case 'print':window.print();break;
   case 'copy':try{navigator.clipboard.writeText(storyText());$('#why').textContent='Copied.'}catch(x){$('#why').textContent='Select the story text and copy it.'}break;
   case 'newStory':if(confirm('Start a new story? Save this one first if you want to keep it.')){P().draft=blank();save();render();window.scrollTo(0,0)}break;
   case 'delStory':if(confirm('Delete this story?')){P().stories.splice(+v,1);save();render()}break;
   case 'gym':{const g=v==='mix'?{id:'mix',name:'Mixed round',gen:null}:GYM.find(x=>x.id===v);
-   const qs=v==='mix'?GYM.flatMap(x=>x.gen(1)):g.gen(6);G={id:g.id,name:g.name,qs:shuffle(qs),i:0,score:0,pick:[],done:false};vGym();break}
+   MPE.begin({kids:['Winston','Evelyn']});const qs=v==='mix'?GYM.flatMap(x=>x.gen(1)):g.gen(6);G={id:g.id,name:g.name,qs:shuffle(qs),i:0,score:0,pick:[],done:false};vGym();break}
   case 'gymhome':G=null;vGym();break;
   case 'ans':{if(G.done)return;const q=G.qs[G.i],j=+v;document.querySelectorAll('.opt').forEach((o,k)=>{o.disabled=true;if(k===q.a)o.classList.add('ok');else if(k===j)o.classList.add('no')});gymFeedback(j===q.a,q.exp);break}
   case 'pick':{if(G.done)return;const q=G.qs[G.i];G.pick.push(+v);if(G.pick.length<q.items.length){vGym();break}
