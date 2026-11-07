@@ -6,6 +6,7 @@
   var SHEET_URL = 'https://script.google.com/macros/s/AKfycbzYbphEL-as7_IXZVugZyFBBYPhNQ-kRBnNbNj1hDU8MJNu9kbFM_LsYn4L0C_1EmoR/exec'; // paste the Google Apps Script web app URL (ends in /exec) between the quotes
   var KIDS = ['Winston', 'Evelyn', 'Haylen', 'Levin'];
   var COLORS = { Winston: '#2A9D8F', Evelyn: '#E76F9A', Haylen: '#F4A261', Levin: '#4C6EF5' };
+  var EXPIRE = 14 * 24 * 3600 * 1000; // paused tests are kept for 14 days
   var IDLE_CAP = 180000; // idle gaps longer than 3 minutes are not counted as time spent
 
   function g(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
@@ -71,6 +72,80 @@
     setTimeout(function () { t.remove(); }, 5000);
   }
 
+
+  /* ---------- pause and resume ---------- */
+  function slots() {
+    var m = jget('mpe_save', {}), now = Date.now(), ch = false;
+    Object.keys(m).forEach(function (k) { if (now - (m[k].ts || 0) > EXPIRE) { delete m[k]; ch = true; } });
+    if (ch) s('mpe_save', JSON.stringify(m));
+    return m;
+  }
+  function delSlot(key) { if (!key) return; var m = slots(); delete m[key]; s('mpe_save', JSON.stringify(m)); }
+  function doSave() {
+    var a = A;
+    if (!a || !a.started || a.reported || a.exited || !a.slot || !a.opts.getState) return false;
+    var st;
+    try { st = a.opts.getState(); } catch (e) { return false; }
+    if (!st) return false;
+    touch(Date.now());
+    var m = slots();
+    m[a.slot] = { state: st, active: a.active, ts: Date.now(), child: a.child };
+    try { localStorage.setItem('mpe_save', JSON.stringify(m)); } catch (e) { return false; }
+    return true;
+  }
+  window.addEventListener('pagehide', doSave);
+
+  function hideBtn() { var b = document.getElementById('mpe-savebtn'); if (b) b.remove(); if (hideBtn.t) { clearInterval(hideBtn.t); hideBtn.t = 0; } }
+  function showBtn(a) {
+    hideBtn();
+    if (!a.opts.getState || !a.slot) return;
+    var b = document.createElement('button');
+    b.id = 'mpe-savebtn';
+    b.textContent = '💾 Save & take a break';
+    b.style.cssText = 'position:fixed;left:12px;bottom:12px;z-index:99990;padding:11px 16px;font:800 14px system-ui,-apple-system,"Segoe UI",sans-serif;border-radius:14px;border:3px solid #26304A;background:#FFD166;color:#26304A;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.3);display:none';
+    b.onclick = function () {
+      if (doSave()) {
+        a.exited = true; hideBtn();
+        toast('Saved for ' + a.child + '. Pick this test again to continue.');
+        if (a.opts.exit) { try { a.opts.exit(); } catch (e) {} }
+      } else { b.style.display = 'none'; }
+    };
+    document.body.appendChild(b);
+    hideBtn.t = setInterval(function () {
+      if (A !== a || a.reported || a.exited) { hideBtn(); return; }
+      var on = false; try { on = !!a.opts.getState(); } catch (e) {}
+      b.style.display = on ? 'block' : 'none';
+    }, 800);
+  }
+  function offerResume(a) {
+    if (!a.slot || !a.opts.resume) return;
+    var e = slots()[a.slot];
+    if (!e || !e.state) return;
+    var o = document.createElement('div');
+    o.setAttribute('role', 'dialog');
+    o.style.cssText = 'position:fixed;inset:0;z-index:100000;background:rgba(20,24,40,.72);display:flex;align-items:center;justify-content:center;padding:16px;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif';
+    var box = document.createElement('div');
+    box.style.cssText = 'background:#fff;color:#26304A;border-radius:20px;padding:24px 20px;max-width:420px;width:100%;text-align:center;box-shadow:0 10px 40px rgba(0,0,0,.35)';
+    var when = new Date(e.ts), days = Math.floor((Date.now() - e.ts) / 86400000);
+    box.innerHTML = '<div style="font-size:22px;font-weight:800;margin-bottom:6px">Welcome back, ' + a.child + '!</div>' +
+      '<div style="font-size:15px;opacity:.8;margin-bottom:16px">You paused this test at <b>' + (e.state.label || 'where you left off') + '</b>' + (days >= 1 ? ' ' + days + ' day' + (days > 1 ? 's' : '') + ' ago' : ' earlier') + '.</div>';
+    function btn(txt, bg, fn) {
+      var b = document.createElement('button');
+      b.textContent = txt;
+      b.style.cssText = 'display:block;width:100%;margin:8px 0;padding:15px;font-size:18px;font-weight:800;border-radius:14px;border:3px solid #26304A;background:' + bg + ';color:#26304A;cursor:pointer';
+      b.onclick = function () { o.remove(); fn(); };
+      box.appendChild(b);
+    }
+    btn('Continue where I left off', '#9BE7C4', function () {
+      if (A !== a) return;
+      a.active = e.active || 0; a.last = Date.now();
+      try { a.opts.resume(e.state); } catch (err) {}
+    });
+    btn('Start over', '#fff', function () { delSlot(a.slot); });
+    o.appendChild(box);
+    document.body.appendChild(o);
+  }
+
   var busy = false;
   function flush() {
     if (busy || !SHEET_URL || !navigator.onLine) return;
@@ -95,25 +170,32 @@
     /* opts.kids: names offered in the picker. opts.fixed: skip the picker and use this name. */
     begin: function (opts) {
       opts = opts || {};
-      var now = Date.now();
-      A = { id: uid(), active: 0, last: now, started: false, paused: false, child: null, reported: false };
-      var mine = A;
-      var start = function (child) { if (A !== mine) return; mine.child = child; mine.started = true; mine.last = Date.now(); mine.active = 0; };
-      if (opts.fixed) { s('mpe_child', opts.fixed); start(opts.fixed); }
-      else picker(opts.kids || KIDS, start);
+      hideBtn();
+      var mine = A = { id: uid(), active: 0, last: Date.now(), started: false, paused: false, child: null, reported: false, opts: opts, slot: null, exited: false };
+      var go = function (child) {
+        if (A !== mine) return;
+        mine.child = child; mine.started = true; mine.last = Date.now(); mine.active = 0;
+        mine.slot = opts.key != null ? child + '|' + location.pathname + '|' + opts.key : null;
+        offerResume(mine); showBtn(mine);
+      };
+      if (opts.fixed) { s('mpe_child', opts.fixed); go(opts.fixed); }
+      else picker(opts.kids || KIDS, go);
     },
+    /* Save progress now (called after each answer). Does nothing if the page gave no getState. */
+    autosave: function () { doSave(); },
     /* Ask who it is, then call cb(name). Starts a fresh attempt. */
     ask: function (kids, cb) {
-      var mine = A = { id: uid(), active: 0, last: Date.now(), started: false, paused: false, child: null, reported: false };
+      var mine = A = { id: uid(), active: 0, last: Date.now(), started: false, paused: false, child: null, reported: false, opts: {}, slot: null, exited: false };
       picker(kids || KIDS, function (c) { if (A === mine) mine.child = c; cb(c); });
     },
     /* info: { score, total, section, test, child, seconds, useSession } */
     finish: function (info) {
       info = info || {};
-      if (!A) A = { id: uid(), active: 0, last: Date.now(), started: false, paused: false, child: null, reported: false };
+      if (!A) A = { id: uid(), active: 0, last: Date.now(), started: false, paused: false, child: null, reported: false, opts: {}, slot: null, exited: false };
       if (A.reported) return;
       A.reported = true;
       touch(Date.now());
+      delSlot(A.slot); hideBtn();
       var rec = {
         id: A.id,
         ts: new Date().toISOString(),

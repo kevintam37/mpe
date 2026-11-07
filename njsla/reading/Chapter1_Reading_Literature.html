@@ -314,7 +314,11 @@ function home() {
   $('st').innerHTML = '<div class="list">' + LES.map((l, k) =>
     '<button class="les" onclick="start(' + k + ')"><span>' + l.name + '</span><small>' + l.qs.length + ' questions</small></button>').join('') + '</div>';
 }
-function start(k) { MPE.begin({}); lesson = k; i = 0; answered = {}; selMC = null; show(); }
+function mpeOpts(k){var L=LES[k];return{key:(L&&L.id)||String(k),
+ getState:function(){if(lesson===null||!LES[lesson]||i>=LES[lesson].qs.length)return null;return{label:'question '+(i+1)+' of '+LES[lesson].qs.length,seed:(typeof seed!=='undefined'?seed:0),lesson:lesson,i:i,answered:answered}},
+ resume:function(st){if(typeof seed!=='undefined'&&st.seed&&st.seed!==seed){seed=st.seed;ls('seed',String(seed));LES=buildSets(seed)}lesson=st.lesson;i=st.i;answered=st.answered||{};pending=null;lastGiven='';selMC=null;if(typeof picked!=='undefined')picked.clear();if(typeof stopTimer==='function')stopTimer();var u=document.getElementById('up');if(u)u.style.display='none';show();window.scrollTo(0,0)},
+ exit:function(){if(typeof stopTimer==='function')stopTimer();lesson=null;home();window.scrollTo(0,0)}}}
+function start(k) { MPE.begin(mpeOpts(k)); lesson = k; i = 0; answered = {}; selMC = null; show(); }
 function goTo(k) { if (lesson === null) return; i = k; show(); }
 function navBar(Q) {
   let b = '';
@@ -326,7 +330,7 @@ function navBar(Q) {
   return '<div class="navwrap">' + b + '</div>';
 }
 function record(ok, given, extra) { answered[i] = Object.assign({ ok: ok, given: given }, extra || {}); }
-function advance() { i++; show(); }
+function advance() { i++; MPE.autosave(); show(); }
 
 // ---- screen rendering ----
 function reviewScreen(L, Q) {

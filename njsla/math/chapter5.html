@@ -152,11 +152,15 @@ const correctText=q=>q.t==='mc'?LT[q.a]+' '+q.opts[q.a]:q.t==='multi'?q.a.map(j=
 const norm=s=>s.toLowerCase().replace(/\s+/g,'').replace(/[×*]/g,'x');
 function home(){stopTimer();lesson=null;$('sub').textContent='Pick a lesson to practice';
  $('st').innerHTML=`<div class="list">${LES.map((l,k)=>`<button class="les" onclick="start(${k})"><span>${l.name}</span><small>${l.qs.length} questions</small></button>`).join('')}</div>`}
-function start(k){MPE.begin({});lesson=k;i=0;answered={};pending=null;lastGiven='';picked.clear();show()}
+function mpeOpts(k){var L=LES[k];return{key:(L&&L.id)||String(k),
+ getState:function(){if(lesson===null||!LES[lesson]||i>=LES[lesson].qs.length)return null;return{label:'question '+(i+1)+' of '+LES[lesson].qs.length,seed:(typeof seed!=='undefined'?seed:0),lesson:lesson,i:i,answered:answered}},
+ resume:function(st){if(typeof seed!=='undefined'&&st.seed&&st.seed!==seed){seed=st.seed;ls('seed',String(seed));LES=buildSets(seed)}lesson=st.lesson;i=st.i;answered=st.answered||{};pending=null;lastGiven='';selMC=null;if(typeof picked!=='undefined')picked.clear();if(typeof stopTimer==='function')stopTimer();var u=document.getElementById('up');if(u)u.style.display='none';show();window.scrollTo(0,0)},
+ exit:function(){if(typeof stopTimer==='function')stopTimer();lesson=null;home();window.scrollTo(0,0)}}}
+function start(k){MPE.begin(mpeOpts(k));lesson=k;i=0;answered={};pending=null;lastGiven='';picked.clear();show()}
 function goTo(k){if(lesson===null)return;i=k;show()}
 function contFromReview(){const Q=LES[lesson].qs;i=Math.min(i+1,Q.length);show()}
 function navBar(Q){let b='';for(let k=0;k<Q.length;k++){const a=answered[k];let cls='navbox';if(k===i)cls+=' cur';if(a)cls+=' done '+(a.ok?'ok':'no');b+=`<button class="${cls}" onclick="goTo(${k})">${k+1}</button>`}return `<div class="navwrap">${b}</div>`}
-function next(ok){answered[i]=Object.assign({ok,given:lastGiven},pending||{});lastGiven='';pending=null;i++;show()}
+function next(ok){answered[i]=Object.assign({ok,given:lastGiven},pending||{});lastGiven='';pending=null;i++;MPE.autosave();show()}
 function show(){
  if(lesson===null){home();return}
  const L=LES[lesson],Q=L.qs,s=$('st');

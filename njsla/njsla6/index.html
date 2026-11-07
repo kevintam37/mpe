@@ -112,11 +112,15 @@ function home(){lesson=null;$('up').style.display='';
  h+=`<p class="note">These practice questions are original and written in the style of the New Jersey Student Learning Assessments (NJSLA) for Grade 6. They are not official test items. Use the topic lists to practice one skill at a time, or take a full practice test.</p>`;
  $('st').innerHTML=h;}
 function newSet(){let s=newSeed();while(s===seed)s=newSeed();seed=s;ls('seed',String(seed));LES=buildSets(seed);home();window.scrollTo(0,0)}
-function start(k){MPE.begin({});lesson=k;i=0;answered={};pending=null;lastGiven='';selMC=null;picked.clear();$('up').style.display='none';show();window.scrollTo(0,0)}
+function mpeOpts(k){var L=LES[k];return{key:(L&&L.id)||String(k),
+ getState:function(){if(lesson===null||!LES[lesson]||i>=LES[lesson].qs.length)return null;return{label:'question '+(i+1)+' of '+LES[lesson].qs.length,seed:(typeof seed!=='undefined'?seed:0),lesson:lesson,i:i,answered:answered}},
+ resume:function(st){if(typeof seed!=='undefined'&&st.seed&&st.seed!==seed){seed=st.seed;ls('seed',String(seed));LES=buildSets(seed)}lesson=st.lesson;i=st.i;answered=st.answered||{};pending=null;lastGiven='';selMC=null;if(typeof picked!=='undefined')picked.clear();if(typeof stopTimer==='function')stopTimer();var u=document.getElementById('up');if(u)u.style.display='none';show();window.scrollTo(0,0)},
+ exit:function(){if(typeof stopTimer==='function')stopTimer();lesson=null;home();window.scrollTo(0,0)}}}
+function start(k){MPE.begin(mpeOpts(k));lesson=k;i=0;answered={};pending=null;lastGiven='';selMC=null;picked.clear();$('up').style.display='none';show();window.scrollTo(0,0)}
 function goTo(k){if(lesson===null)return;i=k;show()}
 function contFromReview(){const Q=LES[lesson].qs;i=Math.min(i+1,Q.length);show()}
 function navBar(Q){let b='';for(let k=0;k<Q.length;k++){const a=answered[k];let cls='navbox';if(k===i)cls+=' cur';if(a)cls+=' done '+(a.ok?'ok':'no');b+=`<button class="${cls}" onclick="goTo(${k})">${k+1}</button>`}return `<div class="navwrap">${b}</div>`}
-function next(ok){answered[i]=Object.assign({ok,given:lastGiven},pending||{});lastGiven='';pending=null;picked.clear();i++;show();window.scrollTo(0,0)}
+function next(ok){answered[i]=Object.assign({ok,given:lastGiven},pending||{});lastGiven='';pending=null;picked.clear();i++;MPE.autosave();show();window.scrollTo(0,0)}
 function show(){
  if(lesson===null){home();return}
  const L=LES[lesson],Q=L.qs,s=$('st');selMC=null;
