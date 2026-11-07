@@ -3,7 +3,7 @@
    Each result is saved on the device and sent to the family Google Sheet. If the device is offline,
    the result waits in a queue and is sent the next time any page loads online. */
 (function () {
-  var SHEET_URL = ''; // paste the Google Apps Script web app URL (ends in /exec) between the quotes
+  var SHEET_URL = 'https://script.google.com/macros/s/AKfycbzYbphEL-as7_IXZVugZyFBBYPhNQ-kRBnNbNj1hDU8MJNu9kbFM_LsYn4L0C_1EmoR/exec'; // paste the Google Apps Script web app URL (ends in /exec) between the quotes
   var KIDS = ['Winston', 'Evelyn', 'Haylen', 'Levin'];
   var COLORS = { Winston: '#2A9D8F', Evelyn: '#E76F9A', Haylen: '#F4A261', Levin: '#4C6EF5' };
   var IDLE_CAP = 180000; // idle gaps longer than 3 minutes are not counted as time spent
