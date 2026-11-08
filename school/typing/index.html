@@ -157,7 +157,7 @@ function menu(){
   bestPop=Math.max(0,...Object.keys(p.best).filter(k=>k.startsWith('pop_')).map(k=>p.best[k])),
   bestRace=Math.min(9,...Object.keys(p.best).filter(k=>k.startsWith('race_')).map(k=>p.best[k]));
  let h=`<h1>⌨️ Typing Quest</h1><p class="sub">Learn to type with all ten fingers. Needs a real keyboard (a laptop or desktop works best).</p>
- <div class="pills">${NAMES.map(n=>`<button class="pill ${n===DB.cur?'on':''}" data-a="prof" data-v="${n}">${n}</button>`).join('')}</div>
+ <p class="sub">Stars on this page are for <b>${DB.cur}</b>, the last player. You will be asked who is playing each time you start.</p>
  <div class="tip">🧘 <b>Before you start:</b> sit tall, keep your wrists floating, rest your pointer fingers on the bumps on <b>F</b> and <b>J</b>, and look at the screen, not your hands. A little every day (10 to 15 minutes) beats one long session. <b>Accuracy first, speed later.</b> ⭐ ${total} stars so far.</div>
  <h2>Learn the keys</h2><div class="grid">`;
  LESSONS.forEach((L,i)=>{const s=p.stars[L.id]||0,lock=i>0&&!(p.stars[LESSONS[i-1].id]>0)&&!p.unlock;
@@ -326,15 +326,17 @@ const SETUPS={
  pop:{title:'🎈 Balloon Pop',blurb:'Press the letter on each balloon to pop it. Pop 30 balloons to win. Fewer than 4 escapes earns 3 stars.',groups:[{k:'set',label:'Letters',o:[['home','Home row'],['top','Top row'],['bottom','Bottom row'],['all','All letters']]}],go:pop},
  rain:{title:'🚀 Word Rain',blurb:'Type the falling words before they land. You have 5 lives, and it speeds up every level.',groups:[{k:'set',label:'Words use',o:[['home','Home row'],['top','Home + top row'],['all','All letters']]},{k:'speed',label:'Speed',o:[['chill','Chill'],['normal','Normal'],['fast','Fast']]}],go:rain},
  race:{title:'🏎️ Turbo Race',blurb:'Type the sentences to drive your car. Each correct key moves you forward. Mistakes do not move you, so accuracy wins races.',groups:[{k:'lvl',label:'Opponents',o:[['rookie','Rookie (5 to 9 words per minute)'],['racer','Racer (10 to 18)'],['pro','Pro (18 to 32)']]}],go:race}};
+/* ask who is playing, switch to that child's progress, then continue */
+function who(go){MPE.ask(NAMES,c=>{if(c!==DB.cur){DB.cur=c;save()}go()})}
 app.addEventListener('click',e=>{
  const b=e.target.closest('[data-a]');if(!b||b.disabled)return;const d=b.dataset;
  switch(d.a){
   case 'menu':menu();break;
   case 'prof':DB.cur=d.v;save();menu();break;
-  case 'lesson':lesson(+d.v);break;
+  case 'lesson':who(()=>{const i=+d.v,lock=i>0&&!(P().stars[LESSONS[i-1].id]>0)&&!P().unlock;if(lock)menu();else lesson(i)});break;
   case 'setup':setup(d.v);break;
   case 'opt':OPT[d.g][d.k]=d.v;setup(d.g);break;
-  case 'start':SETUPS[d.v].go();break;
+  case 'start':who(()=>SETUPS[d.v].go());break;
   case 'sound':DB.sound=!DB.sound;save();menu();break;
   case 'kb':DB.kb=!DB.kb;save();menu();break;
   case 'unlock':P().unlock=!P().unlock;save();menu();break}});
