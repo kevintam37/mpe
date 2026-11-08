@@ -146,22 +146,54 @@
     document.body.appendChild(o);
   }
 
-  var busy = false;
+  /* Delivery: a result stays in the queue until the sheet confirms it has that id.
+     Posting is safe to repeat because the sheet ignores an id it already has. */
+  var busy = false, failN = 0, retryT = 0;
+  function fetchT(url, opt, ms) {
+    var c = typeof AbortController === 'function' ? new AbortController() : null;
+    var t = c ? setTimeout(function () { c.abort(); }, ms) : 0;
+    if (c) opt.signal = c.signal;
+    return fetch(url, opt).then(function (r) { clearTimeout(t); return r; }, function (e) { clearTimeout(t); throw e; });
+  }
+  function confirmed(rec) {
+    return fetchT(SHEET_URL + '?action=has&id=' + encodeURIComponent(rec.id), {}, 15000)
+      .then(function (r) { return r.json(); })
+      .then(function (j) { return j && j.found === false ? false : true; }); // an older sheet script has no 'found' answer
+  }
+  function schedule() {
+    if (retryT) return;
+    var ms = Math.min(60000, 3000 * Math.pow(2, Math.min(failN, 5)));
+    retryT = setTimeout(function () { retryT = 0; flush(); }, ms);
+  }
   function flush() {
-    if (busy || !SHEET_URL || !navigator.onLine) return;
+    if (busy || !SHEET_URL) return;
     var q = jget('mpe_q', []);
-    if (!q.length) return;
+    if (!q.length) { failN = 0; return; }
+    if (!navigator.onLine) { schedule(); return; }
     var rec = q[0];
     busy = true;
-    fetch(SHEET_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(rec), keepalive: true })
+    fetchT(SHEET_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(rec), keepalive: true }, 15000)
       .then(function () {
+        return confirmed(rec).catch(function (err) {
+          // could not read the sheet's answer (blocked or offline): after 3 tries accept the post so the queue cannot jam
+          rec.tries = (rec.tries || 0) + 1;
+          var cur = jget('mpe_q', []).map(function (r) { return r.id === rec.id ? rec : r; });
+          s('mpe_q', JSON.stringify(cur));
+          if (rec.tries >= 3) return true;
+          throw err;
+        });
+      })
+      .then(function (ok) {
+        if (!ok) throw new Error('not stored yet');
         var cur = jget('mpe_q', []).filter(function (r) { return r.id !== rec.id; });
         s('mpe_q', JSON.stringify(cur));
-        busy = false;
+        busy = false; failN = 0;
         if (cur.length) flush();
       })
-      .catch(function () { busy = false; });
+      .catch(function () { busy = false; failN++; schedule(); });
   }
+  document.addEventListener('visibilitychange', function () { if (!document.hidden) flush(); });
+  setInterval(function () { if (jget('mpe_q', []).length) flush(); }, 60000);
   window.addEventListener('online', flush);
 
   var MPE = {
@@ -223,6 +255,7 @@
     },
     log: function () { return jget('mpe_log', []); },
     queued: function () { return jget('mpe_q', []); },
+    pending: function () { return jget('mpe_q', []).length; },
     flush: flush
   };
   window.MPE = MPE;

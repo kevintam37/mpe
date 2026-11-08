@@ -34,6 +34,7 @@ tr:last-child td{border-bottom:0}
 <a class="home" href="../">&larr; Home</a>
 <h1>My Scores</h1>
 <p class="sub">Pick a name to see test results.</p>
+<div id="pend" class="note" style="display:none;background:#FFF3CD;color:#5c4400;border:2px solid #E9A23B;border-radius:12px;padding:10px 12px"></div>
 <div class="tabs" id="tabs"></div>
 <div id="out"></div>
 <p class="note" id="src"></p>
@@ -80,5 +81,10 @@ function load(){
   if(q2.length)rows=localRows(mine).filter(function(r){return q2.some(function(x){return x.test===r.test&&x.section===r.section&&x.score===r.score})}).concat(rows);
   render(rows);src.textContent='All devices combined. Updated just now.'
  }).catch(function(){if(mine!==cur)return;render(localRows(cur));src.textContent='Could not reach the shared sheet. Showing results saved on this device only.'})}
+function pend(){var n=MPE.pending(),e=document.getElementById('pend');
+ if(!n){e.style.display='none';return}
+ e.style.display='block';e.innerHTML='\u26A0\uFE0F <b>'+n+' result'+(n>1?'s':'')+' on this device '+(n>1?'have':'has')+' not reached the shared sheet yet.</b> They are safe on this device and will keep retrying. <button id="sendnow" style="margin-left:6px;padding:6px 12px;border-radius:10px;border:2px solid #5c4400;background:#fff;font-weight:700;cursor:pointer">Send now</button>';
+ document.getElementById('sendnow').onclick=function(){MPE.flush();setTimeout(function(){pend();load()},4000)}}
+pend();setInterval(pend,5000);
 tabs();load();
 </script></body></html>
