@@ -271,6 +271,18 @@ try{prog=JSON.parse(localStorage.getItem("sort3")||"{}")||{}}catch(e){prog={}}
 function save(){try{localStorage.setItem("sort3",JSON.stringify(prog))}catch(e){}}
 function bump(w,ok){var v=prog[w]||0;prog[w]=ok?Math.min(3,v+1):Math.max(0,v-1);save()}
 function shuffle(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t}return a}
+
+/* Test Day length and fair rotation: every word is tested equally often over repeated tests */
+var SEEN_KEY="sort3_seen",TESTN_KEY="sort3_testn";
+function lsGet(k,d){try{var v=JSON.parse(localStorage.getItem(k));return v==null?d:v}catch(e){return d}}
+function lsSet(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
+function longList(t){return t.words.length>20}
+function testSizes(t){var n=t.words.length,o=[];[10,20,30,40].forEach(function(x){if(x<n)o.push(x)});o.push(n);return o}
+function testSize(t){var n=t.words.length,c=lsGet(TESTN_KEY,{})[t.id];if(longList(t)){if(c&&c<=n)return c;return 20}return n}
+/* take the words tested the fewest times so far (ties broken at random), then shuffle the order */
+function fairPick(t,n){var seen=lsGet(SEEN_KEY,{})[t.id]||{};var order=shuffle(t.words);order.sort(function(a,b){return(seen[a.w]||0)-(seen[b.w]||0)});return shuffle(order.slice(0,n))}
+function markSeen(t,w){var all=lsGet(SEEN_KEY,{}),m=all[t.id]||(all[t.id]={});m[w]=(m[w]||0)+1;lsSet(SEEN_KEY,all)}
+function seenRange(t){var m=lsGet(SEEN_KEY,{})[t.id]||{},lo=1e9,hi=0;t.words.forEach(function(o){var c=m[o.w]||0;if(c<lo)lo=c;if(c>hi)hi=c});return[lo,hi]}
 function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
 function stars(n){var s="";for(var i=0;i<3;i++)s+=i<n?"★":"<i>★</i>";return '<span class="stars" aria-label="'+n+' of 3 stars">'+s+"</span>"}
 function speak(t){try{var u=new SpeechSynthesisUtterance(t);u.rate=.85;u.lang="en-US";speechSynthesis.cancel();speechSynthesis.speak(u)}catch(e){}}
@@ -372,11 +384,13 @@ function home(){
    '<div class="row"><button class="btn ghost" id="all">All tests</button></div>'+
    '<div class="top"><div><div class="tag">'+(CUR.bee?'School spelling bee list':'Sort #'+CUR.sort+' spelling list')+'</div><h1>'+label(CUR)+'</h1></div>'+
    '<div class="card" style="padding:10px 16px"><b>'+mastered+' of '+WORDS.length+'</b> words mastered</div></div>'+
+   (longList(CUR)?'<section class="card" style="padding:12px 16px;margin-bottom:14px"><b>Words on Test Day:</b> <span id="sizes" style="display:inline-flex;flex-wrap:wrap;gap:8px;margin-left:6px">'+testSizes(CUR).map(function(n){return '<button class="btn'+(n===testSize(CUR)?'':' ghost')+'" data-size="'+n+'" style="padding:8px 14px">'+(n===CUR.words.length?'All '+n:n)+'</button>'}).join("")+'</span><p class="sentence" style="margin:8px 0 0;font-size:.9rem">The words are shuffled every time and rotate so each word is tested equally often.'+(function(){var r=seenRange(CUR);return r[1]?' So far each word has been tested '+(r[0]===r[1]?r[0]+' time'+(r[0]===1?'':'s'):r[0]+' to '+r[1]+' times')+'.':''})()+'</p></section>':'')+
    '<div class="modes">'+Object.keys(MODES).filter(function(k){return k!=="thenthan"||CUR.pair}).map(function(k){return '<button class="mode'+(k==="testday"?" alt":"")+'" data-m="'+k+'"><strong>'+MODES[k].name+'</strong><span>'+MODES[k].desc+'</span></button>'}).join("")+'</div>'+
    '<section class="card"><h2>Your words</h2><p class="sentence" style="margin:6px 0 12px">Get a word right on the first try to earn a star. Three stars means mastered. Tap a word to hear it.</p>'+
    '<div class="words">'+WORDS.map(function(o){return '<button class="w" data-say="'+o.w+'"><span style="min-width:0"><b>'+o.w+'</b><small>'+esc(o.d)+'</small></span>'+stars(prog[o.w]||0)+'</button>'}).join("")+'</div>'+
    (CUR.pair?'<p class="sentence" style="margin:14px 0 0">The last two, '+CUR.pair[0]+' and '+CUR.pair[1]+', are the non-negotiables.</p>':(CUR.note?'<p class="sentence" style="margin:14px 0 0">'+esc(CUR.note)+'</p>':''))+'</section>';
   document.getElementById("all").onclick=hub;
+  app.querySelectorAll("[data-size]").forEach(function(b){b.onclick=function(){var c=lsGet(TESTN_KEY,{});c[CUR.id]=+b.dataset.size;lsSet(TESTN_KEY,c);home()}});
   app.querySelectorAll("[data-m]").forEach(function(b){b.onclick=function(){start(b.dataset.m)}});
   app.querySelectorAll("[data-say]").forEach(function(b){b.onclick=function(){speak(b.dataset.say)}});
 }
@@ -406,7 +420,7 @@ function start(kind){
     return step();
   }
   if(kind==="testday"){
-    MPE.begin(mpeOpts());G={kind:"testday",items:shuffle(WORDS).map(function(o){return{o:o}}),i:0,right:0,missed:[],answers:[]};
+    MPE.begin(mpeOpts());G={kind:"testday",items:fairPick(CUR,testSize(CUR)).map(function(o){return{o:o}}),i:0,right:0,missed:[],answers:[]};
     return step();
   }
   var items=kind==="thenthan"?shuffle(TT).map(function(t){return{t:t}}):shuffle(WORDS).map(function(o){return{o:o}});
@@ -544,7 +558,7 @@ function testday(o){
   function say(){speakSeq([o.w,o.x,o.w])}
   document.getElementById("hear").onclick=say;say();
   var inp=document.getElementById("ans");inp.focus();
-  function submit(){G.answers.push(inp.value.trim().toLowerCase());G.i++;MPE.autosave();step()}
+  function submit(){G.answers.push(inp.value.trim().toLowerCase());markSeen(CUR,G.items[G.i].o.w);G.i++;MPE.autosave();step()}
   document.getElementById("go").onclick=submit;
   inp.onkeydown=function(e){if(e.key==="Enter"){e.preventDefault();submit()}};
 }
