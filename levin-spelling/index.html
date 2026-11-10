@@ -396,7 +396,7 @@ function home(){
 }
 
 function pickMg(){return["listen","gaps","scramble"][Math.floor(Math.random()*3)]}
-function mpeOpts(){return{key:CUR.id,
+function mpeOpts(){return{key:CUR.id+(longList(CUR)?"#"+testSize(CUR):""),
  getState:function(){return(G&&G.kind==="testday"&&G.i<G.items.length)?{label:'word '+(G.i+1)+' of '+G.items.length,w:G.items.map(function(x){return x.o.w}),i:G.i,a:G.answers}:null},
  resume:function(st){var m={};WORDS.forEach(function(o){m[o.w]=o});var it=st.w.map(function(w){return m[w]}).filter(Boolean);if(it.length!==st.w.length)return;G={kind:"testday",items:it.map(function(o){return{o:o}}),i:st.i,right:0,missed:[],answers:st.a};step()},
  exit:function(){home()}}}
