@@ -285,12 +285,56 @@ function markSeen(t,w){var all=lsGet(SEEN_KEY,{}),m=all[t.id]||(all[t.id]={});m[
 function seenRange(t){var m=lsGet(SEEN_KEY,{})[t.id]||{},lo=1e9,hi=0;t.words.forEach(function(o){var c=m[o.w]||0;if(c<lo)lo=c;if(c>hi)hi=c});return[lo,hi]}
 function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
 function stars(n){var s="";for(var i=0;i<3;i++)s+=i<n?"★":"<i>★</i>";return '<span class="stars" aria-label="'+n+' of 3 stars">'+s+"</span>"}
-function speak(t){try{var u=new SpeechSynthesisUtterance(t);u.rate=.85;u.lang="en-US";speechSynthesis.cancel();speechSynthesis.speak(u)}catch(e){}}
+/* ---- Voices: pick any voice on this device, or a human dictionary recording ---- */
+var VOICE_KEY="sort3_voice",AUDIO_KEY="sort3_audio",curAudio=null;
+function enVoices(){try{return speechSynthesis.getVoices().filter(function(v){return/^en/i.test(v.lang)})}catch(e){return[]}}
+function voiceScore(v){var n=v.name,sc=0;
+  if(/natural|neural|online|enhanced|premium/i.test(n))sc+=50;
+  if(/^google (us|uk) english/i.test(n)||/google/i.test(n))sc+=30;
+  if(/samantha|ava|allison|zoe|aria|jenny|guy|daniel|karen|moira/i.test(n))sc+=20;
+  if(/en[-_]US/i.test(v.lang))sc+=15;else if(/en[-_](GB|AU|CA)/i.test(v.lang))sc+=5;
+  if(/compact|espeak|novelty|bad news|bubbles|cellos|pipe organ|whisper|zarvox|trinoids|boing|jester|albert/i.test(n))sc-=100;
+  if(v.localService===false)sc+=3;return sc}
+function bestVoice(){var vs=enVoices().slice().sort(function(a,b){return voiceScore(b)-voiceScore(a)});return vs[0]||null}
+function chosenVoice(){var id=lsGet(VOICE_KEY,"auto");if(id==="human")return bestVoice();
+  if(id!=="auto"){var f=enVoices().filter(function(v){return v.voiceURI===id})[0];if(f)return f}
+  return bestVoice()}
+function ttsSay(t,rate,queue){try{var u=new SpeechSynthesisUtterance(t),v=chosenVoice();if(v){u.voice=v;u.lang=v.lang}else u.lang="en-US";u.rate=rate;if(!queue)speechSynthesis.cancel();speechSynthesis.speak(u)}catch(e){}}
+function humanUrl(word){var cache=lsGet(AUDIO_KEY,{}),k=word.toLowerCase();
+  if(cache[k]!==undefined)return Promise.resolve(cache[k]||null);
+  return fetch("https://api.dictionaryapi.dev/api/v2/entries/en/"+encodeURIComponent(k)).then(function(r){if(!r.ok)throw 0;return r.json()}).then(function(j){
+    var urls=[];(j||[]).forEach(function(e){(e.phonetics||[]).forEach(function(ph){if(ph.audio)urls.push(ph.audio)})});
+    var us=urls.filter(function(u){return/-us\./i.test(u)})[0],u=us||urls[0]||"";
+    var c=lsGet(AUDIO_KEY,{});c[k]=u;lsSet(AUDIO_KEY,c);return u||null}).catch(function(){return null})}
+function speak(t,rate){rate=rate||.85;
+  try{speechSynthesis.cancel();if(curAudio){curAudio.pause();curAudio=null}}catch(e){}
+  if(lsGet(VOICE_KEY,"auto")==="human"&&/^[A-Za-zñ'-]+$/.test(String(t).trim())){
+    humanUrl(String(t).trim()).then(function(u){if(!u)return ttsSay(t,rate);
+      try{var a=new Audio(u);curAudio=a;a.onerror=function(){ttsSay(t,rate)};var pr=a.play();if(pr&&pr.catch)pr.catch(function(){ttsSay(t,rate)})}catch(e){ttsSay(t,rate)}});
+    return}
+  ttsSay(t,rate)}
+function voicePicker(){
+  var o=document.createElement("div");o.setAttribute("role","dialog");
+  o.style.cssText="position:fixed;inset:0;z-index:99999;background:rgba(20,24,40,.72);display:flex;align-items:center;justify-content:center;padding:16px";
+  var box=document.createElement("div");box.className="card";box.style.cssText="max-width:520px;width:100%;max-height:85vh;overflow:auto;padding:18px";
+  function draw(){var cur=lsGet(VOICE_KEY,"auto"),vs=enVoices();
+    var h='<h2 style="margin:0 0 4px">Choose a voice</h2><p class="sentence" style="margin:0 0 12px;font-size:.9rem">Tap a voice to hear it say a word. If a word sounds wrong, try another voice.</p>';
+    function row(id,name,sub){return '<div style="display:flex;gap:8px;align-items:center;margin:6px 0"><button class="btn'+(cur===id?'':' ghost')+'" data-v="'+esc(id)+'" style="flex:1;text-align:left"><b>'+esc(name)+'</b>'+(sub?'<br><small>'+esc(sub)+'</small>':'')+'</button></div>'}
+    h+=row("auto","Automatic","Picks the most natural voice on this device"+(bestVoice()?": "+bestVoice().name:""));
+    h+=row("human","Human recording","Real dictionary voices. Needs internet. Falls back to a device voice if a word is missing");
+    vs.forEach(function(v){h+=row(v.voiceURI,v.name,v.lang)});
+    if(!vs.length)h+='<p class="sentence">No other voices were found on this device.</p>';
+    h+='<div class="row" style="margin-top:12px"><button class="btn" id="vdone">Done</button></div>';
+    box.innerHTML=h;
+    box.querySelectorAll("[data-v]").forEach(function(b){b.onclick=function(){lsSet(VOICE_KEY,b.dataset.v);speak("pamphlet");draw()}});
+    document.getElementById("vdone").onclick=function(){o.remove()}}
+  o.appendChild(box);document.body.appendChild(o);draw();
+  try{speechSynthesis.onvoiceschanged=function(){if(document.body.contains(o))draw()}}catch(e){}}
 var G=null;
 var badges={};
 try{badges=JSON.parse(localStorage.getItem("sort3_badges")||"{}")||{}}catch(e){badges={}}
 function saveB(){try{localStorage.setItem("sort3_badges",JSON.stringify(badges))}catch(e){}}
-function speakSeq(arr){try{speechSynthesis.cancel();arr.forEach(function(t){var u=new SpeechSynthesisUtterance(t);u.rate=.8;u.lang="en-US";speechSynthesis.speak(u)})}catch(e){}}
+function speakSeq(arr){try{speechSynthesis.cancel();if(curAudio){curAudio.pause();curAudio=null}}catch(e){}arr.forEach(function(t){ttsSay(t,.8,true)})}
 var ICONS={
  star:'<polygon points="36,14 41,28 56,28.5 44,37.5 48.5,52 36,43.5 23.5,52 28,37.5 16,28.5 31,28"/>',
  bolt:'<polygon points="39,12 22,40 34,40 31,60 50,31 38,31"/>',
@@ -381,7 +425,7 @@ function home(){
   stopArena();G=null;
   var mastered=WORDS.filter(function(o){return(prog[o.w]||0)>=3}).length;
   app.innerHTML=
-   '<div class="row"><button class="btn ghost" id="all">All tests</button></div>'+
+   '<div class="row"><button class="btn ghost" id="all">All tests</button><button class="btn ghost" id="voicebtn">&#128266; Voice</button></div>'+
    '<div class="top"><div><div class="tag">'+(CUR.bee?'School spelling bee list':'Sort #'+CUR.sort+' spelling list')+'</div><h1>'+label(CUR)+'</h1></div>'+
    '<div class="card" style="padding:10px 16px"><b>'+mastered+' of '+WORDS.length+'</b> words mastered</div></div>'+
    (longList(CUR)?'<section class="card" style="padding:12px 16px;margin-bottom:14px"><b>Words on Test Day:</b> <span id="sizes" style="display:inline-flex;flex-wrap:wrap;gap:8px;margin-left:6px">'+testSizes(CUR).map(function(n){return '<button class="btn'+(n===testSize(CUR)?'':' ghost')+'" data-size="'+n+'" style="padding:8px 14px">'+(n===CUR.words.length?'All '+n:n)+'</button>'}).join("")+'</span><p class="sentence" style="margin:8px 0 0;font-size:.9rem">The words are shuffled every time and rotate so each word is tested equally often.'+(function(){var r=seenRange(CUR);return r[1]?' So far each word has been tested '+(r[0]===r[1]?r[0]+' time'+(r[0]===1?'':'s'):r[0]+' to '+r[1]+' times')+'.':''})()+'</p></section>':'')+
@@ -390,6 +434,7 @@ function home(){
    '<div class="words">'+WORDS.map(function(o){return '<button class="w" data-say="'+o.w+'"><span style="min-width:0"><b>'+o.w+'</b><small>'+esc(o.d)+'</small></span>'+stars(prog[o.w]||0)+'</button>'}).join("")+'</div>'+
    (CUR.pair?'<p class="sentence" style="margin:14px 0 0">The last two, '+CUR.pair[0]+' and '+CUR.pair[1]+', are the non-negotiables.</p>':(CUR.note?'<p class="sentence" style="margin:14px 0 0">'+esc(CUR.note)+'</p>':''))+'</section>';
   document.getElementById("all").onclick=hub;
+  document.getElementById("voicebtn").onclick=voicePicker;
   app.querySelectorAll("[data-size]").forEach(function(b){b.onclick=function(){var c=lsGet(TESTN_KEY,{});c[CUR.id]=+b.dataset.size;lsSet(TESTN_KEY,c);home()}});
   app.querySelectorAll("[data-m]").forEach(function(b){b.onclick=function(){start(b.dataset.m)}});
   app.querySelectorAll("[data-say]").forEach(function(b){b.onclick=function(){speak(b.dataset.say)}});
