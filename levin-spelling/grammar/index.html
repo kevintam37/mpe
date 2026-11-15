@@ -1,0 +1,483 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Grammar Practice</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@500;700;800&display=swap">
+<style>
+:root{
+  --bg:#eef3fb; --surface:#ffffff; --ink:#132043; --muted:#5b6788; --line:#d5dded;
+  --accent:#2f5bea; --accent-ink:#ffffff; --gold:#f5a800; --good:#178a4c; --good-bg:#dff5e8; --bad:#c62f3d; --bad-bg:#fde3e5;
+  --tile:#e3ebfd; --mark:#fff0b3; --shadow:0 2px 0 rgba(19,32,67,.12);
+  --display:"Fredoka","Trebuchet MS",system-ui,sans-serif; --body:"Nunito",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+@media (prefers-color-scheme: dark){:root{
+  --bg:#0f1730; --surface:#18234a; --ink:#eaf0ff; --muted:#a1aed3; --line:#2c3a6b;
+  --accent:#7d9bff; --accent-ink:#0f1730; --gold:#ffc23d; --good:#5fd394; --good-bg:#12382a; --bad:#ff8892; --bad-bg:#3d1b24;
+  --tile:#25336a; --mark:#5a4a12; --shadow:0 2px 0 rgba(0,0,0,.4); color-scheme:dark}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:18px;line-height:1.45;padding:20px 16px 90px}
+main{max-width:760px;margin:0 auto;display:flex;flex-direction:column;gap:16px}
+h1,h2,h3{font-family:var(--display);margin:0;line-height:1.15;font-weight:600}
+h1{font-size:2rem}h2{font-size:1.35rem}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,textarea:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.tag{font-size:.8rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:800}
+.card{background:var(--surface);border:2px solid var(--line);border-radius:18px;padding:18px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.btn{background:var(--accent);color:var(--accent-ink);border:0;border-radius:12px;padding:12px 20px;font-weight:800;box-shadow:var(--shadow)}
+.btn.ghost{background:transparent;color:var(--ink);border:2px solid var(--line);box-shadow:none}
+.btn:disabled{opacity:.4;cursor:default}
+.topics{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:12px}
+.topic{display:flex;flex-direction:column;gap:8px}
+.topic p{margin:0;color:var(--muted);font-size:.95rem;font-weight:700}
+.topic .last{font-size:.85rem}
+.bar{height:10px;background:var(--tile);border-radius:99px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--accent);border-radius:99px}
+.sent{display:flex;flex-wrap:wrap;gap:6px 4px;font-family:var(--display);font-size:1.35rem;line-height:1.9;margin:4px 0 8px}
+.tok{border:0;background:transparent;padding:2px 6px;border-radius:8px;font:inherit;color:inherit;box-shadow:none}
+.tok:not(:disabled){cursor:pointer}
+.tok:not(:disabled):hover{background:var(--tile)}
+.tok.m-ul{border-bottom:4px solid var(--accent);border-radius:0}
+.tok.m-circle{outline:3px solid var(--accent);outline-offset:0;border-radius:99px}
+.tok.m-hl{background:var(--mark)}
+.tok.m-box{outline:3px dashed var(--accent);border-radius:6px}
+.tok.ok{background:var(--good-bg);color:var(--good)}
+.tok.bad{background:var(--bad-bg);color:var(--bad);text-decoration:line-through}
+.tok.miss{outline:3px dashed var(--good);outline-offset:0}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin:6px 0 10px}
+.chip{border:2px solid var(--line);background:var(--surface);border-radius:99px;padding:6px 14px;font-weight:800;font-size:.95rem}
+.chip.on{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.chip small{font-weight:700;opacity:.85}
+.opts{display:grid;gap:10px;margin:10px 0}
+.opt{display:flex;gap:10px;align-items:flex-start;text-align:left;background:var(--tile);border:3px solid transparent;border-radius:14px;padding:12px 14px;font-weight:700}
+.opt.sel{border-color:var(--accent)}
+.opt.right{background:var(--good-bg);border-color:var(--good)}
+.opt.wrong{background:var(--bad-bg);border-color:var(--bad)}
+.opt b{font-family:var(--display);min-width:1.4em}
+.choicerow{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}
+.stem{font-size:1.2rem;font-weight:700;margin:2px 0 6px}
+.stem u{text-decoration-thickness:3px;text-underline-offset:4px}
+.pair{background:var(--tile);border-radius:12px;padding:10px 14px;margin:8px 0;font-weight:700}
+.fb{border-radius:14px;padding:12px 14px;margin-top:10px;font-weight:700}
+.fb.good{background:var(--good-bg);color:var(--good)}
+.fb.bad{background:var(--bad-bg);color:var(--bad)}
+.fb span{color:var(--ink);font-weight:600;display:block;margin-top:4px}
+.score{font-family:var(--display);font-size:2.6rem;color:var(--accent)}
+.miss-list{display:grid;gap:8px;margin:10px 0}
+.miss-list div{background:var(--tile);border-radius:12px;padding:10px 14px;font-weight:600;font-size:.98rem}
+textarea{width:100%;min-height:200px;border:2px solid var(--line);border-radius:14px;padding:12px;font:inherit;background:var(--surface);color:var(--ink);resize:vertical}
+.check li{margin:6px 0;font-weight:700}
+.check .y{color:var(--good)}.check .n{color:var(--bad)}
+.small{font-size:.9rem;color:var(--muted);font-weight:600}
+</style>
+</head>
+<body>
+<main id="app"></main>
+<script src="../../mpe-track.js"></script>
+<script>
+(function(){
+"use strict";
+/* ---------- helpers ---------- */
+function lsGet(k,d){try{var v=JSON.parse(localStorage.getItem(k));return v==null?d:v}catch(e){return d}}
+function lsSet(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
+function cap(s){return s.charAt(0).toUpperCase()+s.slice(1)}
+function low(s){return s.charAt(0).toLowerCase()+s.slice(1)}
+function RNG(seed){var a=seed>>>0;
+  function f(){a|=0;a=a+0x6D2B79F5|0;var t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}
+  var r={f:f,int:function(x,y){return x+Math.floor(f()*(y-x+1))},pick:function(arr){return arr[Math.floor(f()*arr.length)]},
+    shuffle:function(arr){arr=arr.slice();for(var i=arr.length-1;i>0;i--){var j=Math.floor(f()*(i+1)),t=arr[i];arr[i]=arr[j];arr[j]=t}return arr},
+    sample:function(arr,n){return r.shuffle(arr).slice(0,n)}};
+  return r}
+function steps(tok,st,exp,extra){var q={kind:"steps",tok:tok,steps:st,exp:exp,plain:tok.join(" ")};if(extra)for(var k in extra)q[k]=extra[k];return q}
+function mc(stem,opts,ans,exp,extra){var q={kind:"mc",stem:stem,opts:opts,ans:ans,exp:exp,plain:stem.replace(/<[^>]+>/g,"")};if(extra)for(var k in extra)q[k]=extra[k];return q}
+
+/* ---------- 1. simple subjects and predicates ---------- */
+function SJ(str,h,n,ty,np){return{t:str.split(" "),h:h,n:n,ty:ty,np:!!np}}
+function PR(ty,s,p,r){return{ty:ty,s:s.split(" "),p:p.split(" "),r:r}}
+var SUBJ=[
+ SJ("My older brother",2,"s","h"),SJ("The tall librarian",2,"s","h"),SJ("Our new neighbor",2,"s","h"),SJ("Her best friend",2,"s","h"),
+ SJ("The girl with the blue backpack",1,"s","h"),SJ("The teacher in the hallway",1,"s","h"),SJ("Our soccer coach",2,"s","h"),
+ SJ("Maria",0,"s","h",true),SJ("Daniel",0,"s","h",true),SJ("She",0,"s","h"),SJ("He",0,"s","h"),SJ("Everyone",0,"s","h"),SJ("Somebody",0,"s","h"),
+ SJ("The students in my class",1,"p","h"),SJ("My cousins from Ohio",1,"p","h"),SJ("The twins",1,"p","h"),SJ("Citizens of the town",0,"p","h"),
+ SJ("The players on the team",1,"p","h"),SJ("The hungry campers",2,"p","h"),SJ("They",0,"p","h"),SJ("We",0,"p","h"),SJ("The neighbors",1,"p","h"),
+ SJ("A small puppy",2,"s","a"),SJ("The dog next door",1,"s","a"),SJ("Two tiny kittens",2,"p","a"),SJ("Many birds",1,"p","a"),SJ("The sleepy turtle",2,"s","a"),
+ SJ("The old bridge",2,"s","t"),SJ("The red kite",2,"s","t"),SJ("The old books",2,"p","t"),SJ("The wooden chairs",2,"p","t"),SJ("A tall tree",2,"s","t")];
+var PRED=[
+ PR("h","plays","play","soccer after school"),PR("h","reads","read","mystery novels at night"),PR("h","is cooking","are cooking","dinner for the whole family"),
+ PR("h","has finished","have finished","the science project"),PR("h","will visit","will visit","the museum on Saturday"),PR("h","can solve","can solve","hard puzzles very quickly"),
+ PR("h","walks","walk","to the library every afternoon"),PR("h","is painting","are painting","a picture of the ocean"),PR("h","draws","draw","funny cartoons in a notebook"),
+ PR("h","helps","help","clean the classroom after lunch"),PR("h","rides","ride","the bus to school"),PR("h","should wear","should wear","a warm coat today"),
+ PR("ha","runs","run","across the field every morning"),PR("ha","is sleeping","are sleeping","on the warm porch"),PR("ha","jumped","jumped","over the wooden fence"),
+ PR("ha","has found","have found","a shady spot under the tree"),PR("ha","will wait","will wait","by the back door"),PR("ha","can swim","can swim","across the lake"),
+ PR("ha","climbed","climbed","up the steep hill"),
+ PR("a","chases","chase","the ball across the yard"),PR("a","is eating","are eating","breakfast in the yard"),PR("a","barked","barked","at the mail carrier"),PR("a","has built","have built","a nest in the garden"),
+ PR("t","looks","look","very old"),PR("t","was damaged","were damaged","in the storm"),PR("t","is covered","are covered","with dust"),PR("t","will remain","will remain","here until spring"),
+ PR("t","has been repaired","have been repaired","twice")];
+var INTRO=["After lunch,","Every Saturday,","At the park,","During recess,","Last summer,","In the morning,","On Friday,"];
+function genSubjPred(R){var out=[],seen={},guard=0;
+  while(out.length<20&&guard++<900){
+    var sj=R.pick(SUBJ),cand=PRED.filter(function(p){return p.ty.indexOf(sj.ty)>=0}),pr=R.pick(cand);
+    var verb=sj.n==="s"?pr.s:pr.p,intro=R.f()<.3?R.pick(INTRO):null,sub=sj.t.slice();
+    if(intro&&!sj.np)sub[0]=low(sub[0]);
+    var tok=intro?intro.split(" "):[],subjIdx=tok.length+sj.h;tok=tok.concat(sub);
+    var vs=tok.length;tok=tok.concat(verb);var pi=verb.map(function(_,k){return vs+k});
+    tok=tok.concat(pr.r.split(" "));tok[tok.length-1]+=".";
+    var key=tok.join(" ");if(seen[key])continue;seen[key]=1;
+    out.push(steps(tok,[{id:"s",label:"Underline the simple subject",short:"Subject",style:"ul",ans:[subjIdx],single:true},
+      {id:"p",label:"Circle the simple predicate",short:"Predicate",style:"circle",ans:pi}],
+      "Simple subject: <b>"+sub[sj.h]+"</b>. Simple predicate: <b>"+verb.join(" ")+"</b>."))}
+  return out}
+
+/* ---------- 2. capitalization ---------- */
+var CAPS={
+ n:["sam","pam","maria","omar","lily","diego","nina","ethan","priya","jack","ava","noah"],
+ city:["tampa","newark","denver","boston","austin","seattle","chicago","miami"],
+ state:["florida","texas","oregon","ohio","vermont","nevada","maine","utah"],
+ day:["monday","tuesday","wednesday","thursday","friday","saturday","sunday"],
+ month:["january","march","april","june","july","september","october","december"],
+ country:["japan","brazil","mexico","canada","italy","kenya","india","spain"],
+ lang:["spanish","french","english","japanese","italian"],
+ nat:["american","canadian","european","african","asian"],
+ hol:["halloween","thanksgiving","^independence ^day","^new ^year's ^day"],
+ pet:["max","bella","rocky","luna","milo","daisy"],
+ tchr:["morton","lee","patel","garcia","kim","brooks"],
+ river:["^hudson ^river","^lake ^michigan","^ohio ^river","^lake ^erie","^delaware ^river"],
+ school:["^lincoln ^elementary","^maple ^grove ^middle ^school","^oak ^hill ^academy","^riverside ^school"],
+ street:["^oak ^street","^main ^street","^pine ^avenue","^cedar ^lane"],
+ title:["^the ^magic ^garden","^penny the ^penguin ^explorer","^the ^secret of ^willow ^creek","^zoe and the ^moon ^rocket","^a ^night at the ^museum"]};
+var CAPT=[
+ "^{n1} first met ^{n2} while camping in ^{city}, ^{state}.",
+ "^{n1} invited ^{n2} to read a book called ^{title} together.",
+ "^{title} is about two silly dogs named ^{pet} and ^{pet2}.",
+ "^{n1} said, \"^now it is my turn to read!\"",
+ "my teacher, ^mr. ^{tchr}, gives us a quiz every ^{day}.",
+ "on ^{day}, ^{n1} and ^i walked to the library.",
+ "we flew to ^{city} in ^{month} to visit my grandmother.",
+ "^{n1}'s favorite holiday is ^{hol}.",
+ "my dog, ^{pet}, loves to chase balls at the park.",
+ "^dr. ^{tchr} told ^{n1} to drink more water.",
+ "our school, ^{school}, is on ^{street}.",
+ "^{n1} is learning to speak ^{lang} and ^{lang2}.",
+ "this summer we are traveling to ^{country}.",
+ "^{n1} asked, \"^can you help me with my math homework?\"",
+ "^{n1} has ^{lang} class on ^{day} and ^{day2}.",
+ "we camped near the ^{river} last ^{month}.",
+ "the book was called \"^{title}.\"",
+ "my mom and ^i went to ^{city} for ^{hol}.",
+ "^{n1} and ^{n2} both enrolled in ^mr. ^{tchr}'s reading class.",
+ "they might get into another debate about ^{nat} history and ^{nat2} history.",
+ "^{n1} shouted, \"^watch out for that ball!\"",
+ "the ^{river} flows past ^{city}.",
+ "my favorite month is ^{month} because the weather is nice.",
+ "^{n1} read ^{title} three times last ^{month}.",
+ "our principal, ^mrs. ^{tchr}, visited ^{country} last summer.",
+ "yesterday ^i helped ^{n1} carry boxes to ^{street}.",
+ "^{n1} and ^i are going to ^{school} on ^{day}.",
+ "my grandfather was born in ^{country} and now lives in ^{city}.",
+ "after the game, ^{n1} told ^coach ^{tchr}, \"^thank you for the ride.\"",
+ "every ^{day}, ^{n1} feeds ^{pet} before school."];
+function genCaps(R){var out=[],tpl=R.sample(CAPT,15);
+  tpl.forEach(function(t){var used={};
+    var s=t.replace(/\{(\w+?)(\d?)\}/g,function(m,k,num){var key=k+num,list=CAPS[k]||CAPS[k.replace(/\d$/,"")];
+      if(used[key]===undefined){var tries=0,v;do{v=R.pick(list);tries++}while(tries<20&&Object.keys(used).some(function(u){return used[u]===v}));used[key]=v}
+      return used[key]});
+    var raw=s.split(/\s+/),tok=[],ans=[];
+    raw.forEach(function(w,i){var m=w.indexOf("^")>=0||i===0;tok.push(w.replace(/\^/g,"").toLowerCase());if(m)ans.push(i)});
+    var disp=tok.map(function(w,i){if(ans.indexOf(i)<0)return w;
+      return w.replace(/[A-Za-z]/,function(c){return c.toUpperCase()})});
+    var fixed=disp.join(" ");
+    var q=steps(tok,[{id:"c",label:"Tap the words that should be capitalized",short:"Capitals",style:"hl",ans:ans}],
+      "Correct: <b>"+esc(fixed)+"</b>",{disp:disp});q.plain=fixed;out.push(q)});
+  return out}
+
+/* ---------- 3-5. compound and simple sentences ---------- */
+var COMP=[
+ ["The museum opens at nine","and","we will arrive early"],["Owen painted the fence","and","Mia swept the porch"],
+ ["The soup smelled delicious","and","everyone asked for more"],["Lena practiced the song every night","and","she won first place"],
+ ["The wind blew hard","and","the leaves fell from the trees"],["Dad cooked dinner","and","I set the table"],
+ ["The puppy barked loudly","and","the neighbors looked outside"],["Ravi built a model rocket","and","his sister designed the launch pad"],
+ ["The bell rang","and","the students lined up quietly"],["We packed our bags","and","the bus arrived"],
+ ["Grandma told a funny story","and","the whole family laughed"],["The sun came out","and","the snow began to melt"],
+ ["Keisha plays the violin","and","her brother plays the drums"],["The library is quiet","and","the shelves are full of new books"],
+ ["Lena wanted to swim","but","the pool was closed"],["I studied all week","but","the quiz was still difficult"],
+ ["The team played well","but","they lost the game"],["Marco looked everywhere","but","he could not find his key"],
+ ["It was sunny this morning","but","now the sky is gray"],["The cake looked perfect","but","it tasted too salty"],
+ ["Priya invited Jordan","but","he had to visit his aunt"],["The trail was steep","but","we reached the top"],
+ ["I like pizza","but","my brother prefers pasta"],["The movie was long","but","it was not boring"],
+ ["Ana wanted a pet","but","her apartment did not allow animals"],["The test was hard","but","every student finished it"],
+ ["We planned a picnic","but","it started to rain"],["The old clock is slow","but","it still looks beautiful"],
+ ["You can walk to school","or","you can ride the bus"],["We can watch a movie","or","we can play a board game"],
+ ["Eli will practice piano today","or","he will practice tomorrow"],["You should finish your homework","or","you will fall behind"],
+ ["Mom might bake cookies","or","she might make brownies"],["We can paint the room blue","or","we can paint it green"],
+ ["Zoe could join the chess club","or","she could join the art club"],["Dad will drive us to the lake","or","we will take the train"]];
+var CPS=[ /* simple sentences with two linked parts: [before, last word, conjunction, after] */
+ ["Coach Reed is ","patient","and","kind to every player."],["The team practiced ","hard","but","never complained."],
+ ["Ms. Okafor is ","honest","and","gives good advice."],["We walked ","slowly","but","safely across the icy bridge."],
+ ["My cousin sings ","loudly","and","dances well."],["The kitten is ","tiny","but","very brave."],
+ ["Our neighbor plants ","tomatoes","and","peppers in the garden every spring."],["Ben washed ","the dishes","and","dried them."],
+ ["The movie was ","funny","but","a little too long."],["Tara reads ","quickly","and","remembers every detail."],
+ ["He ordered ","soup","or","a salad for lunch."],["The path was ","narrow","but","easy to follow."],
+ ["Mia opened the box ","slowly","and","carefully."],["We can sit ","inside","or","outside."],["Jack ran ","fast","but","never won the race."]];
+var SIMPLE=[
+ "Maya will attend a new school soon.","The dog barked at the mail carrier.","My grandmother lives near the ocean.","The students walked to the library.",
+ "A butterfly landed on the flower.","Our team practices every Tuesday.","The bus stops at the corner.","Leo built a tower out of blocks.",
+ "The baby giggled at the silly puppet.","Rain fell on the tin roof all night.","My sister plays the flute in the school band.","The farmer picked ripe apples from the tree."];
+var SUBJ2=[
+ "Ravi and Mia have been friends for a very long time.","Carlos and his cousin built a treehouse.","The cat and the dog share a bed.",
+ "Mom and Dad painted the kitchen yellow.","Kira and Dev walked to the park after school.","The teacher and the principal greeted the visitors.",
+ "Pencils and markers are on the shelf.","Grandpa and I planted a vegetable garden."];
+function lowerFirstIfCommon(s){return s}
+function genPunct(R){
+  var kinds=R.shuffle(["n","n","n","h","h","c","c","c","x","x"]),comp=R.shuffle(COMP),cps=R.shuffle(CPS),ci=0,pi=0;
+  return kinds.map(function(k){var pre,w,conj,post;
+    if(k==="n"||k==="h"){var c=comp[ci++],words=c[0].split(" ");w=words.pop();pre=words.join(" ")+" ";conj=c[1];post=c[2]+"."}
+    else{var d=cps[pi++];pre=d[0];w=d[1];conj=d[2];post=d[3]}
+    var shown,correct,wrong,exp;
+    if(k==="n"){shown=w+" "+conj;correct=w+", "+conj;wrong=w+". "+cap(conj);exp="Each side is a complete sentence, so a comma goes before the conjunction."}
+    if(k==="h"){shown=w+", "+conj;correct="correct as is";wrong=w+" "+conj;exp="Each side is a complete sentence, so the comma before the conjunction is right."}
+    if(k==="c"){shown=w+" "+conj;correct="correct as is";wrong=w+", "+conj;exp="The second part is not a complete sentence, so no comma is needed."}
+    if(k==="x"){shown=w+", "+conj;correct=w+" "+conj;wrong=w+". "+cap(conj);exp="The second part is not a complete sentence, so the comma is not needed."}
+    var second=(k==="h")?w+", "+conj+",":(k==="x"||k==="c"||k==="n")?(k==="n"?w+" "+conj:w+", "+conj):"";
+    var first=correct==="correct as is"?wrong:correct;
+    var pair=correct==="correct as is"?[wrong,second]:[correct,wrong];
+    if(k==="c")pair=[w+", "+conj,w+". "+cap(conj)];
+    if(k==="x")pair=[w+" "+conj,w+". "+cap(conj)];
+    if(k==="h")pair=[w+" "+conj,w+", "+conj+","];
+    if(k==="n")pair=[w+", "+conj,w+". "+cap(conj)];
+    pair=R.shuffle(pair);var opts=pair.concat(["correct as is"]);
+    var ans=opts.indexOf(correct);
+    return mc("<div class=\"small\">Are the underlined words punctuated correctly?</div>"+esc(pre)+"<u>"+esc(shown)+"</u> "+esc(post),opts,ans,exp,{letters:true})})}
+function genJoin(R){return R.sample(COMP,8).map(function(c){
+    var s1=c[0]+".",s2=cap(c[2])+".",correct=c[0]+", "+c[1]+" "+c[2]+".";
+    var wrongConj=c[1]==="or"?"and":"or";
+    var opts=R.shuffle([correct,c[0]+", "+wrongConj+" "+c[2]+".",c[0]+" "+c[1]+" "+c[2]+".",c[0]+", "+c[2]+"."]);
+    var how=c[1]==="and"?"adds an idea":c[1]==="but"?"shows a contrast":"shows a choice";
+    return mc("<div class=\"stem\">Join the two simple sentences into one compound sentence with a comma and a conjunction.</div><div class=\"pair\">"+esc(s1)+"<br>"+esc(s2)+"</div>",opts,opts.indexOf(correct),
+      "The conjunction <b>"+c[1]+"</b> "+how+", and a comma goes before it: <b>"+esc(correct)+"</b>")})}
+function genSimpleCompound(R){
+  var items=[];
+  R.sample(COMP,4).forEach(function(c){items.push({s:c[0]+", "+c[1]+" "+c[2]+".",comp:true,conj:c[1]})});
+  R.sample(SIMPLE,2).forEach(function(s){items.push({s:s,comp:false,why:"It has one subject and one complete thought."})});
+  var traps=SUBJ2.concat(CPS.map(function(d){return d[0]+d[1]+" "+d[2]+" "+d[3]}));
+  R.sample(traps,2).forEach(function(s){items.push({s:s,comp:false,why:"It has two linked parts, but only one complete thought, so it is simple, not compound."})});
+  var A=R.shuffle(items).map(function(it){return mc("<div class=\"tag\">Part A</div><div class=\"stem\">Is this sentence simple or compound?</div><div class=\"pair\">"+esc(it.s)+"</div>",["simple","compound"],it.comp?1:0,
+    it.comp?"It is two simple sentences joined by a comma and <b>"+it.conj+"</b>, so it is compound.":it.why)});
+  var B=R.sample(COMP,7).map(function(c){var a=c[0].split(" "),b=c[2].split(" "),tok=a.concat([c[1]],b);
+    tok[a.length-1]+=",";tok[tok.length-1]+=".";
+    return steps(tok,[{id:"e",label:"Tap the LAST word of the first simple sentence",short:"End of 1st sentence",style:"box",ans:[a.length-1],single:true},
+      {id:"j",label:"Tap the word that joins them",short:"Joining word",style:"hl",ans:[a.length],single:true}],
+      "First simple sentence: <b>"+esc(c[0])+"</b>. Joining word: <b>"+c[1]+"</b>. Second simple sentence: <b>"+esc(c[2])+"</b>.",{part:"Part B: Tap to split this compound sentence into its two simple sentences"})});
+  return A.concat(B)}
+
+/* ---------- 6. types of sentences ---------- */
+var TYPES={
+ statement:["The sun is shining brightly today.","We visited the zoo last weekend.","I have a new backpack for school.","My dog loves to play in the park.","The train leaves at noon.","Our class is reading a mystery.","Grandpa planted tomatoes in the garden.","The library closes at six.","Rain fell all night.","My sister plays the flute.","The bakery sells fresh bread.","Tomorrow is my cousin's birthday.","The river is cold in spring.","Dad made pancakes for breakfast.","We saw a rainbow after the storm.","The museum has a new dinosaur exhibit.","Maria keeps her paints in a wooden box.","A butterfly landed on my hand.","The soccer game starts at four.","My brother collects old coins.","The snow covered every roof.","Our teacher wrote the date on the board.","The bus was late this morning.","Ice cream melts quickly in the sun."],
+ question:["What time does the movie start?","Have you finished your homework yet?","Who is coming to the birthday party?","Where did you put my jacket?","Can I borrow your pencil?","Why is the sky red tonight?","How far is it to the lake?","Did you feed the cat?","Which book did you choose?","Are we leaving soon?","When does the library open?","Is this seat taken?","Do you know the answer?","How many apples are in the basket?","Will it rain tomorrow?","Whose backpack is on the floor?","Does anyone have a stapler?","Can you hear the music?","What did the teacher say?","Who left the door open?","Is it your turn yet?","Where is the nearest park?","Did you see that bird?","How old is your little brother?"],
+ command:["Wash your hands before dinner.","Please close the door quietly.","Turn off the lights when you leave.","Bring your library book on Monday.","Put your shoes by the door.","Write your name at the top.","Pass the salt, please.","Take out the trash.","Walk to the end of the hall.","Read the directions first.","Please line up quietly.","Check your work carefully.","Hang your coat on the hook.","Feed the fish every morning.","Open your book to page ten.","Look both ways before crossing.","Go to sleep!","Don't feed the animals!","Stop right there!","Watch out for the puddle!","Hurry up!","Be careful with the glass!","Come here right now!","Hold the rail!"],
+ exclamation:["The sun is shining so brightly today!","What a beautiful rainbow!","My dog loves the park so much!","We won the championship!","That was the best game ever!","How tall that tree is!","I can't believe it!","What a huge cake!","Wow, that rocket is fast!","I passed my test!","The fireworks are amazing!","It's snowing!","What a lovely surprise!","How brave you are!","That roller coaster was scary!","I love this song!","You scared me!","We are going to the beach!","That kite flew so high!","Our team scored again!","What a funny joke!","The puppy learned a new trick!","This soup is delicious!","I finally finished my project!"]};
+var TEXP={statement:"It tells about something and ends with a period.",question:"It asks something and ends with a question mark.",command:"It tells someone to do something. A command can end with a period or an exclamation point.",exclamation:"It shows strong feeling and ends with an exclamation point."};
+function genTypes(R){var kinds=["statement","question","command","exclamation"],out=[];
+  kinds.forEach(function(k){R.sample(TYPES[k],3).forEach(function(s){out.push({s:s,k:k})})});
+  return R.shuffle(out).map(function(it){return mc("<div class=\"stem\">What kind of sentence is this?</div><div class=\"pair\">"+esc(it.s)+"</div>",kinds,kinds.indexOf(it.k),"This is a <b>"+it.k+"</b>. "+TEXP[it.k],{plain:it.s+" ("+it.k+")"})})}
+
+/* ---------- 7. compound subjects and predicates ---------- */
+var NP2=[ /* [tokens, head index, possessive] */
+ ["Chris",0],["Maria",0],["Jameka",0],["Darneka",0],["Tim",0],["Omar",0],["Priya",0],["Leo",0],["his older sister",2],["my best friend",2],["our teacher",1],["the coach",1],["several other students",2],["her little brother",2],["the new neighbor",2],["my cousin",1]];
+var POSS={"he":"his","she":"her","they":"their","I":"my","we":"our"};
+var SCRIPTS=[
+ [["mowed","lawns"],["delivered","papers over the summer"]],[["went","to the store"],["bought","candy"]],[["took","notes"],["asked","questions"]],
+ [["read","the directions"],["solved","the puzzle"]],[["washed","the car"],["dried","it with a towel"]],[["packed","a lunch"],["walked","to school"]],
+ [["baked","cookies"],["shared","them with the class"]],[["opened","the window"],["watched","the rain"]],[["sang","a song"],["played","the guitar"]],
+ [["cleaned","the kitchen"],["swept","the floor"]],[["planted","seeds"],["watered","them every day"]],[["drew","a map"],["colored","it carefully"]],
+ [["brushed","{p} teeth"],["combed","{p} hair"],["left","for school"]]];
+var MODALS=[["will visit","the zoo next week"],["could see","the fireworks from the roof"],["can find","the answer in the book"],["should check","the schedule"],["might join","the science club"]];
+var LABEL={cs:"compound subject",cp:"compound predicate",both:"both"};
+function genCompoundParts(R){var kinds=R.shuffle(["cs","cs","cs","cs","cp","cp","cp","cp","both","both"]),seen={};
+  function once(k){for(var t=0;t<60;t++){var q=build(k);if(!seen[q.plain]){seen[q.plain]=1;return q}}return q}
+  function build(k){
+    var tok=[],subj=[],pred=[];
+    function addNP(np){var w=np[0].split(" ");w.forEach(function(x,i){tok.push(x)});subj.push(tok.length-w.length+np[1])}
+    function addVP(v,r){var vw=v.split(" ");vw.forEach(function(x){pred.push(tok.length);tok.push(x)});r.split(" ").forEach(function(x){tok.push(x)})}
+    var poss="their";
+    if(k==="cs"){var two=R.sample(NP2,2),conj=R.pick(["and","and","or"]);
+      two[1]=[two[1][0],two[1][1]];addNP(two[0]);
+      tok.push(conj);var np2=two[1][0].split(" ");
+      // second noun phrase: lowercase first word unless a name (names are single capitalized words)
+      var np2t=np2.length===1?[np2[0]]:np2;np2t.forEach(function(x){tok.push(x)});subj.push(tok.length-np2t.length+two[1][1]);
+      var m=R.pick(MODALS.concat([["helped","their family around the house"],["walked","to the park after lunch"],["painted","the fence on Saturday"],["built","a snow fort in the yard"]]));
+      addVP(m[0],m[1])}
+    else if(k==="cp"){var sj=R.pick(NP2.concat([["I",0],["We",0],["He",0],["She",0]]));addNP(sj);
+      var pp=sj[0]==="I"?"my":sj[0]==="We"?"our":sj[0]==="He"?"his":sj[0]==="She"?"her":(sj[0].split(" ")[0].toLowerCase()==="his"?"his":"her");
+      if(sj[0]!=="I"&&sj[0]!=="We"&&sj[0]!=="He"&&sj[0]!=="She")pp="their";
+      var sc=R.pick(SCRIPTS);
+      sc.forEach(function(vp,i){if(i>0){if(sc.length>2&&i<sc.length-1){tok[tok.length-1]+=","}else if(sc.length>2){tok[tok.length-1]+=","}if(i===sc.length-1)tok.push("and")}
+        addVP(vp[0],vp[1].replace("{p}",pp))})}
+    else{var two2=R.sample(NP2,2);addNP(two2[0]);tok.push("and");var n2=two2[1][0].split(" ");n2.forEach(function(x){tok.push(x)});subj.push(tok.length-n2.length+two2[1][1]);
+      var sc2=R.pick(SCRIPTS.slice(0,12));sc2.forEach(function(vp,i){if(i>0)tok.push("and");addVP(vp[0],vp[1].replace("{p}","their"))})}
+    tok[tok.length-1]+=".";
+    // proper sentence start: capitalize first word
+    tok[0]=cap(tok[0]);
+    var sw=subj.map(function(i){return tok[i].replace(/[.,]/g,"")}),pw=pred.map(function(i){return tok[i]});
+    return steps(tok,[{id:"s",label:"Underline the simple subjects",short:"Subjects",style:"ul",ans:subj},{id:"p",label:"Circle the simple predicates",short:"Predicates",style:"circle",ans:pred},
+      {id:"l",label:"Does it have a compound subject, a compound predicate, or both?",short:"Type",choice:["compound subject","compound predicate","both"],ans:LABEL[k]}],
+      "Subjects: <b>"+sw.join(", ")+"</b>. Predicates: <b>"+pw.join(", ")+"</b>. So it has a <b>"+LABEL[k]+"</b>.")}
+  return kinds.map(once)}
+
+/* ---------- 8. writing ---------- */
+var PROMPTS=[
+ "Write a paragraph about a time a teacher, coach, or another adult helped you. Use at least two compound sentences.",
+ "Write a paragraph about a time a friend helped you, or you helped a friend. Use at least two compound sentences.",
+ "Write a paragraph about your favorite place to play. Use at least two compound sentences.",
+ "Write a paragraph about a day when something unexpected happened. Use at least two compound sentences.",
+ "Write a paragraph about a goal you want to reach and what you will do to reach it. Use at least two compound sentences.",
+ "Write a paragraph about your favorite season and what you like to do in it. Use at least two compound sentences."];
+function analyze(text){
+  var t=text.trim(),sents=t.match(/[^.!?]+[.!?]+["')\]]*|[^.!?]+$/g)||[];sents=sents.map(function(s){return s.trim()}).filter(Boolean);
+  var words=t?t.split(/\s+/).length:0;
+  var comp=sents.filter(function(s){return /,\s+(and|but|or)\s+\S+\s+\S+\s+\S+/i.test(s)});
+  var noCap=sents.filter(function(s){var m=s.match(/[A-Za-z]/);return !m||m[0]!==m[0].toUpperCase()});
+  var noEnd=sents.filter(function(s){return !/[.!?]["')\]]*$/.test(s)});
+  var checks=[
+   {ok:comp.length>=2,txt:"At least 2 compound sentences (a comma and and, but, or or joining two complete thoughts)",info:comp.length+" found"},
+   {ok:sents.length>0&&noCap.length===0,txt:"Every sentence starts with a capital letter",info:noCap.length?noCap.length+" to fix":"all good"},
+   {ok:sents.length>0&&noEnd.length===0,txt:"Every sentence ends with a . or ! or ?",info:noEnd.length?noEnd.length+" to fix":"all good"},
+   {ok:sents.length>=5&&words>=40,txt:"At least 5 sentences and 40 words",info:sents.length+" sentences, "+words+" words"}];
+  return{checks:checks,score:checks.filter(function(c){return c.ok}).length,comp:comp,sents:sents}}
+
+/* ---------- topics ---------- */
+var TOPICS=[
+ {id:"subjpred",name:"Simple Subjects and Predicates",desc:"Underline the simple subject and circle the simple predicate in each sentence.",gen:genSubjPred},
+ {id:"caps",name:"Capitalization",desc:"Tap the words that should be capitalized.",gen:genCaps},
+ {id:"punct",name:"Punctuating Simple and Compound Sentences",desc:"Are the underlined words punctuated correctly? Choose a, b or c.",gen:genPunct},
+ {id:"join",name:"Joining Sentences",desc:"Join two simple sentences into a compound sentence with a comma and a conjunction.",gen:genJoin},
+ {id:"simplecomp",name:"Simple and Compound Sentences",desc:"Part A: simple or compound? Part B: split a compound sentence into its two simple sentences.",gen:genSimpleCompound},
+ {id:"types",name:"Types of Sentences",desc:"Statement, question, command or exclamation?",gen:genTypes},
+ {id:"compound",name:"Compound Subjects and Predicates",desc:"Underline the subjects, circle the predicates, and say which are compound.",gen:genCompoundParts},
+ {id:"write",name:"Write a Paragraph with Compound Sentences",desc:"Write a paragraph. A checklist counts compound sentences, capitals, end marks and length.",write:true}];
+function topicById(id){return TOPICS.filter(function(t){return t.id===id})[0]}
+
+/* ---------- state ---------- */
+var app=document.getElementById("app");
+var S={view:"home",topic:null,seed:0,Q:[],i:0,res:[],U:null,text:"",done:false};
+function seedFor(id){var m=lsGet("gr_seeds",{});if(!m[id]){m[id]=Math.floor(Math.random()*1e9)+1;lsSet("gr_seeds",m)}return m[id]}
+function newSeed(id){var m=lsGet("gr_seeds",{});m[id]=Math.floor(Math.random()*1e9)+1;lsSet("gr_seeds",m);return m[id]}
+function newU(q){return{act:0,sel:q.kind==="steps"?q.steps.map(function(){return[]}):[],choice:null,checked:false,ok:false}}
+function lastFor(t){var l=MPE.log().filter(function(r){return r.test==="Grammar Practice"&&r.section===t.name});var r=l[l.length-1];
+  return r?"Last on this device: "+r.score+" of "+r.total+" ("+Math.round(r.score/r.total*100)+"%)"+(r.child?" by "+r.child:""):""}
+
+/* ---------- screens ---------- */
+function home(){S.view="home";S.topic=null;
+  app.innerHTML='<div class="row"><a class="btn ghost" href="../" style="text-decoration:none">&larr; Spelling</a><a class="btn ghost" href="../../scores/" style="text-decoration:none">My Scores</a></div>'+
+   '<div><div class="tag">Levin</div><h1>Grammar Practice</h1></div>'+
+   '<p class="small" style="margin:-6px 0 0">Practice pages that match the school sample worksheets. Tap <b>New questions</b> any time for a fresh set.</p>'+
+   '<div class="topics">'+TOPICS.map(function(t,i){var n=t.write?"1 paragraph":(t.gen(RNG(seedFor(t.id))).length+" questions");
+    return '<section class="card topic"><h2>'+esc(t.name)+'</h2><p>'+esc(t.desc)+'</p><p>'+n+'</p><p class="last">'+esc(lastFor(t))+'</p><div class="row"><button class="btn" data-go="'+t.id+'">Start</button><button class="btn ghost" data-new="'+t.id+'">New questions</button></div></section>'}).join("")+'</div>';
+  app.querySelectorAll("[data-go]").forEach(function(b){b.onclick=function(){start(b.dataset.go,seedFor(b.dataset.go))}});
+  app.querySelectorAll("[data-new]").forEach(function(b){b.onclick=function(){newSeed(b.dataset.new);home()}})}
+
+function mpeOpts(t){return{key:t.id,
+  getState:function(){
+    if(S.topic&&S.topic.write&&S.view==="write")return S.text.trim()?{label:"your paragraph",topic:t.id,seed:S.seed,text:S.text}:null;
+    if(S.view==="test"&&S.topic&&S.i<S.Q.length)return{label:"question "+(S.i+1)+" of "+S.Q.length,topic:t.id,seed:S.seed,i:S.i,res:S.res};
+    return null},
+  resume:function(st){var tp=topicById(st.topic);if(!tp)return;S.topic=tp;S.seed=st.seed;
+    if(tp.write){S.text=st.text||"";S.view="write";return writeView(true)}
+    S.Q=tp.gen(RNG(st.seed));S.i=st.i;S.res=st.res||[];S.view="test";S.U=newU(S.Q[S.i]);renderQ()},
+  exit:function(){home()}}}
+
+function start(id,seed){var t=topicById(id);S.topic=t;S.seed=seed;
+  MPE.begin(mpeOpts(t));
+  if(t.write){S.text="";S.done=false;S.view="write";return writeView()}
+  S.Q=t.gen(RNG(seed));S.i=0;S.res=[];S.view="test";S.done=false;S.U=newU(S.Q[0]);renderQ()}
+
+function headHTML(){var n=S.Q.length,p=Math.round(S.i/n*100);
+  return '<div class="row" style="justify-content:space-between"><button class="btn ghost" id="quit">Home</button><span class="tag">Question '+(S.i+1)+' of '+n+'</span></div><div class="bar"><i style="width:'+p+'%"></i></div><div><div class="tag">'+esc(S.topic.name)+'</div></div>'}
+
+function tokHTML(q,U){return q.tok.map(function(w,i){var cls="tok",txt=w,dis="";
+  if(U.checked){var okAll=true;
+    q.steps.forEach(function(st,k){if(st.choice)return;var inAns=st.ans.indexOf(i)>=0,sel=U.sel[k].indexOf(i)>=0;
+      if(inAns&&sel)cls+=" ok";else if(inAns&&!sel)cls+=" miss";else if(!inAns&&sel)cls+=" bad"});
+    if(q.disp&&q.steps[0].ans.indexOf(i)>=0)txt=q.disp[i];dis=" disabled"}
+  else q.steps.forEach(function(st,k){if(!st.choice&&U.sel[k].indexOf(i)>=0)cls+=" m-"+st.style});
+  return '<button class="'+cls+'" data-t="'+i+'"'+dis+'>'+esc(txt)+'</button>'}).join("")}
+
+function canCheck(q,U){if(q.kind==="mc")return U.choice!==null;
+  return q.steps.every(function(st,k){return st.choice?U.choice!==null:U.sel[k].length>0})}
+function grade(q,U){if(q.kind==="mc")return U.choice===q.ans;
+  return q.steps.every(function(st,k){if(st.choice)return st.choice[U.choice]===st.ans;var a=st.ans.slice().sort(function(x,y){return x-y}),b=U.sel[k].slice().sort(function(x,y){return x-y});return a.length===b.length&&a.every(function(v,i){return v===b[i]})})}
+
+function renderQ(){var q=S.Q[S.i],U=S.U,html=headHTML();
+  if(q.part&&q.kind==="steps")html+='<div class="tag">'+esc(q.part)+'</div>';
+  html+='<section class="card" id="qcard">';
+  if(q.kind==="mc"){
+    html+='<div class="stem">'+q.stem+'</div><div class="opts">'+q.opts.map(function(o,i){var c="opt";
+      if(U.checked){if(i===q.ans)c+=" right";else if(i===U.choice)c+=" wrong"}else if(i===U.choice)c+=" sel";
+      return '<button class="'+c+'" data-o="'+i+'"'+(U.checked?" disabled":"")+'>'+(q.letters?'<b>'+"abc"[i]+'</b>':'')+'<span>'+esc(o)+'</span></button>'}).join("")+'</div>'}
+  else{
+    var tokSteps=q.steps.filter(function(s){return !s.choice});
+    if(!U.checked){html+='<div class="chips">'+tokSteps.map(function(st,k){var idx=q.steps.indexOf(st);return '<button class="chip'+(U.act===idx?" on":"")+'" data-a="'+idx+'">'+esc(st.label)+'</button>'}).join("")+'</div>'}
+    html+='<div class="sent">'+tokHTML(q,U)+'</div>';
+    q.steps.forEach(function(st,k){if(!st.choice)return;
+      html+='<div class="stem">'+esc(st.label)+'</div><div class="choicerow">'+st.choice.map(function(c,i){var cl="opt";if(U.checked){if(c===st.ans)cl+=" right";else if(i===U.choice)cl+=" wrong"}else if(i===U.choice)cl+=" sel";
+        return '<button class="'+cl+'" data-c="'+i+'"'+(U.checked?" disabled":"")+'>'+esc(c)+'</button>'}).join("")+'</div>'})}
+  if(U.checked){html+='<div class="fb '+(U.ok?"good":"bad")+'">'+(U.ok?"Correct!":"Not quite.")+'<span>'+q.exp+'</span></div>'}
+  html+='<div class="row" style="margin-top:14px">'+(U.checked?'<button class="btn" id="next">'+(S.i+1>=S.Q.length?"See my score":"Next")+'</button>':'<button class="btn" id="check"'+(canCheck(q,U)?"":" disabled")+'>Check</button>')+'</div></section>';
+  app.innerHTML=html;
+  document.getElementById("quit").onclick=function(){if(confirm("Go back home? Use the yellow Save button first if you want to continue later."))home()};
+  app.querySelectorAll("[data-t]").forEach(function(b){b.onclick=function(){var st=q.steps[U.act],k=U.act,i=+b.dataset.t,s=U.sel[k],at=s.indexOf(i);
+    if(st.single){U.sel[k]=at>=0?[]:[i]}else{if(at>=0)s.splice(at,1);else s.push(i)}
+    // a word cannot be in two token steps at once
+    q.steps.forEach(function(o,j){if(j!==k&&!o.choice){var p=U.sel[j].indexOf(i);if(p>=0&&q.steps[k].id!==o.id&&(q.steps[k].style!==o.style))U.sel[j].splice(p,1)}});
+    renderQ()}});
+  app.querySelectorAll("[data-a]").forEach(function(b){b.onclick=function(){U.act=+b.dataset.a;renderQ()}});
+  app.querySelectorAll("[data-o]").forEach(function(b){b.onclick=function(){U.choice=+b.dataset.o;renderQ()}});
+  app.querySelectorAll("[data-c]").forEach(function(b){b.onclick=function(){U.choice=+b.dataset.c;renderQ()}});
+  var ck=document.getElementById("check");if(ck)ck.onclick=function(){U.checked=true;U.ok=grade(q,U);renderQ();window.scrollTo(0,document.body.scrollHeight)};
+  var nx=document.getElementById("next");if(nx)nx.onclick=function(){S.res[S.i]=U.ok?1:0;S.i++;MPE.autosave();
+    if(S.i>=S.Q.length)return results();S.U=newU(S.Q[S.i]);renderQ();window.scrollTo(0,0)}}
+
+function results(){S.view="results";
+  var n=S.Q.length,sc=S.res.reduce(function(a,b){return a+b},0),pct=Math.round(sc/n*100);
+  MPE.finish({test:"Grammar Practice",section:S.topic.name,score:sc,total:n});
+  var miss=[];S.Q.forEach(function(q,i){if(!S.res[i])miss.push('<div><b>'+esc(q.plain)+'</b><br>'+q.exp+'</div>')});
+  var msg=pct===100?"Perfect score!":pct>=90?"Excellent work!":pct>=70?"Good job. A little more practice.":"Keep practicing. Review the answers below, then try again.";
+  app.innerHTML='<section class="card"><div class="tag">'+esc(S.topic.name)+'</div><div class="score">'+sc+' / '+n+' &middot; '+pct+'%</div><h2>'+msg+'</h2>'+
+   (miss.length?'<h3 style="margin-top:14px">Review what you missed</h3><div class="miss-list">'+miss.join("")+'</div>':'')+
+   '<div class="row"><button class="btn" id="new">New questions</button><button class="btn ghost" id="again">Try these again</button><button class="btn ghost" id="hm">Home</button></div></section>';
+  document.getElementById("new").onclick=function(){start(S.topic.id,newSeed(S.topic.id))};
+  document.getElementById("again").onclick=function(){start(S.topic.id,S.seed)};
+  document.getElementById("hm").onclick=home}
+
+function writeView(resumed){var prompt=PROMPTS[S.seed%PROMPTS.length],timer=null;
+  app.innerHTML='<div class="row" style="justify-content:space-between"><button class="btn ghost" id="quit">Home</button><span class="tag">Writing</span></div>'+
+   '<section class="card"><div class="tag">'+esc(S.topic.name)+'</div><div class="stem">'+esc(prompt)+'</div>'+
+   '<textarea id="txt" placeholder="Start writing here..."></textarea>'+
+   '<p class="small">Tip: a compound sentence joins two complete thoughts with a comma and <b>and</b>, <b>but</b>, or <b>or</b>.</p>'+
+   '<div class="row"><button class="btn" id="chk">Check my paragraph</button><button class="btn ghost" id="new">New prompt</button></div></section>';
+  var ta=document.getElementById("txt");ta.value=S.text||"";
+  ta.oninput=function(){S.text=ta.value;clearTimeout(timer);timer=setTimeout(function(){MPE.autosave()},1500)};
+  document.getElementById("quit").onclick=function(){if(confirm("Go back home? Use the yellow Save button first if you want to continue later."))home()};
+  document.getElementById("new").onclick=function(){start("write",newSeed("write"))};
+  document.getElementById("chk").onclick=function(){S.text=ta.value;if(S.text.trim().split(/\s+/).length<5){alert("Write a few sentences first.");return}writeResults()}}
+
+function writeResults(){S.view="writeResults";var a=analyze(S.text),n=a.checks.length;
+  MPE.finish({test:"Grammar Practice",section:S.topic.name,score:a.score,total:n});
+  app.innerHTML='<section class="card"><div class="tag">'+esc(S.topic.name)+'</div><div class="score">'+a.score+' / '+n+'</div>'+
+   '<ul class="check" style="list-style:none;padding:0">'+a.checks.map(function(c){return '<li class="'+(c.ok?"y":"n")+'">'+(c.ok?"✓":"✗")+' '+esc(c.txt)+' <span class="small">('+esc(c.info)+')</span></li>'}).join("")+'</ul>'+
+   (a.comp.length?'<h3>Compound sentences I found</h3><div class="miss-list">'+a.comp.map(function(s){return '<div>'+esc(s)+'</div>'}).join("")+'</div>':'')+
+   '<p class="small">This is a checklist, not a teacher\'s grade. It cannot tell if your writing is good or if every comma is in the right place. Ask a grown-up to read it too.</p>'+
+   '<div class="row"><button class="btn" id="edit">Keep editing</button><button class="btn ghost" id="new">New prompt</button><button class="btn ghost" id="hm">Home</button></div></section>';
+  document.getElementById("edit").onclick=function(){S.view="write";writeView()};
+  document.getElementById("new").onclick=function(){start("write",newSeed("write"))};
+  document.getElementById("hm").onclick=home}
+
+window.__grammar={TOPICS:TOPICS,RNG:RNG,start:start,state:function(){return S},analyze:analyze,topicById:topicById,grade:grade};
+home();
+})();
+</script>
+</body>
+</html>

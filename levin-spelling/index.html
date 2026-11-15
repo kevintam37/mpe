@@ -403,7 +403,7 @@ function hub(){
   app.innerHTML='<div><div class="tag">Spelling tests</div><h1>Choose a test</h1></div>'+
    '<div class="tests">'+TESTS.map(function(t,i){var m=t.words.filter(function(o){return(prog[o.w]||0)>=3}).length;
      return '<button class="mode test" data-t="'+i+'"><strong>'+label(t)+'</strong><span>'+(t.bee?'School spelling bee':'Sort #'+t.sort)+' &middot; '+t.words.length+' words &middot; '+m+' mastered</span></button>'}).join("")+'</div>'+
-   '<div class="row"><button class="btn" id="book">Sticker book ('+earned()+' of '+badgeDefs().length+')</button></div>';
+   '<div class="row"><button class="btn" id="book">Sticker book ('+earned()+' of '+badgeDefs().length+')</button><a class="btn ghost" href="grammar/" style="text-decoration:none">Grammar Practice</a></div>';
   document.getElementById("book").onclick=book;
   app.querySelectorAll("[data-t]").forEach(function(b){b.onclick=function(){pick(TESTS[+b.dataset.t])}});
 }
