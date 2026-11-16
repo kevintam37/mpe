@@ -258,6 +258,49 @@
     pending: function () { return jget('mpe_q', []).length; },
     flush: flush
   };
+
+  // Review row: full question, every choice with "your pick" and "correct" marks, then the explanation.
+  function reviewItem(q, r, k, o) {
+    o = o || {};
+    r = r || { ok: false, given: '(no answer)' };
+    function esc(t) { return String(t == null ? '' : t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+    if (!document.getElementById('mpe-rev-css')) {
+      var st = document.createElement('style'); st.id = 'mpe-rev-css';
+      st.textContent = '.rvq{margin:6px 0 8px;font-size:15px;line-height:1.5;text-align:left}.rvq p{margin:4px 0}' +
+        '.rvo{display:flex;gap:8px;align-items:flex-start;border:2px solid rgba(128,128,128,.28);border-radius:10px;padding:7px 10px;margin:5px 0;font-size:14px;text-align:left}' +
+        '.rvo>b{min-width:1.4em}.rvo>span.t{flex:1}.rvo.rg{border-color:#2A9D8F;background:rgba(42,157,143,.16)}.rvo.rb{border-color:#E76F51;background:rgba(231,111,81,.16)}' +
+        '.rvt{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.03em;white-space:nowrap;padding:2px 7px;border-radius:99px;background:rgba(128,128,128,.22)}' +
+        '.rvo.rg .rvt.c{background:#2A9D8F;color:#fff}.rvo.rb .rvt.p{background:#E76F51;color:#fff}.rvo.rg .rvt.p{background:#2A9D8F;color:#fff}' +
+        '.rvx{margin-top:8px;font-size:14px;text-align:left;border-top:1px dashed rgba(128,128,128,.4);padding-top:6px}' +
+        '.rvpass{font-size:13px;margin:4px 0;text-align:left}.rvpass summary{cursor:pointer;font-weight:700}.rvf{margin:4px 0;text-align:left;font-size:14px}';
+      document.head.appendChild(st);
+    }
+    var LT = o.LT || ['A', 'B', 'C', 'D', 'E', 'F'];
+    var head = '<div class="rh"><span class="mk">' + (r.ok ? '✓' : '✗') + '</span> <b>Question ' + esc(o.label != null ? o.label : k + 1) + '</b>' + (o.sec ? ' · ' + esc(o.sec) : '') + '</div>';
+    var h = '<div class="ri ' + (r.ok ? 'okr' : 'nor') + '">' + head;
+    var pz = o.pass || q.pass;
+    if (pz) h += '<details class="rvpass"><summary>Show the passage</summary>' + pz + '</details>';
+    h += '<div class="rvq">' + (q.q != null ? String(q.q).replace(/\n/g, '<br>') : '') + (q.pics || '') + '</div>';
+    var isMC = (q.t === 'mc' || q.t === 'multi' || (!q.t && Array.isArray(q.opts))) && Array.isArray(q.opts);
+    if (isMC) {
+      var ans = Array.isArray(q.a) ? q.a : [q.a];
+      var sel = Array.isArray(r.sel) ? r.sel : (r.sel == null ? [] : [r.sel]);
+      h += q.opts.map(function (opt, j) {
+        var c = ans.indexOf(j) >= 0, p = sel.indexOf(j) >= 0, cls = 'rvo' + (c ? ' rg' : (p ? ' rb' : '')), tag = '';
+        if (p) tag += '<span class="rvt p">Your pick</span> ';
+        if (c) tag += '<span class="rvt c">Correct</span>';
+        return '<div class="' + cls + '"><b>' + (LT[j] || '') + '</b><span class="t">' + opt + '</span><span>' + tag + '</span></div>';
+      }).join('');
+      if (!sel.length) h += '<div class="rvf"><b>Your answer:</b> (no answer)</div>';
+    } else {
+      var corr = typeof o.correct === 'function' ? o.correct(q) : (q.show || q.model || '');
+      h += '<div class="rvf"><b>Your answer:</b> ' + esc(r.given || '(no answer)') + '</div>';
+      if (!r.ok || o.alwaysCorrect) h += '<div class="rvf"><b>Correct answer:</b> ' + (o.html ? corr : esc(corr)) + '</div>';
+    }
+    if (q.exp) h += '<div class="rvx">' + q.exp + '</div>';
+    return h + '</div>';
+  }
+  MPE.reviewItem = reviewItem;
   window.MPE = MPE;
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', flush); else flush();
 })();

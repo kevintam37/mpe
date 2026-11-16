@@ -65,6 +65,7 @@ button:focus-visible,textarea:focus-visible{outline:3px solid var(--gold);outlin
 .fb.good{background:var(--good-bg);color:var(--good)}
 .fb.bad{background:var(--bad-bg);color:var(--bad)}
 .fb span{color:var(--ink);font-weight:600;display:block;margin-top:4px}
+.rv{border:2px solid var(--line);border-left:8px solid var(--good);border-radius:14px;padding:12px 14px;background:var(--surface);margin-bottom:10px}.rv.rno{border-left-color:var(--bad)}.rv .opt{cursor:default}.rv .sent{font-size:1.15rem}.rvh{margin-bottom:6px}
 .score{font-family:var(--display);font-size:2.6rem;color:var(--accent)}
 .miss-list{display:grid;gap:8px;margin:10px 0}
 .miss-list div{background:var(--tile);border-radius:12px;padding:10px 14px;font-weight:600;font-size:.98rem}
@@ -362,7 +363,7 @@ function topicById(id){return TOPICS.filter(function(t){return t.id===id})[0]}
 
 /* ---------- state ---------- */
 var app=document.getElementById("app");
-var S={view:"home",topic:null,seed:0,Q:[],i:0,res:[],U:null,text:"",done:false};
+var S={view:"home",topic:null,seed:0,Q:[],i:0,res:[],picks:[],U:null,text:"",done:false};
 function seedFor(id){var m=lsGet("gr_seeds",{});if(!m[id]){m[id]=Math.floor(Math.random()*1e9)+1;lsSet("gr_seeds",m)}return m[id]}
 function newSeed(id){var m=lsGet("gr_seeds",{});m[id]=Math.floor(Math.random()*1e9)+1;lsSet("gr_seeds",m);return m[id]}
 function newU(q){return{act:0,sel:q.kind==="steps"?q.steps.map(function(){return[]}):[],choice:null,checked:false,ok:false}}
@@ -382,17 +383,17 @@ function home(){S.view="home";S.topic=null;
 function mpeOpts(t){return{key:t.id,
   getState:function(){
     if(S.topic&&S.topic.write&&S.view==="write")return S.text.trim()?{label:"your paragraph",topic:t.id,seed:S.seed,text:S.text}:null;
-    if(S.view==="test"&&S.topic&&S.i<S.Q.length)return{label:"question "+(S.i+1)+" of "+S.Q.length,topic:t.id,seed:S.seed,i:S.i,res:S.res};
+    if(S.view==="test"&&S.topic&&S.i<S.Q.length)return{label:"question "+(S.i+1)+" of "+S.Q.length,topic:t.id,seed:S.seed,i:S.i,res:S.res,picks:S.picks};
     return null},
   resume:function(st){var tp=topicById(st.topic);if(!tp)return;S.topic=tp;S.seed=st.seed;
     if(tp.write){S.text=st.text||"";S.view="write";return writeView(true)}
-    S.Q=tp.gen(RNG(st.seed));S.i=st.i;S.res=st.res||[];S.view="test";S.U=newU(S.Q[S.i]);renderQ()},
+    S.Q=tp.gen(RNG(st.seed));S.i=st.i;S.res=st.res||[];S.picks=st.picks||[];S.view="test";S.U=newU(S.Q[S.i]);renderQ()},
   exit:function(){home()}}}
 
 function start(id,seed){var t=topicById(id);S.topic=t;S.seed=seed;
   MPE.begin(mpeOpts(t));
   if(t.write){S.text="";S.done=false;S.view="write";return writeView()}
-  S.Q=t.gen(RNG(seed));S.i=0;S.res=[];S.view="test";S.done=false;S.U=newU(S.Q[0]);renderQ()}
+  S.Q=t.gen(RNG(seed));S.i=0;S.res=[];S.picks=[];S.view="test";S.done=false;S.U=newU(S.Q[0]);renderQ()}
 
 function headHTML(){var n=S.Q.length,p=Math.round(S.i/n*100);
   return '<div class="row" style="justify-content:space-between"><button class="btn ghost" id="quit">Home</button><span class="tag">Question '+(S.i+1)+' of '+n+'</span></div><div class="bar"><i style="width:'+p+'%"></i></div><div><div class="tag">'+esc(S.topic.name)+'</div></div>'}
@@ -437,16 +438,31 @@ function renderQ(){var q=S.Q[S.i],U=S.U,html=headHTML();
   app.querySelectorAll("[data-o]").forEach(function(b){b.onclick=function(){U.choice=+b.dataset.o;renderQ()}});
   app.querySelectorAll("[data-c]").forEach(function(b){b.onclick=function(){U.choice=+b.dataset.c;renderQ()}});
   var ck=document.getElementById("check");if(ck)ck.onclick=function(){U.checked=true;U.ok=grade(q,U);renderQ();window.scrollTo(0,document.body.scrollHeight)};
-  var nx=document.getElementById("next");if(nx)nx.onclick=function(){S.res[S.i]=U.ok?1:0;S.i++;MPE.autosave();
+  var nx=document.getElementById("next");if(nx)nx.onclick=function(){S.res[S.i]=U.ok?1:0;S.picks[S.i]={sel:U.sel,choice:U.choice};S.i++;MPE.autosave();
     if(S.i>=S.Q.length)return results();S.U=newU(S.Q[S.i]);renderQ();window.scrollTo(0,0)}}
+
+function reviewHTML(q,i){var ok=S.res[i]===1,pk=S.picks[i]||{sel:q.kind==="steps"?q.steps.map(function(){return[]}):[],choice:null};
+  var h='<div class="rv '+(ok?"rok":"rno")+'"><div class="rvh"><b>'+(ok?"\u2713":"\u2717")+' Question '+(i+1)+'</b></div>';
+  if(q.kind==="mc"){
+    h+='<div class="stem">'+q.stem+'</div><div class="opts">'+q.opts.map(function(o,j){var c=j===q.ans,p=j===pk.choice,cl="opt"+(c?" right":p?" wrong":"");
+      return '<div class="'+cl+'">'+(q.letters?'<b>'+"abc"[j]+'</b>':'')+'<span>'+esc(o)+'</span>'+(p?' <span class="chip on">Your pick</span>':'')+(c?' <span class="chip on" style="background:var(--good);border-color:var(--good)">Correct</span>':'')+'</div>'}).join("")+'</div>'}
+  else{
+    q.steps.forEach(function(st){if(st.part)h+=''});
+    if(q.part)h+='<div class="tag">'+esc(q.part)+'</div>';
+    h+='<div class="small">Green = right. Red crossed out = your tap that was wrong. Dashed green = you missed it.</div><div class="sent">'+tokHTML(q,{checked:true,sel:pk.sel})+'</div>';
+    q.steps.forEach(function(st,k){
+      if(st.choice){h+='<div class="stem">'+esc(st.label)+'</div><div class="pair">Your answer: <b>'+(pk.choice==null?"(none)":esc(st.choice[pk.choice]))+'</b><br>Correct answer: <b>'+esc(st.ans)+'</b></div>'}
+      else{var say=function(a){return a.length?a.slice().sort(function(x,y){return x-y}).map(function(n){return q.tok[n].replace(/[.,]$/,"")}).join(", "):"(none)"};
+        h+='<div class="pair">'+esc(st.short||st.label)+' &mdash; you tapped: <b>'+esc(say(pk.sel[k]))+'</b><br>Correct: <b>'+esc(say(st.ans))+'</b></div>'}})}
+  return h+'<div class="fb '+(ok?"good":"bad")+'">'+(ok?"Correct.":"Not quite.")+'<span>'+q.exp+'</span></div></div>'}
 
 function results(){S.view="results";
   var n=S.Q.length,sc=S.res.reduce(function(a,b){return a+b},0),pct=Math.round(sc/n*100);
   MPE.finish({test:"Grammar Practice",section:S.topic.name,score:sc,total:n});
-  var miss=[];S.Q.forEach(function(q,i){if(!S.res[i])miss.push('<div><b>'+esc(q.plain)+'</b><br>'+q.exp+'</div>')});
+  var miss=S.Q.map(function(q,i){return reviewHTML(q,i)});
   var msg=pct===100?"Perfect score!":pct>=90?"Excellent work!":pct>=70?"Good job. A little more practice.":"Keep practicing. Review the answers below, then try again.";
   app.innerHTML='<section class="card"><div class="tag">'+esc(S.topic.name)+'</div><div class="score">'+sc+' / '+n+' &middot; '+pct+'%</div><h2>'+msg+'</h2>'+
-   (miss.length?'<h3 style="margin-top:14px">Review what you missed</h3><div class="miss-list">'+miss.join("")+'</div>':'')+
+   '<h3 style="margin-top:14px">Review of your answers</h3><p class="small">Green is the correct answer. Red is what you picked.</p><div class="review">'+miss.join("")+'</div>'+
    '<div class="row"><button class="btn" id="new">New questions</button><button class="btn ghost" id="again">Try these again</button><button class="btn ghost" id="hm">Home</button></div></section>';
   document.getElementById("new").onclick=function(){start(S.topic.id,newSeed(S.topic.id))};
   document.getElementById("again").onclick=function(){start(S.topic.id,S.seed)};

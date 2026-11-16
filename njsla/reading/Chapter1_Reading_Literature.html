@@ -337,13 +337,7 @@ function reviewScreen(L, Q) {
   stopTimer();
   const score = Q.filter((q, k) => answered[k] && answered[k].ok).length;
   const pct = Math.round(score / Q.length * 100);MPE.finish({section:L.name,score:score,total:Q.length});
-  const rows = Q.map((q, k) => {
-    const r = answered[k] || { ok: false, given: '(no answer)' };
-    return '<div class="ri ' + (r.ok ? 'okr' : 'nor') + '"><div><span class="mk">' + (r.ok ? '✓' : '✗') + '</span> <b>Question ' + esc(q.n) + '</b></div>' +
-      '<div class="rq">' + esc(q.q.slice(0, 110)) + (q.q.length > 110 ? '…' : '') + '</div>' +
-      '<div><b>Your answer:</b> ' + esc(r.given || '(no answer)') + '</div>' +
-      (r.ok ? '' : '<div class="rc"><b>Correct answer:</b> ' + esc(correctText(q)) + '</div>') + '</div>';
-  }).join('');
+  const rows = Q.map((q, k) => MPE.reviewItem(q, answered[k], k, { LT: LT, label: q.n, html: true, pass: (typeof passageHTML === 'function' && q.p) ? passageHTML(q.p) : '', correct: correctText })).join('');
   $('st').innerHTML = '<div class="c"><div class="score">' + score + '/' + Q.length + '</div><p><b>Test score: ' + pct + '%</b><br>' + score + ' correct · ' + (Q.length - score) + ' wrong</p>' +
     '<p class="small">' + L.name + '</p><button class="nb" onclick="start(lesson)">Try again</button>' +
     (lesson < LES.length - 1 ? '<button class="nb alt" onclick="start(' + (lesson + 1) + ')">Next lesson →</button>' : '') +

@@ -189,7 +189,7 @@ function show(){
   let score=0;const missArr=[];
   for(let k=0;k<Q.length;k++){const a=answered[k];if(a&&a.ok)score++;else missArr.push(k+1);}
   const pct=Math.round(score/Q.length*100);MPE.finish({section:L.name,score:score,total:Q.length});
-  const rows=Q.map((q,k)=>{const r=answered[k]||{ok:false,given:'(no answer)'};return `<div class="ri ${r.ok?'okr':'nor'}"><div class="rh"><span class="mk">${r.ok?'✓':'✗'}</span> Question ${k+1}</div><div class="rq">${esc(q.q.replace(/\n/g,' ').slice(0,110))}${q.q.length>110?'…':''}</div><div class="ra"><b>Your answer:</b> ${esc(r.given||'(no answer)')}</div>${r.ok?'':`<div class="rc"><b>Correct answer:</b> ${esc(correctText(q))}</div>`}</div>`}).join('');
+  const rows=Q.map((q,k)=>MPE.reviewItem(q,answered[k],k,{LT:LT,sec:null,html:true,correct:typeof correctText==='function'?correctText:null})).join('');
   s.innerHTML=`<div class="c"><div class="score">${score}/${Q.length}</div><p><b>Test score: ${pct}%</b><br>${score} correct · ${Q.length-score} wrong</p><p class="small">${L.name}</p><button class="nb" onclick="start(lesson)">Try again</button>${lesson<LES.length-1?`<button class="nb alt" onclick="start(${lesson+1})">Next lesson →</button>`:''}<button class="nb ghost" onclick="home()">All lessons</button></div><h3 class="revh">Review of your answers</h3><div class="rev">${rows}</div>`;return}
  const q=Q[i];
  const locked=answered[i];
