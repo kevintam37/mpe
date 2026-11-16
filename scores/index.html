@@ -53,7 +53,18 @@ function localRows(child){
  return all.filter(function(r){if(seen[r.id])return false;seen[r.id]=1;return child==='Everyone'||r.child===child}).map(function(r){
   var d=new Date(r.ts);function z(n){return n<10?'0'+n:n}
   return {date:d.getFullYear()+'-'+z(d.getMonth()+1)+'-'+z(d.getDate()),time:z(d.getHours())+':'+z(d.getMinutes()),child:r.child,test:r.test,section:r.section,score:r.score,total:r.total,percent:r.total?Math.round(r.score/r.total*100):'',minutes:Math.round(r.seconds/6)/10}}).reverse()}
+function fixDate(v){v=String(v==null?'':v);
+ if(/^\d{4}-\d{2}-\d{2}$/.test(v))return v;
+ var d=new Date(v);if(isNaN(d))return v;
+ var p=new Intl.DateTimeFormat('en-CA',{timeZone:'America/New_York',year:'numeric',month:'2-digit',day:'2-digit'}).format(d);return p}
+function fixTime(v){v=String(v==null?'':v);
+ if(/^\d{1,2}:\d{2}$/.test(v))return v;
+ var m=v.match(/^1899-12-30T(\d{2}):(\d{2}):(\d{2})/);
+ if(m){var t=(+m[1])*3600+(+m[2])*60+(+m[3])-(4*3600+56*60+2);t=((t%86400)+86400)%86400;t=Math.round(t/60);var h=Math.floor(t/60)%24,mi=t%60;return (h<10?'0':'')+h+':'+(mi<10?'0':'')+mi}
+ var d=new Date(v);if(isNaN(d))return v;
+ return new Intl.DateTimeFormat('en-GB',{timeZone:'America/New_York',hour:'2-digit',minute:'2-digit',hour12:false}).format(d)}
 function render(rows,from){
+ rows=rows.map(function(r){r.date=fixDate(r.date);r.time=fixTime(r.time);return r});
  var out=document.getElementById('out');
  if(!rows.length){out.innerHTML='<div class="card"><div class="empty">No test results yet for '+esc(cur)+'.<br>Finish a test and it will show up here.</div></div>';return}
  var withPct=rows.filter(function(r){return r.percent!==''&&r.percent!=null});
