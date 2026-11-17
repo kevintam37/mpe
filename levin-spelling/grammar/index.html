@@ -151,7 +151,7 @@ var CAPS={
  street:["^oak ^street","^main ^street","^pine ^avenue","^cedar ^lane"],
  title:["^the ^magic ^garden","^penny the ^penguin ^explorer","^the ^secret of ^willow ^creek","^zoe and the ^moon ^rocket","^a ^night at the ^museum"]};
 var CAPT=[
- "^{n1} first met ^{n2} while camping in ^{city}, ^{state}.",
+ "^{n1} first met ^{n2} while camping in ^{cs}.",
  "^{n1} invited ^{n2} to read a book called ^{title} together.",
  "^{title} is about two silly dogs named ^{pet} and ^{pet2}.",
  "^{n1} said, \"^now it is my turn to read!\"",
@@ -349,6 +349,84 @@ function analyze(text){
    {ok:sents.length>=5&&words>=40,txt:"At least 5 sentences and 40 words",info:sents.length+" sentences, "+words+" words"}];
   return{checks:checks,score:checks.filter(function(c){return c.ok}).length,comp:comp,sents:sents}}
 
+/* ---------- more material (bigger banks so sets rarely repeat) ---------- */
+COMP.push.apply(COMP,[
+ ["Sara fed the fish","and","Ben watered the plants"],["The rain stopped","and","a rainbow appeared"],["Nina drew a dragon","and","her brother colored it"],
+ ["The train arrived","and","the passengers stepped off"],["Mr. Cruz teaches math","and","Ms. Hall teaches art"],["The baby laughed","and","everyone smiled"],
+ ["I set the table","and","my sister poured the juice"],["The campers built a fire","and","the leaders told stories"],["Our class visited the farm","and","we learned about cows"],
+ ["The wind howled","and","the windows rattled"],["Jose swept the porch","and","Dina raked the leaves"],["The lights went out","and","the room became dark"],
+ ["A bird built a nest","and","three eggs appeared"],["Tom wrote the story","and","Lucy drew the pictures"],["The bakery opened early","and","a long line formed outside"],
+ ["We sang loudly","and","the audience clapped"],["Mom packed the lunches","and","Dad drove us to school"],["The river is wide","and","the water is cold"],
+ ["Hana plays chess","and","her cousin plays checkers"],["The coach blew the whistle","and","the players stopped"],["Fireflies lit up the yard","and","the children chased them"],
+ ["The store opens at ten","and","it closes at six"],
+ ["I wanted a snack","but","the cupboard was empty"],["Ella studied hard","but","she felt nervous"],["The sun was shining","but","the air was chilly"],
+ ["Ravi called his friend","but","nobody answered"],["The puzzle looked easy","but","it was tricky"],["We hurried to the station","but","the train had left"],
+ ["Sam likes tennis","but","his sister prefers swimming"],["The soup was hot","but","I ate it anyway"],["Kai tried to open the jar","but","the lid was stuck"],
+ ["The shoes were pretty","but","they did not fit"],["Our team practiced daily","but","we lost the final game"],["The kitten is small","but","it is very fast"],
+ ["Dina loves apples","but","she dislikes pears"],["The path looked short","but","the walk took an hour"],["The test was long","but","I finished on time"],
+ ["Pedro waited patiently","but","the bus never came"],["The movie started late","but","we still enjoyed it"],["Anna wanted to help","but","she did not know how"],
+ ["The room was quiet","but","my mind was busy"],["The cookies smelled good","but","they were not ready"],
+ ["We can take the bus","or","we can walk home"],["You may read a book","or","you may draw a picture"],["Dad could cook pasta","or","he could order pizza"],
+ ["Lila might sing a song","or","she might tell a joke"],["We can plant flowers","or","we can plant vegetables"],["You must hurry","or","you will miss the bus"],
+ ["Kofi will paint the fence","or","he will mow the lawn"],["We could visit the zoo","or","we could go to the beach"],["Mia can borrow my pencil","or","she can use a pen"],
+ ["You can sit by the window","or","you can sit near the door"],["Grandpa will tell a story","or","he will play a game"],["We should leave now","or","we will be late"],
+ ["Nora could wear the red coat","or","she could wear the blue one"],["The class can write a poem","or","the class can write a story"],
+ ["Uncle Raj might call tonight","or","he might call tomorrow"],["You can ask your teacher","or","you can look it up in the book"]]);
+SIMPLE.push.apply(SIMPLE,[
+ "The cat slept on the sofa all afternoon.","Our class visited the science museum.","A cold wind blew across the field.","The chef stirred the pot of soup.","My uncle drives a delivery truck.",
+ "Fireflies glowed in the dark yard.","The new student sat near the window.","We watched a movie about space.","The mail carrier brought a package.","Grandpa told us a story about his childhood.",
+ "A tiny frog jumped into the pond.","The band played a lively song.","Zara painted a picture of her house.","The janitor mopped the hallway floor.","Our neighbors planted tulips along the fence.",
+ "Thunder shook the windows during the storm.","The librarian recommended a mystery novel.","My brother practices the drums after school.","The teacher handed out the spelling tests.","A rabbit nibbled the lettuce in the garden.",
+ "Dad grilled corn on the back porch.","The artist hung her paintings in the hall.","Many children waited at the bus stop.","The pilot checked the controls before takeoff.","Lina folded the laundry and put it away.",
+ "The magician pulled a coin from my ear.","Heavy snow covered the quiet street.","Our principal read a story to the whole school."]);
+SUBJ2.push.apply(SUBJ2,[
+ "Tara and Jun built a sandcastle at the beach.","The dentist and the nurse greeted us warmly.","Apples and oranges are in the basket.","My aunt and uncle live in Arizona.","Rain and wind shook the old barn.",
+ "Leo and his dog run every morning.","The bus and the train stop at this corner.","Lions and tigers are large cats.","Mina and her sister sing in the choir.","The farmer and his son picked corn.",
+ "Ducks and geese swim in the pond.","Sam and Priya won the spelling bee.","Mom and I baked a chocolate cake.","The pilot and the crew waved to us.","Books and magazines cover the table.","Coach Lee and the players practiced all week."]);
+CPS.push.apply(CPS,[
+ ["The farmer feeds ","cows","and","milks them every morning."],["We sat ","quietly","and","listened to the story."],["Tess ran ","home","and","called her grandmother."],
+ ["The wind blew ","gently","but","steadily all afternoon."],["Mr. Lopez is ","funny","and","very kind."],["The soup smelled ","good","but","tasted bland."],
+ ["Dad bakes ","bread","and","cakes on weekends."],["My brother plays ","guitar","or","piano after dinner."],["Ivy washed ","her hands","and","dried them."],
+ ["The ducks swam ","across","and","around the pond."],["I can finish ","now","or","after dinner."],["The movie was ","scary","but","exciting."],
+ ["She opened ","the door","and","stepped outside."],["The twins laughed ","loudly","and","clapped their hands."],["Our cat sleeps ","all day","and","plays all night."],["Hugo packed ","a sandwich","and","an apple for lunch."]]);
+TYPES.statement.push.apply(TYPES.statement,["The garden is full of tomatoes.","Our dog sleeps by the front door.","My grandmother lives in Florida.","The test begins at nine o'clock.","Seven students joined the chess club.","The lake freezes in January.","Pablo wears a red scarf in winter.","The cafeteria serves pizza on Fridays.","A hummingbird visited the feeder.","The movie lasted two hours.","My cousin plays the violin.","The moon was bright last night.","We ate lunch outside today.","Our teacher has a blue backpack.","The bridge crosses a wide river.","Her notebook is on the desk.","The farmer sells fresh eggs.","I finished my homework before dinner.","A train passed the station at noon.","The puppy chewed my slipper."]);
+TYPES.question.push.apply(TYPES.question,["What is your favorite color?","Can you help me carry this box?","Where does the bus stop?","Did you remember your lunch?","How long is the school day?","Who wrote this story?","Are you ready for the quiz?","Why did the lights go out?","Which way is the gym?","Will you sit next to me?","Have you ever seen a whale?","Do we have any milk left?","What time is recess?","Is it going to snow today?","Who is your best friend?","How do you spell that word?","Can we play outside after lunch?","When is your birthday?","Where did you find that shell?","Does this bus go downtown?"]);
+TYPES.command.push.apply(TYPES.command,["Please sit down and open your notebook.","Wipe your feet on the mat.","Pick up your toys before bedtime.","Raise your hand before you speak.","Water the plants every Sunday.","Clean your desk before you leave.","Please turn to the next page.","Tie your shoes tightly.","Return the book to the library.","Wait for your turn.","Listen carefully to the directions.","Put the milk back in the fridge.","Please speak quietly in the hallway.","Add two cups of flour.","Fold the paper in half.","Look at the board.","Stay on the path!","Catch the ball!","Duck under the branch!","Don't touch the stove!"]);
+TYPES.exclamation.push.apply(TYPES.exclamation,["What a gorgeous sunset!","I won the race!","That puppy is so cute!","We made it to the top!","How exciting this is!","The cake smells amazing!","I can't wait for summer!","What a terrible storm!","He caught the ball!","That was so much fun!","How fast the cheetah runs!","This is the best day ever!","What a clever idea!","Look how high the rocket went!","I'm so proud of you!","The game is tied!","It's a girl!","What a huge wave!","I found my lost cat!","How lucky we are!"]);
+Object.keys(CAPS).forEach(function(k){});
+CAPS.n.push.apply(CAPS.n,["lucas","zoe","amir","hannah","tyler","grace"]);
+CAPS.city.push.apply(CAPS.city,["phoenix","atlanta","dallas","portland"]);
+CAPS.state.push.apply(CAPS.state,["georgia","arizona","iowa","montana"]);
+CAPS.tchr.push.apply(CAPS.tchr,["nguyen","davis","reed"]);
+CAPS.pet.push.apply(CAPS.pet,["coco","buddy","pepper"]);
+CAPT.push.apply(CAPT,[
+ "^{n1} and ^{n2} visited ^{city} on ^{day}.","my aunt moved from ^{city} to ^{city2} in ^{month}.","the school bus stops on ^{street} every ^{day}.",
+ "^{n1} wants to learn ^{lang} before the trip to ^{country}.","last ^{month}, ^i read ^{title} with ^{n1}.","^{pet} the dog barked at ^mr. ^{tchr}.",
+ "we celebrate ^{hol} in ^{month} with my cousins.","^{n1} was born in ^{state} and lives in ^{city}.","my class went to ^{cs}, on ^{day}.",
+ "^{n1} and ^i study at ^{school}.","^{n1} said, \"^i love ^{lang} class on ^{day}!\"","^dr. ^{tchr} lives near ^{river}.","^{river} is beautiful in ^{month}.",
+ "^{n1} asked ^{n2}, \"^are you going to ^{city} on ^{day}?\"","my friend ^{n1} speaks ^{lang} at home.","^{n1} packed a bag for ^{country} in ^{month}.",
+ "every ^{month}, ^{n1} visits ^{city}.","^coach ^{tchr} said we play on ^{day}.","^{n1} and ^{n2} sat on ^{street} to eat lunch on ^{day}."]);
+SUBJ.push.apply(SUBJ,[SJ("The little girl",2,"s","h"),SJ("My uncle",1,"s","h"),SJ("Our principal",1,"s","h"),SJ("The kind nurse",2,"s","h"),SJ("The boys on the bus",1,"p","h"),SJ("Several tired hikers",2,"p","h"),
+ SJ("The big brown horse",3,"s","a"),SJ("The baby ducks",2,"p","a"),SJ("A small rabbit",2,"s","a"),SJ("The heavy box",2,"s","t"),SJ("My favorite sweater",2,"s","t"),SJ("The shiny coins",2,"p","t")]);
+PRED.push.apply(PRED,[PR("h","laughs","laugh","at funny jokes"),PR("h","packed","packed","a lunch for the trip"),PR("h","is writing","are writing","a letter to a friend"),PR("h","will plant","will plant","flowers in the spring"),
+ PR("h","has learned","have learned","a new song"),PR("h","can carry","can carry","the heavy boxes"),PR("ha","hops","hop","across the lawn"),PR("ha","was resting","were resting","in the shade"),PR("ha","will follow","will follow","us home"),
+ PR("a","likes","like","to nap in the sun"),PR("t","fell","fell","off the shelf"),PR("t","is lying","are lying","on the floor"),PR("t","has fallen","have fallen","from the table")]);
+NP2.push.apply(NP2,[["Aisha",0],["Mateo",0],["Hannah",0],["Lucas",0],["Grace",0],["the little girl",2],["my uncle",1],["the bus driver",2]]);
+SCRIPTS.splice(SCRIPTS.length-1,0,[["fed","the dog"],["filled","its water bowl"]],[["wrote","a letter"],["mailed","it on Monday"]],[["found","a seashell"],["kept","it in a jar"]],[["cut","the paper"],["glued","it to the poster"]],[["opened","the box"],["read","the note inside"]],[["stirred","the batter"],["poured","it into the pan"]],[["lifted","the lid"],["peeked","inside"]],[["fixed","the bike"],["rode","it to the park"]]);
+MODALS.push.apply(MODALS,[["will bring","snacks for the team"],["can play","the piano very well"],["should call","their grandmother"],["could help","with the dishes"]]);
+PROMPTS.push.apply(PROMPTS,[
+ "Write a paragraph about a trip you took or want to take. Use at least two compound sentences.",
+ "Write a paragraph about your favorite food and how it is made. Use at least two compound sentences.",
+ "Write a paragraph about a pet or an animal you like. Use at least two compound sentences.",
+ "Write a paragraph about something you learned how to do. Use at least two compound sentences.",
+ "Write a paragraph about your favorite game or sport. Use at least two compound sentences.",
+ "Write a paragraph about a family tradition or holiday. Use at least two compound sentences.",
+ "Write a paragraph about a rainy or snowy day. Use at least two compound sentences.",
+ "Write a paragraph about a book or movie you enjoyed. Use at least two compound sentences."]);
+CAPS.cs=["^tampa, ^florida","^newark, ^new ^jersey","^denver, ^colorado","^boston, ^massachusetts","^austin, ^texas","^seattle, ^washington","^chicago, ^illinois","^miami, ^florida","^portland, ^oregon","^phoenix, ^arizona"];
+CAPS.river=["the ^hudson ^river","^lake ^michigan","the ^ohio ^river","^lake ^erie","the ^delaware ^river"];
+for(var ci=0;ci<CAPT.length;ci++)CAPT[ci]=CAPT[ci].replace("near the ^{river}","near ^{river}").replace("the ^{river} flows","^{river} flows");
+
 /* ---------- topics ---------- */
 var TOPICS=[
  {id:"subjpred",name:"Simple Subjects and Predicates",desc:"Underline the simple subject and circle the simple predicate in each sentence.",gen:genSubjPred},
@@ -364,6 +442,18 @@ function topicById(id){return TOPICS.filter(function(t){return t.id===id})[0]}
 /* ---------- state ---------- */
 var app=document.getElementById("app");
 var S={view:"home",topic:null,seed:0,Q:[],i:0,res:[],picks:[],U:null,text:"",done:false};
+var NCAND=30;
+function genSet(t,seed){var key=t.id+"_"+seed,pk=lsGet("gr_pick",{});
+  if(pk[key]!==undefined)return t.gen(RNG(seed*31+pk[key]));
+  var avoid={},h=lsGet("gr_hist",{})[t.id]||[];h.forEach(function(p){avoid[p]=1});
+  var best=0,bs=1e9,bq=null;
+  for(var k=0;k<NCAND;k++){var Q=t.gen(RNG(seed*31+k)),sc=0;Q.forEach(function(q){if(avoid[q.plain])sc++});
+    if(sc<bs){bs=sc;best=k;bq=Q;if(sc===0)break}}
+  var ks=Object.keys(pk);if(ks.length>80){ks.slice(0,ks.length-60).forEach(function(x){delete pk[x]})}
+  pk[key]=best;lsSet("gr_pick",pk);return bq}
+function rememberSet(t,Q){var h=lsGet("gr_hist",{}),a=h[t.id]||[];
+  Q.forEach(function(q){if(a.indexOf(q.plain)<0)a.push(q.plain)});
+  var cap=t.id==="types"?96:t.id==="caps"?60:80;if(a.length>cap)a=a.slice(a.length-cap);h[t.id]=a;lsSet("gr_hist",h)}
 function seedFor(id){var m=lsGet("gr_seeds",{});if(!m[id]){m[id]=Math.floor(Math.random()*1e9)+1;lsSet("gr_seeds",m)}return m[id]}
 function newSeed(id){var m=lsGet("gr_seeds",{});m[id]=Math.floor(Math.random()*1e9)+1;lsSet("gr_seeds",m);return m[id]}
 function newU(q){return{act:0,sel:q.kind==="steps"?q.steps.map(function(){return[]}):[],choice:null,checked:false,ok:false}}
@@ -375,7 +465,7 @@ function home(){S.view="home";S.topic=null;
   app.innerHTML='<div class="row"><a class="btn ghost" href="../" style="text-decoration:none">&larr; Spelling</a><a class="btn ghost" href="../../scores/" style="text-decoration:none">My Scores</a></div>'+
    '<div><div class="tag">Levin</div><h1>Grammar Practice</h1></div>'+
    '<p class="small" style="margin:-6px 0 0">Practice pages that match the school sample worksheets. Tap <b>New questions</b> any time for a fresh set.</p>'+
-   '<div class="topics">'+TOPICS.map(function(t,i){var n=t.write?"1 paragraph":(t.gen(RNG(seedFor(t.id))).length+" questions");
+   '<div class="topics">'+TOPICS.map(function(t,i){var n=t.write?"1 paragraph":(genSet(t,seedFor(t.id)).length+" questions");
     return '<section class="card topic"><h2>'+esc(t.name)+'</h2><p>'+esc(t.desc)+'</p><p>'+n+'</p><p class="last">'+esc(lastFor(t))+'</p><div class="row"><button class="btn" data-go="'+t.id+'">Start</button><button class="btn ghost" data-new="'+t.id+'">New questions</button></div></section>'}).join("")+'</div>';
   app.querySelectorAll("[data-go]").forEach(function(b){b.onclick=function(){start(b.dataset.go,seedFor(b.dataset.go))}});
   app.querySelectorAll("[data-new]").forEach(function(b){b.onclick=function(){newSeed(b.dataset.new);home()}})}
@@ -387,13 +477,13 @@ function mpeOpts(t){return{key:t.id,
     return null},
   resume:function(st){var tp=topicById(st.topic);if(!tp)return;S.topic=tp;S.seed=st.seed;
     if(tp.write){S.text=st.text||"";S.view="write";return writeView(true)}
-    S.Q=tp.gen(RNG(st.seed));S.i=st.i;S.res=st.res||[];S.picks=st.picks||[];S.view="test";S.U=newU(S.Q[S.i]);renderQ()},
+    S.Q=genSet(tp,st.seed);S.i=st.i;S.res=st.res||[];S.picks=st.picks||[];S.view="test";S.U=newU(S.Q[S.i]);renderQ()},
   exit:function(){home()}}}
 
 function start(id,seed){var t=topicById(id);S.topic=t;S.seed=seed;
   MPE.begin(mpeOpts(t));
   if(t.write){S.text="";S.done=false;S.view="write";return writeView()}
-  S.Q=t.gen(RNG(seed));S.i=0;S.res=[];S.picks=[];S.view="test";S.done=false;S.U=newU(S.Q[0]);renderQ()}
+  S.Q=genSet(t,seed);rememberSet(t,S.Q);S.i=0;S.res=[];S.picks=[];S.view="test";S.done=false;S.U=newU(S.Q[0]);renderQ()}
 
 function headHTML(){var n=S.Q.length,p=Math.round(S.i/n*100);
   return '<div class="row" style="justify-content:space-between"><button class="btn ghost" id="quit">Home</button><span class="tag">Question '+(S.i+1)+' of '+n+'</span></div><div class="bar"><i style="width:'+p+'%"></i></div><div><div class="tag">'+esc(S.topic.name)+'</div></div>'}
@@ -491,7 +581,7 @@ function writeResults(){S.view="writeResults";var a=analyze(S.text),n=a.checks.l
   document.getElementById("new").onclick=function(){start("write",newSeed("write"))};
   document.getElementById("hm").onclick=home}
 
-window.__grammar={TOPICS:TOPICS,RNG:RNG,start:start,state:function(){return S},analyze:analyze,topicById:topicById,grade:grade};
+window.__grammar={genSet:genSet,TOPICS:TOPICS,RNG:RNG,start:start,state:function(){return S},analyze:analyze,topicById:topicById,grade:grade};
 home();
 })();
 </script>
