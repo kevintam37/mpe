@@ -1,0 +1,370 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Science: Unit 1 Review</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@500;700;800&display=swap">
+<style>
+:root{
+  --bg:#eef3fb; --surface:#ffffff; --ink:#132043; --muted:#5b6788; --line:#d5dded;
+  --accent:#2f5bea; --accent-ink:#ffffff; --gold:#f5a800; --good:#178a4c; --good-bg:#dff5e8; --bad:#c62f3d; --bad-bg:#fde3e5;
+  --tile:#e3ebfd; --mark:#fff0b3; --shadow:0 2px 0 rgba(19,32,67,.12);
+  --display:"Fredoka","Trebuchet MS",system-ui,sans-serif; --body:"Nunito",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+@media (prefers-color-scheme: dark){:root{
+  --bg:#0f1730; --surface:#18234a; --ink:#eaf0ff; --muted:#a1aed3; --line:#2c3a6b;
+  --accent:#7d9bff; --accent-ink:#0f1730; --gold:#ffc23d; --good:#5fd394; --good-bg:#12382a; --bad:#ff8892; --bad-bg:#3d1b24;
+  --tile:#25336a; --mark:#5a4a12; --shadow:0 2px 0 rgba(0,0,0,.4); color-scheme:dark}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:18px;line-height:1.45;padding:20px 16px 90px}
+main{max-width:760px;margin:0 auto;display:flex;flex-direction:column;gap:16px}
+h1,h2,h3{font-family:var(--display);margin:0;line-height:1.15;font-weight:600}
+h1{font-size:2rem}h2{font-size:1.35rem}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,textarea:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.tag{font-size:.8rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:800}
+.card{background:var(--surface);border:2px solid var(--line);border-radius:18px;padding:18px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.btn{background:var(--accent);color:var(--accent-ink);border:0;border-radius:12px;padding:12px 20px;font-weight:800;box-shadow:var(--shadow)}
+.btn.ghost{background:transparent;color:var(--ink);border:2px solid var(--line);box-shadow:none}
+.btn:disabled{opacity:.4;cursor:default}
+.topics{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:12px}
+.topic{display:flex;flex-direction:column;gap:8px}
+.topic p{margin:0;color:var(--muted);font-size:.95rem;font-weight:700}
+.topic .last{font-size:.85rem}
+.bar{height:10px;background:var(--tile);border-radius:99px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--accent);border-radius:99px}
+.sent{display:flex;flex-wrap:wrap;gap:6px 4px;font-family:var(--display);font-size:1.35rem;line-height:1.9;margin:4px 0 8px}
+.tok{border:0;background:transparent;padding:2px 6px;border-radius:8px;font:inherit;color:inherit;box-shadow:none}
+.tok:not(:disabled){cursor:pointer}
+.tok:not(:disabled):hover{background:var(--tile)}
+.tok.m-ul{border-bottom:4px solid var(--accent);border-radius:0}
+.tok.m-circle{outline:3px solid var(--accent);outline-offset:0;border-radius:99px}
+.tok.m-hl{background:var(--mark)}
+.tok.m-box{outline:3px dashed var(--accent);border-radius:6px}
+.tok.ok{background:var(--good-bg);color:var(--good)}
+.tok.bad{background:var(--bad-bg);color:var(--bad);text-decoration:line-through}
+.tok.miss{outline:3px dashed var(--good);outline-offset:0}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin:6px 0 10px}
+.chip{border:2px solid var(--line);background:var(--surface);border-radius:99px;padding:6px 14px;font-weight:800;font-size:.95rem}
+.chip.on{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.chip small{font-weight:700;opacity:.85}
+.opts{display:grid;gap:10px;margin:10px 0}
+.opt{display:flex;gap:10px;align-items:flex-start;text-align:left;background:var(--tile);border:3px solid transparent;border-radius:14px;padding:12px 14px;font-weight:700}
+.opt.sel{border-color:var(--accent)}
+.opt.right{background:var(--good-bg);border-color:var(--good)}
+.opt.wrong{background:var(--bad-bg);border-color:var(--bad)}
+.opt b{font-family:var(--display);min-width:1.4em}
+.choicerow{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}
+.stem{font-size:1.2rem;font-weight:700;margin:2px 0 6px}
+.stem u{text-decoration-thickness:3px;text-underline-offset:4px}
+.pair{background:var(--tile);border-radius:12px;padding:10px 14px;margin:8px 0;font-weight:700}
+.fb{border-radius:14px;padding:12px 14px;margin-top:10px;font-weight:700}
+.fb.good{background:var(--good-bg);color:var(--good)}
+.fb.bad{background:var(--bad-bg);color:var(--bad)}
+.fb span{color:var(--ink);font-weight:600;display:block;margin-top:4px}
+.rv{border:2px solid var(--line);border-left:8px solid var(--good);border-radius:14px;padding:12px 14px;background:var(--surface);margin-bottom:10px}.rv.rno{border-left-color:var(--bad)}.rv .opt{cursor:default}.rv .sent{font-size:1.15rem}.rvh{margin-bottom:6px}
+.score{font-family:var(--display);font-size:2.6rem;color:var(--accent)}
+.miss-list{display:grid;gap:8px;margin:10px 0}
+.miss-list div{background:var(--tile);border-radius:12px;padding:10px 14px;font-weight:600;font-size:.98rem}
+textarea{width:100%;min-height:200px;border:2px solid var(--line);border-radius:14px;padding:12px;font:inherit;background:var(--surface);color:var(--ink);resize:vertical}
+.check li{margin:6px 0;font-weight:700}
+.check .y{color:var(--good)}.check .n{color:var(--bad)}
+.small{font-size:.9rem;color:var(--muted);font-weight:600}
+.review .ri{border:2px solid var(--line);border-left:8px solid var(--good);border-radius:14px;padding:12px 14px;background:var(--surface);margin-bottom:10px}.review .ri.nor{border-left-color:var(--bad)}.review .rh{margin-bottom:6px}
+.opt b{font-family:var(--display)}.opt svg{display:block;color:var(--ink)}.opt>span{flex:1}
+</style>
+</head>
+<body>
+<main id="app"></main>
+<script src="../../mpe-track.js"></script>
+<script>
+(function(){
+"use strict";
+function lsGet(k,d){try{var v=JSON.parse(localStorage.getItem(k));return v==null?d:v}catch(e){return d}}
+function lsSet(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
+function RNG(seed){var a=seed>>>0;
+  function f(){a|=0;a=a+0x6D2B79F5|0;var t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}
+  var r={f:f,int:function(x,y){return x+Math.floor(f()*(y-x+1))},pick:function(arr){return arr[Math.floor(f()*arr.length)]},
+    shuffle:function(arr){arr=arr.slice();for(var i=arr.length-1;i>0;i--){var j=Math.floor(f()*(i+1)),t=arr[i];arr[i]=arr[j];arr[j]=t}return arr},
+    sample:function(arr,n){return r.shuffle(arr).slice(0,n)}};
+  return r}
+function strip(h){return String(h).replace(/<svg[\s\S]*?<\/svg>/g,"[picture]").replace(/<[^>]+>/g,"")}
+/* multiple choice: correct answer plus wrong ones, shuffled */
+function MC(R,stem,right,wrongs,exp,extra){
+  var w=[];R.shuffle(wrongs).forEach(function(x){if(x!==right&&w.indexOf(x)<0&&w.length<3)w.push(x)});
+  var opts=R.shuffle([right].concat(w));
+  var q={t:"mc",q:stem,opts:opts,a:opts.indexOf(right),exp:exp||"",plain:strip(stem)+(extra&&extra.key?" "+extra.key:"")};
+  if(extra)for(var k in extra)q[k]=extra[k];return q}
+/* short answer graded by key words */
+function SA(stem,groups,model,need,extra){var q={t:"sa",q:stem,groups:groups,need:need||groups.length,model:model,exp:"",plain:strip(stem)};if(extra)for(var k in extra)q[k]=extra[k];return q}
+function norm(s){return " "+String(s).toLowerCase().replace(/[^a-z0-9 ]+/g," ").replace(/\s+/g," ").trim()+" "}
+function gradeSA(q,text){var n=norm(text),hit=0;
+  q.groups.forEach(function(g){if(g.some(function(a){return n.indexOf(norm(a).trim())>=0}))hit++});
+  return hit>=q.need}
+/* particle pictures */
+function particles(R,state){var pts=[],i,j;
+  if(state==="solid"){for(i=0;i<5;i++)for(j=0;j<4;j++)pts.push([20+i*22,18+j*21])}
+  else if(state==="liquid"){var tries=0;while(pts.length<14&&tries++<400){var x=R.int(14,116),y=R.int(34,86);if(pts.every(function(p){return Math.hypot(p[0]-x,p[1]-y)>19}))pts.push([x,y])}}
+  else{var tries2=0;while(pts.length<5&&tries2++<400){var x2=R.int(14,116),y2=R.int(14,86);if(pts.every(function(p){return Math.hypot(p[0]-x2,p[1]-y2)>38}))pts.push([x2,y2])}}
+  return '<svg viewBox="0 0 130 100" width="130" height="100" role="img" aria-label="particle picture"><rect x="2" y="2" width="126" height="96" rx="6" fill="none" stroke="currentColor" stroke-opacity=".45" stroke-width="2"/>'+
+    pts.map(function(p){return '<circle cx="'+p[0]+'" cy="'+p[1]+'" r="8.5" fill="#2f7dd1" stroke="#1b4f8f" stroke-width="1.5"/>'}).join("")+'</svg>'}
+
+/* ======= TOPIC 1: matter and conservation ======= */
+var REACT=[["a log","oxygen","ash, smoke and gases"],["steel wool","oxygen","rust (iron oxide)"],["baking soda","vinegar","gas bubbles and liquid"],["a candle","oxygen","carbon dioxide and water vapor"]];
+function poolMatter(R){var mc=[],sa=[];
+  mc.push(MC(R,"Which is the best definition of <b>matter</b>?","Anything that has mass and takes up space",["Anything that can be seen with your eyes","Anything that can move on its own","Anything that is solid and heavy","Anything that gives off light"],"Matter is anything that has mass and takes up space (volume)."));
+  mc.push(MC(R,"Which of these is <b>matter</b>?","A glass of water",["A shadow","A beam of light","A sound","An idea"],"A glass of water has mass and takes up space. Shadows, light, sound and ideas do not."));
+  mc.push(MC(R,"Which of these is <b>not</b> matter?","Light from a flashlight",["Air in a balloon","A wooden desk","Steam from a kettle","Sand at the beach"],"Light has no mass and takes up no space, so it is not matter."));
+  mc.push(MC(R,"What does the <b>Law of Conservation of Matter</b> say?","Matter cannot be created or destroyed; the total amount stays the same",["Matter can be created but not destroyed","Matter is destroyed when it burns","The mass of the products is always less than the reactants","Matter is only conserved when it is a solid"],"The total amount of matter always stays the same, even when matter changes form."));
+  mc.push(MC(R,"In a chemical reaction, how does the mass of the <b>reactants</b> compare with the mass of the <b>products</b>?","They are equal",["The reactants have more mass","The products always have more mass","It depends on the color","There is no way to compare them"],"The mass of the stuff you START WITH equals the mass of the stuff you END UP WITH."));
+  mc.push(MC(R,"In the picture, wood burns in oxygen and makes ash and smoke. The wood and the oxygen are called the ______.","reactants",["products","reaction","solids","energy"],"The starting materials are the reactants. What you end up with are the products."));
+  mc.push(MC(R,"In the burning log picture, the ash and smoke are called the ______.","products",["reactants","oxygen","fuel","reaction"],"Products are the new substances that form in a reaction."));
+  for(var n=0;n<4;n++){var a=R.pick([10,12,15,18,20,24,25,30,36,40,45,50]),b=R.pick([5,8,10,14,16,20,22,32]),sc=R.pick(REACT),t=a+b;
+    mc.push(MC(R,"A closed container holds "+a+" g of "+sc[0]+" and "+b+" g of "+sc[1]+". They react completely. What is the total mass of the products?",t+" g",[(t-b)+" g",(t+b)+" g",Math.abs(a-b)+" g",(t-5)+" g",(t+10)+" g"],a+" g + "+b+" g = "+t+" g. Mass is conserved, so the products have the same total mass.",{key:a+"-"+b+sc[0]}))}
+  var pm=R.pick([[200,"ice","water"],[150,"ice","water"],[80,"snow","water"],[120,"ice","water"]]);
+  mc.push(MC(R,pm[0]+" g of "+pm[1]+" melts and becomes "+pm[2]+". What is the mass of the "+pm[2]+"?",pm[0]+" g",[Math.round(pm[0]/2)+" g",(pm[0]+50)+" g","0 g",(pm[0]-30)+" g"],"No matter is created or destroyed, so the mass stays "+pm[0]+" g.",{key:"pm"+pm[0]+pm[1]}));
+  mc.push(MC(R,"A student burns a log in an open fire and the ashes weigh less than the log. Where did the rest of the matter go?","Into gases and smoke that went into the air",["It was destroyed","It turned into energy only","It disappeared","It stayed inside the ash"],"Matter is not lost. Some of it became gases and smoke that escaped into the air."));
+  var amt=R.pick([25,36,40,48,60,72]);
+  sa.push(SA("What is matter?",[["mass"],["space","volume"]],"Matter is anything that has mass and takes up space (volume)."));
+  sa.push(SA("Explain the Law of Conservation of Matter in your own words.",[["creat","made","make","new matter"],["destroy","disappear","lost","gone"]],"Matter cannot be created or destroyed. The total amount of matter always stays the same, even when it changes form."));
+  sa.push(SA("Name one <b>reactant</b> and one <b>product</b> when wood burns.",[["wood","log","oxygen"],["ash","smoke","gas","carbon dioxide","soot"]],"Reactants: wood and oxygen. Products: ash, smoke and gases."));
+  sa.push(SA("A closed jar has <b>"+amt+" g</b> of reactants. After a chemical reaction, what is the mass of everything in the jar? Explain.",[[String(amt)],["same","equal","conserv","no change","not change","stay"]],amt+" g. The mass of the stuff you start with equals the mass of the stuff you end up with.",2,{key:"amt"+amt}));
+  sa.push(SA("Why does a burned log seem to weigh less than it did before it burned?",[["gas","smoke","air","carbon dioxide","vapor"]],"Some of the matter turned into gases and smoke that escaped into the air. The total mass of all the products still equals the starting mass."));
+  sa.push(SA("Complete the sentence: The mass of the stuff you ______ with equals the mass of the stuff you ______ with.",[["start","begin"],["end"]],"The mass of the stuff you START with equals the mass of the stuff you END UP with."));
+  return{mc:mc,sa:sa}}
+
+/* ======= TOPIC 2: properties of matter ======= */
+var DENS=[["a cork",0.25],["a pine board",0.55],["a piece of ice",0.92],["a plastic toy",0.95],["cooking oil",0.9],["a rock",2.7],["an iron nail",7.9],["a gold ring",19.3],["a glass marble",2.5],["a steel bolt",7.8],["an aluminum can",2.7],["a wax candle",0.93]];
+function poolProps(R){var mc=[],sa=[];
+  mc.push(MC(R,"What is a <b>property</b> of matter?","Any characteristic of matter",["Only the weight of an object","A change that makes a new substance","The place where matter is found","A type of energy"],"A property is any characteristic of matter."));
+  mc.push(MC(R,"Properties of matter help us to ______.","identify the matter and decide what it is useful for",["make new matter","destroy matter","remove mass","stop chemical changes"],"Properties tell us how to identify matter and what a substance may be useful for."));
+  mc.push(MC(R,"<b>Physical</b> properties can be observed ______.","with our senses",["only when the substance changes into something new","only with a microscope","only after burning it","only by heating it"],"Physical properties can be observed with our senses (color, shape, texture, smell)."));
+  mc.push(MC(R,"<b>Chemical</b> properties can be observed ONLY when ______.","the identity of the substance changes",["the color changes","the shape changes","the object is cut in half","the object is frozen"],"A chemical property shows up only when a substance becomes a different substance."));
+  [["its color","physical"],["its shape","physical"],["its texture","physical"],["its smell","physical"],["its size","physical"],["its ability to burn (flammability)","chemical"],["its ability to rust","chemical"],["its ability to react with vinegar","chemical"],["its ability to tarnish","chemical"],["its ability to rot","chemical"]].forEach(function(p){
+    mc.push(MC(R,"Is <b>"+p[0]+"</b> a physical property or a chemical property?",p[1]+" property",[p[1]==="physical"?"chemical property":"physical property"],p[1]==="physical"?"You can observe it with your senses without changing the substance.":"You can only see it when the substance changes into something new.",{key:p[0]}))});
+  [["electric conductivity","Electric wires are made of copper because copper has good ______."],["heat conductivity","Cooking pots are made of metal because metal has good ______."],["malleability","A blacksmith can hammer a hot metal into a thin sheet. This property is called ______."],["strength","Steel beams are used to build bridges because metal has great ______."]].forEach(function(m){
+    mc.push(MC(R,m[1],m[0],["electric conductivity","heat conductivity","malleability","strength","density","flammability"].filter(function(x){return x!==m[0]}),"Metals are important because of their electric conductivity, heat conductivity, malleability and strength.",{key:m[0]}))});
+  mc.push(MC(R,"Which is <b>not</b> one of the important properties of metals listed in the review guide?","Easily dissolves in water",["Electric conductivity","Heat conductivity","Malleability","Strength"],"Metals are important for their electric conductivity, heat conductivity, malleability and strength."));
+  R.sample(DENS,5).forEach(function(d){var fl=d[1]<1;
+    mc.push(MC(R,"Water has a density of 1.0 g/cm³. "+d[0].replace(/^./,function(c){return c.toUpperCase()})+" has a density of "+d[1]+" g/cm³. Will it float or sink in water?",fl?"It will float":"It will sink",[fl?"It will sink":"It will float"],fl?"Its density is less than water's, so it floats.":"Its density is greater than water's, so it sinks.",{key:"d"+d[0]}))});
+  mc.push(MC(R,"<b>Density</b> is ______.","how much matter there is in a given volume",["how hot something is","how fast something moves","how much space is between two objects","how strong a material is"],"Density = how much matter there is in a given volume."));
+  mc.push(MC(R,"Density helps to determine whether something ______.","floats or sinks",["burns or rusts","melts or freezes","conducts electricity","is a mixture or compound"],"Density determines buoyancy: whether something floats or sinks."));
+  sa.push(SA("In your own words, what is a property of matter?",[["characteristic","feature","trait","quality","describ"]],"A property is any characteristic of matter."));
+  sa.push(SA("Why are the properties of matter useful to scientists? Give two reasons.",[["identify","tell what","figure out what","what it is","recogni"],["useful","use","good for","used for"]],"Properties tell us how to identify matter and what a substance may be useful for."));
+  sa.push(SA("How is a chemical property different from a physical property?",[["identity","change","react","new substance","become"],["sens","observe","see","touch","smell","without"]],"Chemical properties can be observed ONLY when the identity of the substance changes. Physical properties can be observed with our senses."));
+  sa.push(SA("Name two properties of metals that make metals important.",[["electric"],["heat","thermal"],["malleab","hammer","bend","shape"],["strength","strong"]],"Metals are important because of their electric conductivity, heat conductivity, malleability and strength.",2));
+  sa.push(SA("What does density tell you about an object, and how does it help you tell if the object will float or sink?",[["how much","amount","mass","matter","packed"],["float","sink","buoyan"]],"Density is how much matter there is in a given volume. It determines whether something floats or sinks (buoyancy)."));
+  sa.push(SA("Why are electrical wires made of metal?",[["electric","conduct","current","flow"]],"Metals have good electric conductivity, so electricity flows easily through them."));
+  return{mc:mc,sa:sa}}
+
+/* ======= TOPIC 3: states of matter ======= */
+var STATEDEF={solid:"definite shape and definite volume",liquid:"indefinite shape (takes the shape of its container) and definite volume",gas:"indefinite shape and indefinite volume (takes the shape and volume of its container)"};
+function poolStates(R){var mc=[],sa=[],S3=["solid","liquid","gas"];
+  S3.forEach(function(s){mc.push(MC(R,"Which statement describes a <b>"+s+"</b>?",STATEDEF[s].replace(/^./,function(c){return c.toUpperCase()}),S3.filter(function(x){return x!==s}).map(function(x){return STATEDEF[x].replace(/^./,function(c){return c.toUpperCase()})}),"A "+s+" has "+STATEDEF[s]+".",{key:"def"+s}))});
+  [["Which state of matter has a definite shape and a definite volume?","solid"],["Which state of matter takes the shape of its container but has a definite volume?","liquid"],["Which state of matter takes both the shape and the volume of its container?","gas"],["A rock keeps its shape no matter what container it is in. It is a ______.","solid"],["Juice poured from a tall glass into a short, wide bowl changes shape but not volume. Juice is a ______.","liquid"],["Helium inside a balloon spreads out to fill the whole balloon. Helium is a ______.","gas"]].forEach(function(p,i){
+    mc.push(MC(R,p[0],p[1],S3.filter(function(x){return x!==p[1]}).concat(["plasma"]),"A "+p[1]+" has "+STATEDEF[p[1]]+".",{key:"s"+i}))});
+  S3.forEach(function(s){mc.push(MC(R,"Which picture shows the particles of a <b>"+s+"</b>?",particles(R,s),[particles(R,S3.filter(function(x){return x!==s})[0]),particles(R,S3.filter(function(x){return x!==s})[1])],{solid:"In a solid, the particles are packed tightly in a fixed pattern.",liquid:"In a liquid, the particles touch but can slide past each other.",gas:"In a gas, the particles are far apart and spread out."}[s],{key:"pic"+s,pic:true}))});
+  mc.push(MC(R,"Particles are packed tightly in a fixed pattern in a ______.","solid",["liquid","gas","mixture"],"Solid particles are packed tightly and stay in place."));
+  mc.push(MC(R,"Particles are spread far apart and move freely in a ______.","gas",["solid","liquid","compound"],"Gas particles are far apart."));
+  mc.push(MC(R,"As matter changes from a solid to a liquid to a gas, which three things happen?","The temperature gets higher, the density gets lower and the energy gets higher",["The temperature gets lower, the density gets higher and the energy gets lower","The temperature gets higher, the density gets higher and the energy gets lower","The density gets higher and the energy gets higher","The temperature stays the same and the density gets higher"],"Moving from solid to gas means higher temperature, lower density and higher energy."));
+  mc.push(MC(R,"Which state of matter has the <b>highest</b> energy?","Gas",["Solid","Liquid","They all have the same energy"],"Gas particles have the most energy. Solid particles have the least."));
+  mc.push(MC(R,"Which state of matter has the <b>lowest</b> density?","Gas",["Solid","Liquid","Ice"],"The particles of a gas are far apart, so a gas has the lowest density."));
+  sa.push(SA("Describe the shape and volume of a <b>solid</b>.",[["definite","fixed","keeps","stay","same"],["shape"],["volume"]],"A solid has a definite shape and a definite volume."));
+  sa.push(SA("Describe the shape and volume of a <b>liquid</b>.",[["container","indefinite","takes the shape","any shape","changes shape","no definite shape","no fixed shape"],["volume"]],"A liquid has an indefinite shape (it takes the shape of its container) and a definite volume."));
+  sa.push(SA("Describe the shape and volume of a <b>gas</b>.",[["container","indefinite","fills","spread","expand","no definite","no fixed"],["volume","shape"]],"A gas has an indefinite shape and an indefinite volume. It takes the shape and volume of its container."));
+  sa.push(SA("What happens to the density and the energy of matter as it goes from a solid to a gas?",[["lower","less","decrease","down","smaller"],["higher","more","increase","up","greater","bigger"]],"The density gets lower and the energy gets higher (and so does the temperature).",2));
+  sa.push(SA("How are the particles in a solid arranged compared with the particles in a gas?",[["close","tight","packed","together","fixed","touch"],["far","apart","spread","space","free","move"]],"In a solid the particles are packed tightly together. In a gas they are far apart and spread out."));
+  sa.push(SA("Why does a gas fill the whole container it is in?",[["indefinite","spread","expand","move","takes the shape","volume of the container","no definite","no fixed","fill"]],"A gas has an indefinite shape and volume, so it takes the shape and volume of its container."));
+  return{mc:mc,sa:sa}}
+
+/* ======= TOPIC 4: physical and chemical changes ======= */
+var CHEM=[["Iron rusting","The iron reacts with oxygen and forms rust, a new substance."],["Burning wood","Burning makes ash, smoke and gases, which are new substances."],["Cooking an egg","Heat changes the egg into something new that cannot be uncooked."],["Baking a cake","The batter changes into a new substance, cake, that cannot go back."],["Electroplating","A new layer of metal forms in a chemical reaction."],["A banana rotting","Rotting makes new substances, so the banana cannot be restored."],["Vinegar mixed with baking soda","They react and make a new gas, carbon dioxide."],["Fireworks exploding","The chemicals react and make new substances, heat and light."],["Milk turning sour","New substances form that give sour milk its taste and smell."],["A candle burning","The wax reacts with oxygen and makes new substances."],["Bread being toasted","Heat causes a chemical reaction that browns the bread."],["Silver tarnishing","The silver reacts with the air and makes a new dark substance."]];
+var PHYS=[["Breaking glass","The glass is still glass, just in smaller pieces."],["Mixing candies","Each candy is still the same kind of substance."],["Shredding paper","The paper is still paper, only in smaller pieces."],["Folding paper","The paper only changes shape."],["Melting ice","The ice is still water, just in a different state."],["Chopping wood","The wood is still wood, only in smaller pieces."],["Cutting hair","Hair is still hair, just shorter."],["Dry ice sublimating","Solid carbon dioxide becomes carbon dioxide gas, which is a state change."],["Boiling water","Liquid water becomes water vapor, a state change."],["Breaking an egg","The egg is only broken. It is still the same substance."],["Crushing a can","The can is still metal, just a different shape."],["Dissolving sugar in water","The sugar is still sugar and can be recovered."],["Freezing juice","Liquid juice becomes solid juice. It is a state change."],["Tearing cloth","The cloth is still cloth, just in pieces."]];
+function poolChanges(R){var mc=[],sa=[];
+  mc.push(MC(R,"What is a <b>physical change</b>?","A change in how matter looks, but not the kind of substance it is",["A change that creates a new substance","A change that can never be undone","A change that always needs heat","A change in the mass of matter"],"A physical change changes how matter looks but not the kind of substance. It can usually be undone."));
+  mc.push(MC(R,"What is a <b>chemical change</b>?","A change that creates a new substance",["A change in how matter looks","A change in the shape of matter only","A change that can usually be undone","A change in the size of matter"],"A chemical change creates a new substance and cannot be undone physically."));
+  mc.push(MC(R,"Which statement is true about a <b>chemical change</b>?","It cannot be undone physically",["It can usually be undone","It never makes anything new","It only changes the shape","It only happens to liquids"],"Chemical changes make new substances and cannot be undone physically."));
+  mc.push(MC(R,"Which statement is true about a <b>physical change</b>?","It can usually be undone",["It creates a new substance","It cannot be undone","It is always caused by burning","It changes the kind of substance"],"Physical changes can usually be undone."));
+  mc.push(MC(R,"Which of these is a clue that a <b>chemical change</b> has happened?","A new substance forms",["The object changes size","The object is cut into pieces","The object changes shape","The object is mixed with another solid"],"A new substance forming means a chemical change."));
+  R.sample(CHEM,6).forEach(function(c){mc.push(MC(R,"Is <b>"+c[0].toLowerCase()+"</b> a physical change or a chemical change?","Chemical change",["Physical change"],c[1],{key:"c"+c[0]}))});
+  R.sample(PHYS,6).forEach(function(c){mc.push(MC(R,"Is <b>"+c[0].toLowerCase()+"</b> a physical change or a chemical change?","Physical change",["Chemical change"],c[1],{key:"p"+c[0]}))});
+  mc.push(MC(R,"Which one is a <b>chemical</b> change?",R.pick(CHEM)[0],R.sample(PHYS,3).map(function(x){return x[0]}),"The others only change how the matter looks.",{key:"whichchem"}));
+  mc.push(MC(R,"Which one is a <b>physical</b> change?",R.pick(PHYS)[0],R.sample(CHEM,3).map(function(x){return x[0]}),"The others create new substances.",{key:"whichphys"}));
+  mc.push(MC(R,"Which of these is <b>not</b> a chemical change?","Melting ice",["Iron rusting","Fireworks exploding","A banana rotting"],"Melting ice is a physical change. The ice is still water."));
+  var ex=R.pick(CHEM),ep=R.pick(PHYS);
+  sa.push(SA("In your own words, what is a physical change?",[["look","shape","form","appear","state"],["same","not the kind","not a new","no new","undone","undo","reverse","not change the"]],"A physical change is a change in how matter looks, but not the kind of substance it is. It can usually be undone."));
+  sa.push(SA("In your own words, what is a chemical change?",[["new substance","new material","different substance","creates a new","new kind","new thing","something new"]],"A chemical change is a change that creates a new substance. It cannot be undone physically."));
+  sa.push(SA("Is <b>"+ex[0].toLowerCase()+"</b> a physical or a chemical change? Explain.",[["chemical"],["new","creat","cannot","can't","undo","react","different"]],"It is a chemical change. "+ex[1],2,{key:"saex"+ex[0]}));
+  sa.push(SA("Is <b>"+ep[0].toLowerCase()+"</b> a physical or a chemical change? Explain.",[["physical"],["same","still","only","no new","not a new","undo","just","shape","state","look"]],"It is a physical change. "+ep[1],2,{key:"saep"+ep[0]}));
+  sa.push(SA("Name two examples of chemical changes.",[["rust"],["burn","fire","candle"],["cook","egg"],["bak","cake"],["electroplat"],["rot","spoil","sour"],["vinegar","baking soda"],["firework"],["toast","tarnish"]],"Examples: iron rusting, burning, cooking an egg, baking a cake, electroplating, a banana rotting, vinegar and baking soda, fireworks.",2));
+  sa.push(SA("Name two examples of physical changes.",[["glass"],["mix","candies"],["shred"],["fold"],["melt","freez","ice"],["chop","wood"],["cut","hair"],["dry ice","sublim"],["boil"],["break","crack","egg"],["crush","tear","dissolv"]],"Examples: breaking glass, mixing candies, shredding or folding paper, melting ice, chopping wood, cutting hair, boiling water, breaking an egg.",2));
+  sa.push(SA("Why can a chemical change not be undone physically?",[["new substance","new material","different substance","new thing","something new","creates","made"]],"A chemical change makes a new substance, so you cannot get the old substance back just by a physical change."));
+  return{mc:mc,sa:sa}}
+
+/* ======= TOPIC 5: state changes ======= */
+var SC=[["condensation","a gas into a liquid","gas","liquid","Water drops form on the outside of a cold glass."],["evaporation","a liquid into a gas","liquid","gas","If it is done by rapid heating, it is called boiling."],["melting","a solid into a liquid","solid","liquid","Ice turning into water is melting."],["freezing","a liquid into a solid","liquid","solid","Water turning into ice is freezing."],["sublimation","a solid directly into a gas","solid","gas","Dry ice turning into carbon dioxide gas is sublimation."],["deposition","a gas directly into a solid","gas","solid","Frost forming on a cold window is deposition."]];
+var SCEN=[["A puddle disappears on a sunny day.","evaporation"],["Water drops form on the outside of a cold glass of lemonade.","condensation"],["An ice cube turns into water on a warm counter.","melting"],["Water in the freezer turns into ice cubes.","freezing"],["Dry ice turns right into gas without becoming a liquid.","sublimation"],["Frost forms on a cold window from water vapor in the air.","deposition"],["Butter in a hot pan turns into a liquid.","melting"],["Steam from a shower turns into drops on the bathroom mirror.","condensation"],["Wet laundry dries on a clothesline.","evaporation"],["Liquid juice turns into a popsicle in the freezer.","freezing"],["A snowman gets smaller and turns into a puddle.","melting"],["Water vapor in the air turns into dew on grass.","condensation"],["Hot lava cools and becomes solid rock.","freezing"],["A mothball slowly turns into a gas without melting.","sublimation"]];
+function poolStateChanges(R){var mc=[],sa=[],names=SC.map(function(s){return s[0]});
+  SC.forEach(function(s){mc.push(MC(R,"What is <b>"+s[0]+"</b>?","The changing of "+s[1],SC.filter(function(x){return x!==s}).map(function(x){return "The changing of "+x[1]}),s[0].replace(/^./,function(c){return c.toUpperCase()})+" is the changing of "+s[1]+". "+s[4],{key:"d"+s[0]}));
+    mc.push(MC(R,"The changing of "+s[1]+" is called ______.",s[0],names.filter(function(x){return x!==s[0]}),s[4],{key:"n"+s[0]}))});
+  R.sample(SCEN,6).forEach(function(s,i){mc.push(MC(R,s[0]+" Which state change is this?",s[1],names.filter(function(x){return x!==s[1]}),"This is "+s[1]+".",{key:"sc"+s[1]+s[0].slice(0,12)}))});
+  mc.push(MC(R,"Changes in state are ______ changes.","physical",["chemical","nuclear","electrical"],"A change in state is a physical change. The substance stays the same."));
+  mc.push(MC(R,"When water boils, it becomes steam. Is this a physical or chemical change?","Physical change",["Chemical change"],"The water is still water, only in a different state."));
+  mc.push(MC(R,"Evaporation done by rapid heating is called ______.","boiling",["freezing","melting","deposition"],"Evaporation by rapid heating is called boiling."));
+  mc.push(MC(R,"Which change turns a solid directly into a gas, skipping the liquid state?","Sublimation",["Evaporation","Melting","Condensation"],"Sublimation is solid → gas."));
+  mc.push(MC(R,"Which change turns a gas directly into a solid, skipping the liquid state?","Deposition",["Freezing","Sublimation","Condensation"],"Deposition is gas → solid."));
+  mc.push(MC(R,"Which pair of state changes are opposites of each other?","Melting and freezing",["Melting and evaporation","Freezing and sublimation","Condensation and melting"],"Melting (solid → liquid) is the reverse of freezing (liquid → solid).",{key:"opp0"}));
+  mc.push(MC(R,"Which pair of state changes are opposites of each other?","Condensation and evaporation",["Condensation and freezing","Evaporation and sublimation","Deposition and melting"],"Evaporation (liquid → gas) is the reverse of condensation (gas → liquid).",{key:"opp1"}));
+  mc.push(MC(R,"Which pair of state changes are opposites of each other?","Sublimation and deposition",["Sublimation and melting","Deposition and evaporation","Freezing and sublimation"],"Sublimation (solid → gas) is the reverse of deposition (gas → solid).",{key:"opp2"}));
+  var s1=R.pick(SC),s2=R.pick(SC.filter(function(x){return x!==s1}));
+  sa.push(SA("What is <b>"+s1[0]+"</b>? Give an example.",[[s1[2]],[s1[3]]],s1[0].replace(/^./,function(c){return c.toUpperCase()})+" is the changing of "+s1[1]+". "+s1[4],2,{key:"sa"+s1[0]}));
+  sa.push(SA("What is <b>"+s2[0]+"</b>? Give an example.",[[s2[2]],[s2[3]]],s2[0].replace(/^./,function(c){return c.toUpperCase()})+" is the changing of "+s2[1]+". "+s2[4],2,{key:"sa"+s2[0]}));
+  sa.push(SA("Are changes in state physical changes or chemical changes? Explain.",[["physical"],["same","not a new","no new","still","only the state","just the state","different state","undo"]],"They are physical changes. The substance stays the same. Only its state changes."));
+  sa.push(SA("Why do water drops form on the outside of a cold glass?",[["vapor","vapour","gas","air","moisture"],["condens","cold","cool","liquid"]],"Water vapor (a gas) in the air touches the cold glass and condenses into liquid water drops."));
+  sa.push(SA("What is evaporation called when it is done by rapid heating?",[["boil"]],"Boiling."));
+  sa.push(SA("Which two state changes need energy (heat) to be added to a solid and then a liquid? Name them in order.",[["melt"],["evaporat","boil","vaporiz"]],"A solid melts into a liquid, then the liquid evaporates (or boils) into a gas."));
+  return{mc:mc,sa:sa}}
+
+/* ======= TOPIC 6: atoms, substances, periodic table, electricity and energy ======= */
+var ELEM=[["sodium","Na"],["calcium","Ca"],["magnesium","Mg"],["iron","Fe"],["chlorine","Cl"],["helium","He"],["zinc","Zn"],["copper","Cu"],["silicon","Si"],["neon","Ne"]];
+var SUBS=[["a gold nugget","element","It is made of only one type of atom (gold)."],["aluminum foil","element","It is made of only one type of atom (aluminum)."],["oxygen gas (O₂)","element","It is made of only one type of atom (oxygen), even though the atoms are bonded in pairs."],["water (H₂O)","compound","It is made of one type of molecule (hydrogen and oxygen bonded together)."],["carbon dioxide (CO₂)","compound","It is made of one type of molecule (carbon and oxygen bonded together)."],["table salt (NaCl)","compound","It is made of one type of molecule (sodium and chlorine bonded together)."],["trail mix","mixture","It is made of different things mixed together, not chemically bonded."],["salad","mixture","It is made of different foods mixed together, not chemically bonded."],["salt water","mixture","Salt and water are mixed together, not chemically bonded."],["sand mixed with iron filings","mixture","They are mixed together, not chemically bonded."]];
+var COND=[["a copper wire","conductor"],["an iron nail","conductor"],["aluminum foil","conductor"],["a metal spoon","conductor"],["a rubber glove","insulator"],["a plastic bag","insulator"],["a wooden pencil","insulator"],["a glass cup","insulator"],["a cotton shirt","insulator"],["a ceramic mug","insulator"]];
+var EN=[["Chemical","potential"],["Nuclear","potential"],["Magnetic","potential"],["Gravitational","potential"],["Thermal (heat)","kinetic"],["Light","kinetic"],["Sound","kinetic"],["Mechanical","kinetic"],["Electric","kinetic"]];
+function poolAtoms(R){var mc=[],sa=[];
+  mc.push(MC(R,"What is an <b>atom</b>?","The smallest particle of a pure chemical substance",["A particle made of many different molecules","A substance made of more than one element","A mixture of two compounds","The center of a nucleus"],"An atom is the smallest particle of a pure chemical substance."));
+  mc.push(MC(R,"What is a <b>molecule</b>?","A particle made up of multiple atoms chemically bonded together",["The smallest particle of a pure substance","A substance made of multiple mixed elements","The center of an atom","A particle with a negative charge"],"A molecule is made of multiple atoms bonded together."));
+  mc.push(MC(R,"What is an <b>element</b>?","A substance made of one type of atom",["A substance made of one type of molecule","A substance of multiple mixed compounds","A particle made of protons only","A particle with a negative charge"],"An element is a substance made of one type of atom."));
+  mc.push(MC(R,"What is a <b>compound</b>?","A substance made of one type of molecule",["A substance made of one type of atom","Substances mixed together but not bonded","The smallest part of an atom","A flow of electrons"],"A compound is a substance made of one type of molecule."));
+  mc.push(MC(R,"What is a <b>mixture</b>?","A substance made of multiple elements and/or compounds mixed together (not chemically bonded)",["A substance made of one type of atom","A substance made of one type of molecule","The smallest particle of an element","A particle made of protons and neutrons"],"In a mixture, the parts are mixed but not chemically bonded."));
+  R.sample(SUBS,5).forEach(function(s){mc.push(MC(R,"Is <b>"+s[0]+"</b> an element, a compound or a mixture?",s[1],["element","compound","mixture"].filter(function(x){return x!==s[1]}),s[2],{key:"sub"+s[0]}))});
+  [["nucleus","The center of an atom that contains most of its mass","It has protons and neutrons."],["proton","A positively-charged particle in the nucleus","The number of protons determines the type of element."],["neutron","A non-charged (neutral) particle in the nucleus","It has the same mass as a proton."],["electron","A negatively-charged particle outside the nucleus","It is the smallest sub-atomic particle."]].forEach(function(p){
+    mc.push(MC(R,"Which part of an atom is "+p[1].toLowerCase().replace(/^the /,"the ")+"?",p[0].replace(/^./,function(c){return c.toUpperCase()}),["Nucleus","Proton","Neutron","Electron"].filter(function(x){return x.toLowerCase()!==p[0]}),p[2],{key:"part"+p[0]}))});
+  mc.push(MC(R,"Which part of an atom determines the type of element?","Proton",["Neutron","Electron","Molecule"],"The number of protons determines the type of element."));
+  mc.push(MC(R,"Which sub-atomic particle is the <b>smallest</b>?","Electron",["Proton","Neutron","Nucleus"],"The electron is the smallest sub-atomic particle."));
+  mc.push(MC(R,"Which two particles are found in the <b>nucleus</b>?","Protons and neutrons",["Protons and electrons","Neutrons and electrons","Only electrons"],"The nucleus has protons and neutrons. Electrons are outside it."));
+  mc.push(MC(R,"The atomic number of an element is the number of ______.","protons",["neutrons","electrons","molecules"],"Atomic number = the number of protons."));
+  mc.push(MC(R,"The elements in the periodic table are organized in order of their ______.","atomic number (number of protons)",["alphabet","atomic mass only","color","state of matter"],"The elements are in order of atomic number."));
+  var z=R.pick([2,3,6,7,8,10,11,12,16,20]);
+  mc.push(MC(R,"An element has an atomic number of "+z+". How many protons does each atom have?",String(z),[String(z+1),String(z*2),String(z-1),String(z+4)],"The atomic number is the number of protons.",{key:"z"+z}));
+  var p2=R.pick([2,4,6,8,10]),nn=R.pick([2,4,6,8,10].filter(function(v){return v!==p2}));
+  mc.push(MC(R,"An atom has "+p2+" protons and "+nn+" neutrons. About what is its atomic mass?",String(p2+nn),[String(p2),String(nn),String(p2+nn+2),String(p2*nn)],"Atomic mass is about the number of protons plus neutrons.",{key:"am"+p2+"-"+nn}));
+  mc.push(MC(R,"On the periodic table, the number <b>1</b> above H (hydrogen) is the ______.","atomic number",["atomic mass","symbol","number of neutrons"],"The atomic number (number of protons) is shown at the top. Hydrogen has 1 proton."));
+  mc.push(MC(R,"What does the table of all known elements, the <b>periodic table</b>, do over time?","It changes as scientists discover or create new elements",["It never changes","It loses elements","It only has 20 elements","It lists only compounds"],"The periodic table is changing as scientists discover (or create) new elements."));
+  R.sample(ELEM,2).forEach(function(e){var sym=e[1],wr=[sym.toUpperCase(),sym.toLowerCase(),sym[0].toLowerCase()+sym[1].toUpperCase()];
+    mc.push(MC(R,"Which shows the correct way to write the symbol for <b>"+e[0]+"</b>?",sym,wr,"The first letter is capitalized and the second letter (if any) is lower case.",{key:"sym"+e[0]}))});
+  mc.push(MC(R,"What is <b>electricity</b>?","Energy caused by the movement or flow of electrons",["Energy caused by heat only","The center of an atom","A kind of mixture","Energy that is stored in food only"],"Electricity is energy caused by the movement or flow of electrons."));
+  mc.push(MC(R,"For electricity to flow, a circuit must be ______.","a closed loop",["an open line","made of only plastic","a single wire with no battery","a loop with a gap"],"Circuits must be in the form of a closed loop."));
+  mc.push(MC(R,"A circuit has a gap in the wire. What will happen to the light bulb?","It will not light because the loop is open",["It will light brighter","It will light normally","It will melt"],"A circuit must be a closed loop for electricity to flow."));
+  R.sample(COND,4).forEach(function(c){mc.push(MC(R,"Is <b>"+c[0]+"</b> a conductor or an insulator of electricity?",c[1],["conductor","insulator"].filter(function(x){return x!==c[1]}),c[1]==="conductor"?"Metals let electricity flow through them.":"Insulators do not let electricity flow through them.",{key:"cond"+c[0]}))});
+  mc.push(MC(R,"<b>Conductors</b> ______ electricity to flow through them.","allow",["do not allow","destroy","create","absorb"],"Conductors allow electricity to flow. Insulators do not."));
+  mc.push(MC(R,"What is <b>energy</b>?","The ability to do work or to make things happen",["Anything with mass","The center of an atom","A kind of metal","A type of solid"],"Energy is the ability to do work, or to make things happen."));
+  R.sample(EN,4).forEach(function(e){mc.push(MC(R,"Which kind of energy is <b>"+e[0].toLowerCase()+"</b> energy?",e[1]+" energy",[e[1]==="potential"?"kinetic energy":"potential energy"],e[1]==="potential"?"Chemical, nuclear, magnetic and gravitational energy are potential (stored) energy.":"Thermal, light, sound, mechanical and electric energy are kinetic energy.",{key:"en"+e[0]}))});
+  mc.push(MC(R,"The <b>Law of Conservation of Energy</b> says that energy ______.","cannot be created or destroyed, it can only change form",["can be created but not destroyed","is destroyed when it is used","can be destroyed but not created","always stays in the same form"],"Energy cannot be created nor destroyed. It can only change form."));
+  mc.push(MC(R,"Magnets can ______.","generate electricity",["destroy electrons","stop all energy","make matter disappear"],"Magnets can generate electricity, and electric current can create magnetic fields (electromagnets)."));
+  mc.push(MC(R,"An <b>electromagnet</b> works because ______.","an electric current can create a magnetic field",["magnets can destroy electricity","metals never conduct","electrons are protons","a circuit has a gap"],"Electric current can create magnetic fields (electromagnets)."));
+  sa.push(SA("In your own words, what is an atom?",[["smallest"],["particle","part","piece","unit","bit"]],"An atom is the smallest particle of a pure chemical substance."));
+  sa.push(SA("How is a molecule different from an atom?",[["multiple","more than one","two or more","bond","together","many","combin"],["atom"]],"A molecule is made up of multiple atoms chemically bonded together. An atom is the smallest particle of a pure chemical substance."));
+  sa.push(SA("Name the three parts of an atom.",[["proton"],["neutron"],["electron"]],"Protons, neutrons and electrons. Protons and neutrons are in the nucleus. Electrons are outside it."));
+  sa.push(SA("What does the atomic number tell you, and how are the elements in the periodic table organized?",[["proton"],["order","atomic number","organized","arranged","increas"]],"The atomic number is the number of protons. Elements are in order of atomic number."));
+  sa.push(SA("What is the difference between a conductor and an insulator?",[["allow","let","flow","through","pass"],["insulat","not","do not","doesn","block","stop"]],"Conductors allow electricity to flow through. Insulators do not."));
+  sa.push(SA("What is the Law of Conservation of Energy?",[["creat","made","make"],["destroy","lost","disappear"]],"Energy cannot be created nor destroyed. It can only change form."));
+  sa.push(SA("What is a circuit, and how must it be built for electricity to flow?",[["closed","loop","complete","circle","no gap","connected"]],"A circuit must be a closed loop for electricity to flow."));
+  sa.push(SA("In your own words, what is a mixture?",[["multiple","two or more","different","more than one","many"],["mix","together","not chemically","not bonded","not combined","not joined"]],"A mixture is a substance made of multiple elements and/or compounds mixed together, but not chemically bonded.",1));
+  sa.push(SA("In your own words, what is electricity?",[["movement","flow","moving","move","current"],["electron"]],"Electricity is energy caused by the movement or flow of electrons.",2));
+  sa.push(SA("Which particle in an atom has a positive charge, and where is it found?",[["proton"],["nucleus","center","middle"]],"The proton has a positive charge and is found in the nucleus.",2));
+  return{mc:mc,sa:sa}}
+
+var TOPICS=[
+ {id:"matter",name:"Matter and Conservation of Matter",desc:"What matter is and why the mass of the reactants equals the mass of the products.",pool:poolMatter},
+ {id:"props",name:"Properties of Matter",desc:"Physical and chemical properties, metals and density.",pool:poolProps},
+ {id:"states",name:"States of Matter",desc:"Solids, liquids and gases, their particles, temperature and energy.",pool:poolStates},
+ {id:"changes",name:"Physical and Chemical Changes",desc:"Is a new substance made? Sort the examples.",pool:poolChanges},
+ {id:"statechg",name:"State Changes",desc:"Condensation, evaporation, melting, freezing, sublimation and deposition.",pool:poolStateChanges},
+ {id:"atoms",name:"Atoms, Substances, Periodic Table, Electricity and Energy",desc:"Atom, molecule, element, compound, mixture, parts of an atom, circuits and types of energy.",pool:poolAtoms},
+ {id:"mixed",name:"Mixed Review: All of Unit 1",desc:"Questions from every topic.",pool:null}];
+function build(t,R){
+  if(t.id==="mixed"){var all=TOPICS.filter(function(x){return x.pool}).map(function(x){return x.pool(R)}),mc=[],sa=[];
+    all.forEach(function(p){mc=mc.concat(R.sample(p.mc,2));sa=sa.concat(R.sample(p.sa,1))});
+    mc=R.sample(mc,12);sa=R.sample(sa,6);mc.forEach(function(q){q.part="Part A: Multiple choice"});sa.forEach(function(q){q.part="Part B: Short answer"});return mc.concat(sa)}
+  var p=t.pool(R),m=R.sample(p.mc,8),s=R.sample(p.sa,4);
+  m.forEach(function(q){q.part="Part A: Multiple choice"});s.forEach(function(q){q.part="Part B: Short answer"});return m.concat(s)}
+function topicById(id){return TOPICS.filter(function(t){return t.id===id})[0]}
+TOPICS.forEach(function(t){t.gen=function(R){return build(t,R)}});
+
+/* ---------- seeds, history, state ---------- */
+var app=document.getElementById("app");
+var S={view:"home",topic:null,seed:0,Q:[],i:0,res:[],picks:[],U:null};
+var NCAND=20;
+function genSet(t,seed){var key=t.id+"_"+seed,pk=lsGet("sc_pick",{});
+  if(pk[key]!==undefined)return t.gen(RNG(seed*31+pk[key]));
+  var avoid={},h=lsGet("sc_hist",{})[t.id]||[];h.forEach(function(p){avoid[p]=1});
+  var best=0,bs=1e9,bq=null;
+  for(var k=0;k<NCAND;k++){var Q=t.gen(RNG(seed*31+k)),sc=0;Q.forEach(function(q){if(avoid[q.plain])sc++});
+    if(sc<bs){bs=sc;best=k;bq=Q;if(sc===0)break}}
+  var ks=Object.keys(pk);if(ks.length>80){ks.slice(0,ks.length-60).forEach(function(x){delete pk[x]})}
+  pk[key]=best;lsSet("sc_pick",pk);return bq}
+function rememberSet(t,Q){var h=lsGet("sc_hist",{}),a=h[t.id]||[];
+  Q.forEach(function(q){if(a.indexOf(q.plain)<0)a.push(q.plain)});
+  if(a.length>120)a=a.slice(a.length-120);h[t.id]=a;lsSet("sc_hist",h)}
+function seedFor(id){var m=lsGet("sc_seeds",{});if(!m[id]){m[id]=Math.floor(Math.random()*1e9)+1;lsSet("sc_seeds",m)}return m[id]}
+function newSeed(id){var m=lsGet("sc_seeds",{});m[id]=Math.floor(Math.random()*1e9)+1;lsSet("sc_seeds",m);return m[id]}
+function newU(){return{choice:null,text:"",checked:false,ok:false,overridden:false}}
+function lastFor(t){var l=MPE.log().filter(function(r){return r.test==="Science: Unit 1 Review"&&r.section===t.name});var r=l[l.length-1];
+  return r?"Last on this device: "+r.score+" of "+r.total+" ("+Math.round(r.score/r.total*100)+"%)"+(r.child?" by "+r.child:""):""}
+
+/* ---------- screens ---------- */
+function home(){S.view="home";S.topic=null;
+  app.innerHTML='<div class="row"><a class="btn ghost" href="../" style="text-decoration:none">&larr; Spelling</a><a class="btn ghost" href="../../scores/" style="text-decoration:none">My Scores</a></div>'+
+   '<div><div class="tag">Levin &middot; 5th grade</div><h1>Science: Unit 1 Review</h1></div>'+
+   '<p class="small" style="margin:-6px 0 0">Practice for the Unit 1 Concept Review Guide (pages 1 to 3). Each set has multiple choice and short answer questions. Tap <b>New questions</b> any time for a fresh set.</p>'+
+   '<div class="topics">'+TOPICS.map(function(t){var n=genSet(t,seedFor(t.id)).length;
+    return '<section class="card topic"><h2>'+esc(t.name)+'</h2><p>'+esc(t.desc)+'</p><p>'+n+' questions</p><p class="last">'+esc(lastFor(t))+'</p><div class="row"><button class="btn" data-go="'+t.id+'">Start</button><button class="btn ghost" data-new="'+t.id+'">New questions</button></div></section>'}).join("")+'</div>';
+  app.querySelectorAll("[data-go]").forEach(function(b){b.onclick=function(){start(b.dataset.go,seedFor(b.dataset.go))}});
+  app.querySelectorAll("[data-new]").forEach(function(b){b.onclick=function(){newSeed(b.dataset.new);home()}})}
+
+function mpeOpts(t){return{key:t.id,
+  getState:function(){if(S.view==="test"&&S.topic&&S.i<S.Q.length)return{label:"question "+(S.i+1)+" of "+S.Q.length,topic:t.id,seed:S.seed,i:S.i,res:S.res,picks:S.picks};return null},
+  resume:function(st){var tp=topicById(st.topic);if(!tp)return;S.topic=tp;S.seed=st.seed;
+    S.Q=genSet(tp,st.seed);S.i=st.i;S.res=st.res||[];S.picks=st.picks||[];S.view="test";S.U=newU();renderQ()},
+  exit:function(){home()}}}
+function start(id,seed){var t=topicById(id);S.topic=t;S.seed=seed;MPE.begin(mpeOpts(t));
+  S.Q=genSet(t,seed);rememberSet(t,S.Q);S.i=0;S.res=[];S.picks=[];S.view="test";S.U=newU();renderQ()}
+
+function renderQ(){var q=S.Q[S.i],U=S.U,n=S.Q.length,html='<div class="row" style="justify-content:space-between"><button class="btn ghost" id="quit">Home</button><span class="tag">Question '+(S.i+1)+' of '+n+'</span></div><div class="bar"><i style="width:'+Math.round(S.i/n*100)+'%"></i></div><div><div class="tag">'+esc(S.topic.name)+' &middot; '+esc(q.part||"")+'</div></div>';
+  html+='<section class="card" id="qcard"><div class="stem">'+q.q+'</div>';
+  if(q.t==="mc"){
+    html+='<div class="opts">'+q.opts.map(function(o,j){var c="opt";if(U.checked){if(j===q.a)c+=" right";else if(j===U.choice)c+=" wrong"}else if(j===U.choice)c+=" sel";
+      return '<button class="'+c+'" data-o="'+j+'"'+(U.checked?" disabled":"")+'><b>'+"ABCD"[j]+'</b><span>'+o+'</span></button>'}).join("")+'</div>'}
+  else{html+='<p class="small">Write your answer in a sentence. Use the science words you learned.</p><textarea id="ans" rows="3" placeholder="Type your answer here..."'+(U.checked?" disabled":"")+'></textarea>'}
+  if(U.checked){html+='<div class="fb '+(U.ok?"good":"bad")+'">'+(U.ok?(U.overridden?"Counted as correct.":"Correct!"):"Not quite.")+'<span>'+(q.t==="sa"?'<b>Model answer:</b> '+esc(q.model):q.exp)+'</span>'+(!U.ok&&q.t==="sa"?'<button class="btn ghost" id="right" style="margin-top:8px">My answer was right too</button>':'')+'</div>'}
+  html+='<div class="row" style="margin-top:14px">'+(U.checked?'<button class="btn" id="next">'+(S.i+1>=n?"See my score":"Next")+'</button>':'<button class="btn" id="check"'+((q.t==="mc"?U.choice!==null:U.text.trim().length>0)?"":" disabled")+'>Check</button>')+'</div></section>';
+  app.innerHTML=html;
+  document.getElementById("quit").onclick=function(){if(confirm("Go back home? Use the yellow Save button first if you want to continue later."))home()};
+  app.querySelectorAll("[data-o]").forEach(function(b){b.onclick=function(){U.choice=+b.dataset.o;renderQ()}});
+  var ta=document.getElementById("ans");if(ta){ta.value=U.text;ta.oninput=function(){U.text=ta.value;var c=document.getElementById("check");if(c)c.disabled=!U.text.trim()};if(!U.checked)ta.focus()}
+  var ck=document.getElementById("check");if(ck)ck.onclick=function(){U.checked=true;U.ok=q.t==="mc"?U.choice===q.a:gradeSA(q,U.text);renderQ();window.scrollTo(0,document.body.scrollHeight)};
+  var rt=document.getElementById("right");if(rt)rt.onclick=function(){U.ok=true;U.overridden=true;renderQ()};
+  var nx=document.getElementById("next");if(nx)nx.onclick=function(){S.res[S.i]=U.ok?1:0;S.picks[S.i]={sel:q.t==="mc"?U.choice:null,given:q.t==="sa"?U.text:"",ok:U.ok};S.i++;MPE.autosave();
+    if(S.i>=S.Q.length)return results();S.U=newU();renderQ();window.scrollTo(0,0)}}
+
+function results(){S.view="results";var n=S.Q.length,sc=S.res.reduce(function(a,b){return a+b},0),pct=Math.round(sc/n*100);
+  MPE.finish({test:"Science: Unit 1 Review",section:S.topic.name,score:sc,total:n});
+  var rows=S.Q.map(function(q,i){var pk=S.picks[i]||{};return MPE.reviewItem(q,{ok:S.res[i]===1,sel:pk.sel,given:pk.given||"(no answer)"},i,{LT:["A","B","C","D"],correct:function(x){return x.model},alwaysCorrect:true,sec:q.part})}).join("");
+  var msg=pct===100?"Perfect score!":pct>=90?"Excellent work!":pct>=70?"Good job. A little more practice.":"Keep practicing. Review the answers below, then try again.";
+  app.innerHTML='<section class="card"><div class="tag">'+esc(S.topic.name)+'</div><div class="score">'+sc+' / '+n+' &middot; '+pct+'%</div><h2>'+msg+'</h2>'+
+   '<div class="row"><button class="btn" id="new">New questions</button><button class="btn ghost" id="again">Try these again</button><button class="btn ghost" id="hm">Home</button></div></section>'+
+   '<h3>Review of your answers</h3><p class="small">Green is the correct answer. Red is what you picked. Short answers show the model answer.</p><div class="review">'+rows+'</div>';
+  document.getElementById("new").onclick=function(){start(S.topic.id,newSeed(S.topic.id))};
+  document.getElementById("again").onclick=function(){start(S.topic.id,S.seed)};
+  document.getElementById("hm").onclick=home}
+
+window.__sci={TOPICS:TOPICS,RNG:RNG,genSet:genSet,gradeSA:gradeSA,state:function(){return S},topicById:topicById};
+home();
+})();
+</script>
+</body>
+</html>
