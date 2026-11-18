@@ -1,0 +1,365 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Social Studies: Unit 1</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@500;700;800&display=swap">
+<style>
+:root{
+  --bg:#eef3fb; --surface:#ffffff; --ink:#132043; --muted:#5b6788; --line:#d5dded;
+  --accent:#2f5bea; --accent-ink:#ffffff; --gold:#f5a800; --good:#178a4c; --good-bg:#dff5e8; --bad:#c62f3d; --bad-bg:#fde3e5;
+  --tile:#e3ebfd; --mark:#fff0b3; --shadow:0 2px 0 rgba(19,32,67,.12);
+  --display:"Fredoka","Trebuchet MS",system-ui,sans-serif; --body:"Nunito",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+@media (prefers-color-scheme: dark){:root{
+  --bg:#0f1730; --surface:#18234a; --ink:#eaf0ff; --muted:#a1aed3; --line:#2c3a6b;
+  --accent:#7d9bff; --accent-ink:#0f1730; --gold:#ffc23d; --good:#5fd394; --good-bg:#12382a; --bad:#ff8892; --bad-bg:#3d1b24;
+  --tile:#25336a; --mark:#5a4a12; --shadow:0 2px 0 rgba(0,0,0,.4); color-scheme:dark}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:18px;line-height:1.45;padding:20px 16px 90px}
+main{max-width:760px;margin:0 auto;display:flex;flex-direction:column;gap:16px}
+h1,h2,h3{font-family:var(--display);margin:0;line-height:1.15;font-weight:600}
+h1{font-size:2rem}h2{font-size:1.35rem}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,textarea:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.tag{font-size:.8rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:800}
+.card{background:var(--surface);border:2px solid var(--line);border-radius:18px;padding:18px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.btn{background:var(--accent);color:var(--accent-ink);border:0;border-radius:12px;padding:12px 20px;font-weight:800;box-shadow:var(--shadow)}
+.btn.ghost{background:transparent;color:var(--ink);border:2px solid var(--line);box-shadow:none}
+.btn:disabled{opacity:.4;cursor:default}
+.topics{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:12px}
+.topic{display:flex;flex-direction:column;gap:8px}
+.topic p{margin:0;color:var(--muted);font-size:.95rem;font-weight:700}
+.topic .last{font-size:.85rem}
+.bar{height:10px;background:var(--tile);border-radius:99px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--accent);border-radius:99px}
+.sent{display:flex;flex-wrap:wrap;gap:6px 4px;font-family:var(--display);font-size:1.35rem;line-height:1.9;margin:4px 0 8px}
+.tok{border:0;background:transparent;padding:2px 6px;border-radius:8px;font:inherit;color:inherit;box-shadow:none}
+.tok:not(:disabled){cursor:pointer}
+.tok:not(:disabled):hover{background:var(--tile)}
+.tok.m-ul{border-bottom:4px solid var(--accent);border-radius:0}
+.tok.m-circle{outline:3px solid var(--accent);outline-offset:0;border-radius:99px}
+.tok.m-hl{background:var(--mark)}
+.tok.m-box{outline:3px dashed var(--accent);border-radius:6px}
+.tok.ok{background:var(--good-bg);color:var(--good)}
+.tok.bad{background:var(--bad-bg);color:var(--bad);text-decoration:line-through}
+.tok.miss{outline:3px dashed var(--good);outline-offset:0}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin:6px 0 10px}
+.chip{border:2px solid var(--line);background:var(--surface);border-radius:99px;padding:6px 14px;font-weight:800;font-size:.95rem}
+.chip.on{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.chip small{font-weight:700;opacity:.85}
+.opts{display:grid;gap:10px;margin:10px 0}
+.opt{display:flex;gap:10px;align-items:flex-start;text-align:left;background:var(--tile);border:3px solid transparent;border-radius:14px;padding:12px 14px;font-weight:700}
+.opt.sel{border-color:var(--accent)}
+.opt.right{background:var(--good-bg);border-color:var(--good)}
+.opt.wrong{background:var(--bad-bg);border-color:var(--bad)}
+.opt b{font-family:var(--display);min-width:1.4em}
+.choicerow{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}
+.stem{font-size:1.2rem;font-weight:700;margin:2px 0 6px}
+.stem u{text-decoration-thickness:3px;text-underline-offset:4px}
+.pair{background:var(--tile);border-radius:12px;padding:10px 14px;margin:8px 0;font-weight:700}
+.fb{border-radius:14px;padding:12px 14px;margin-top:10px;font-weight:700}
+.fb.good{background:var(--good-bg);color:var(--good)}
+.fb.bad{background:var(--bad-bg);color:var(--bad)}
+.fb span{color:var(--ink);font-weight:600;display:block;margin-top:4px}
+.rv{border:2px solid var(--line);border-left:8px solid var(--good);border-radius:14px;padding:12px 14px;background:var(--surface);margin-bottom:10px}.rv.rno{border-left-color:var(--bad)}.rv .opt{cursor:default}.rv .sent{font-size:1.15rem}.rvh{margin-bottom:6px}
+.score{font-family:var(--display);font-size:2.6rem;color:var(--accent)}
+.miss-list{display:grid;gap:8px;margin:10px 0}
+.miss-list div{background:var(--tile);border-radius:12px;padding:10px 14px;font-weight:600;font-size:.98rem}
+textarea{width:100%;min-height:200px;border:2px solid var(--line);border-radius:14px;padding:12px;font:inherit;background:var(--surface);color:var(--ink);resize:vertical}
+.check li{margin:6px 0;font-weight:700}
+.check .y{color:var(--good)}.check .n{color:var(--bad)}
+.small{font-size:.9rem;color:var(--muted);font-weight:600}
+.review .ri{border:2px solid var(--line);border-left:8px solid var(--good);border-radius:14px;padding:12px 14px;background:var(--surface);margin-bottom:10px}.review .ri.nor{border-left-color:var(--bad)}.review .rh{margin-bottom:6px}
+.opt b{font-family:var(--display)}.opt svg{display:block;color:var(--ink)}.opt>span{flex:1}
+</style>
+</head>
+<body>
+<main id="app"></main>
+<script src="../../mpe-track.js"></script>
+<script>
+(function(){
+"use strict";
+function lsGet(k,d){try{var v=JSON.parse(localStorage.getItem(k));return v==null?d:v}catch(e){return d}}
+function lsSet(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
+function RNG(seed){var a=seed>>>0;
+  function f(){a|=0;a=a+0x6D2B79F5|0;var t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}
+  var r={f:f,int:function(x,y){return x+Math.floor(f()*(y-x+1))},pick:function(arr){return arr[Math.floor(f()*arr.length)]},
+    shuffle:function(arr){arr=arr.slice();for(var i=arr.length-1;i>0;i--){var j=Math.floor(f()*(i+1)),t=arr[i];arr[i]=arr[j];arr[j]=t}return arr},
+    sample:function(arr,n){return r.shuffle(arr).slice(0,n)}};
+  return r}
+function strip(h){return String(h).replace(/<svg[\s\S]*?<\/svg>/g,"[picture]").replace(/<[^>]+>/g,"")}
+/* multiple choice: correct answer plus wrong ones, shuffled */
+function MC(R,stem,right,wrongs,exp,extra){
+  var w=[];R.shuffle(wrongs).forEach(function(x){if(x!==right&&w.indexOf(x)<0&&w.length<3)w.push(x)});
+  var opts=R.shuffle([right].concat(w));
+  var q={t:"mc",q:stem,opts:opts,a:opts.indexOf(right),exp:exp||"",plain:strip(stem)+(extra&&extra.key?" "+extra.key:"")};
+  if(extra)for(var k in extra)q[k]=extra[k];return q}
+/* short answer graded by key words */
+function SA(stem,groups,model,need,extra){var q={t:"sa",q:stem,groups:groups,need:need||groups.length,model:model,exp:"",plain:strip(stem)};if(extra)for(var k in extra)q[k]=extra[k];return q}
+function norm(s){return " "+String(s).toLowerCase().replace(/[^a-z0-9 ]+/g," ").replace(/\s+/g," ").trim()+" "}
+function gradeSA(q,text){var n=norm(text),hit=0;
+  q.groups.forEach(function(g){if(g.some(function(a){return n.indexOf(norm(a).trim())>=0}))hit++});
+  return hit>=q.need}
+/* particle pictures */
+function particles(R,state){var pts=[],i,j;
+  if(state==="solid"){for(i=0;i<5;i++)for(j=0;j<4;j++)pts.push([20+i*22,18+j*21])}
+  else if(state==="liquid"){var tries=0;while(pts.length<14&&tries++<400){var x=R.int(14,116),y=R.int(34,86);if(pts.every(function(p){return Math.hypot(p[0]-x,p[1]-y)>19}))pts.push([x,y])}}
+  else{var tries2=0;while(pts.length<5&&tries2++<400){var x2=R.int(14,116),y2=R.int(14,86);if(pts.every(function(p){return Math.hypot(p[0]-x2,p[1]-y2)>38}))pts.push([x2,y2])}}
+  return '<svg viewBox="0 0 130 100" width="130" height="100" role="img" aria-label="particle picture"><rect x="2" y="2" width="126" height="96" rx="6" fill="none" stroke="currentColor" stroke-opacity=".45" stroke-width="2"/>'+
+    pts.map(function(p){return '<circle cx="'+p[0]+'" cy="'+p[1]+'" r="8.5" fill="#2f7dd1" stroke="#1b4f8f" stroke-width="1.5"/>'}).join("")+'</svg>'}
+
+/* ======= VOCABULARY ======= */
+var VOC=[
+ ["history","the study of the past",[["past"]],"unit"],
+ ["historian","a person who studies and writes about the past",[["study","studies","writes","research","learn","investigat"],["past","history"]],"unit"],
+ ["interpretation","an explanation of what evidence from the past means",[["explain","explanation","meaning","understand","opinion","view","idea","conclusion","mean"]],"unit",1],
+ ["evidence","facts, objects or information used to support an idea or answer a question",[["fact","information","proof","object","support","clue","source","show"]],"unit",1],
+ ["primary source","a first-hand record made at the time by someone who was there",[["first","original","firsthand","first-hand","at the time","there","witness","during","made by someone who"]],"unit",1],
+ ["secondary source","an account made later by someone who was not there",[["later","after","not there","wasn't there","was not there","not present","didn't","did not","secondhand","second-hand","second"]],"unit",1],
+ ["artifact","an object, such as a tool or clothing, made by a group of humans",[["object","tool","clothing","item","thing"]],"unit",1],
+ ["migration","the movement of people from one place to another to live",[["move","moving","movement","travel","go"],["place","from","another","people","live","settle","area"]],"unit"],
+ ["oral history","history that is told by speaking and passed down from person to person",[["spoken","told","tell","stor","word","pass","talk","say","speak"]],"unit",1],
+ ["chronology","the order in which events happened in time",[["order","sequence","timeline","time"]],"unit",1],
+ ["archive","a place where historical records and documents are collected and stored",[["store","keep","collect","place","building","records","documents","papers","save"]],"unit",1],
+ ["adaptation","a change that helps living things survive in their environment",[["change","adjust","adapt","survive","fit","shift","evolve"]],"unit",1],
+ ["cultural region","an area of the world where people develop similar ways of life, especially similar customs and beliefs",[["area","region","place","part"],["similar","same","customs","beliefs","way of life","ways of life","culture","traditions"]],"l3"],
+ ["culture","the way of living of a group of people",[["way","living","life","customs","beliefs","traditions"],["people","group","community","society"]],"l3"],
+ ["adapt","to shift or change slightly over time to survive in changing habitats",[["change","adjust","shift","evolve","get used"],["survive","live","habitat","environment","fit","new","over time","conditions"]],"l3"],
+ ["gorge","a narrow, deep valley with steep sides",[["valley","canyon"],["narrow","deep","steep"]],"l3",1],
+ ["mesa","a flat-topped hill with steep sides",[["hill","mountain","flat","table","plateau"]],"l3",1],
+ ["nomadic","moving from place to place, often with the seasons, to follow sources of food",[["move","moving","travel","wander","place to place"],["food","season","follow","animals","hunt","buffalo"]],"l3",1]];
+var VAPPLY=[
+ ["A historian reads a letter written by a soldier during the war. The letter is a ______.","primary source",["secondary source","chronology","migration"]],
+ ["A student reads a textbook chapter about the war, written 100 years later. The textbook is a ______.","secondary source",["primary source","artifact","oral history"]],
+ ["A clay pot made by people long ago and dug up by scientists is an ______.","artifact",["archive","interpretation","adaptation"]],
+ ["A museum stores old letters, maps and documents in a special building. The building is an ______.","archive",["artifact","oral history","evidence"]],
+ ["Putting the events of the Civil War in the order they happened is using ______.","chronology",["migration","adaptation","interpretation"]],
+ ["Grandma tells the family stories from long ago that her own grandmother told her. This is ______.","oral history",["an archive","a secondary source","a chronology"]],
+ ["Two historians study the same diary but explain what it means in different ways. They have different ______.","interpretations",["archives","artifacts","chronologies"]],
+ ["Birds fly south for the winter to find food. This movement from one place to another is called ______.","migration",["history","chronology","evidence"]],
+ ["A tribe that follows buffalo herds from place to place all year is ______.","nomadic",["a mesa","an archive","a gorge"]],
+ ["A tall, flat-topped hill with steep sides in the desert is a ______.","mesa",["gorge","culture","archive"]],
+ ["A river cuts a narrow, deep valley with steep sides. This valley is a ______.","gorge",["mesa","culture","chronology"]],
+ ["The foods, clothing, music, and beliefs of a group of people make up their ______.","culture",["chronology","evidence","gorge"]],
+ ["A thick fur coat helps an animal survive in the cold. This is an ______.","adaptation",["archive","interpretation","artifact"]],
+ ["The Great Plains and the Southwest are two ______ where people had different ways of life.","cultural regions",["archives","chronologies","artifacts"]],
+ ["A detective uses fingerprints, photos and notes to prove who did it. These are all ______.","evidence",["migrations","mesas","archives"]],
+ ["A person who studies and writes about the past is a ______.","historian",["archive","artifact","chronology"]]];
+function poolVocab(R){var mc=[],sa=[],terms=VOC.map(function(v){return v[0]});
+  function cap(s){return s.replace(/^./,function(c){return c.toUpperCase()})}
+  R.sample(VOC,6).forEach(function(v){mc.push(MC(R,"What does <b>"+v[0]+"</b> mean?",cap(v[1]),VOC.filter(function(x){return x!==v&&!(x[0].indexOf("adapt")===0&&v[0].indexOf("adapt")===0)}).map(function(x){return cap(x[1])}),cap(v[0])+": "+v[1]+".",{key:"vd"+v[0]}))});
+  R.sample(VOC,6).forEach(function(v){mc.push(MC(R,"Which word means: <i>"+v[1]+"</i>?",cap(v[0]),VOC.filter(function(x){return x!==v&&!(x[0].indexOf("adapt")===0&&v[0].indexOf("adapt")===0)}).map(function(x){return cap(x[0])}),cap(v[0])+": "+v[1]+".",{key:"vt"+v[0]}))});
+  R.sample(VAPPLY,6).forEach(function(a,i){mc.push(MC(R,a[0],a[1],a[2],"The answer is "+a[1]+".",{key:"va"+a[1]+a[0].slice(0,14)}))});
+  R.sample(VOC,5).forEach(function(v){var q=SA("In your own words, what is <b>"+v[0]+"</b>?",v[2],cap(v[0])+": "+v[1]+".",v[4]?v[4]:v[2].length,{key:"vsa"+v[0]});sa.push(q)});
+  return{mc:mc,sa:sa}}
+
+/* ======= PRIMARY AND SECONDARY SOURCES ======= */
+var PRIM=[["a diary entry written by a girl in 1850","She wrote it herself at the time."],["a photograph taken at a march in 1963","It was taken at the time by someone who was there."],["a letter written by a soldier to his family during a war","The soldier wrote it during the war."],["a newspaper article written the day of the event","It was written at the time of the event."],["a birth certificate from 1920","It is an original record made at the time."],["a speech recorded as it was given","It was recorded by people who were there."],["a tool used by early farmers and found by scientists","It is an object from the time period."],["an interview with a person who lived through the event","The person was there and is telling what happened."],["a painting made by an artist who watched a battle","The artist saw it happen."],["an old coin from ancient times","It is an object made during that time."],["a map drawn by an explorer on his trip","He made it during the trip."],["a video of a space launch filmed by the crowd","It was filmed at the time by people who were there."]];
+var SECO=[["a textbook chapter about the American Revolution","It was written long after the events, by someone who was not there."],["an encyclopedia entry about ancient Egypt","It collects information from other sources, written later."],["a documentary about the 1960s made in 2020","It was made long after the time it describes."],["a biography of Abraham Lincoln written last year","The author was not alive during Lincoln's life."],["a museum website that summarizes the history of the railroad","It tells about the past using other sources."],["a magazine article written 100 years after an event","It was written much later by someone who was not there."],["a student's report about the first Americans","The student was not there and used other sources."],["a movie about the Titanic made today","It was made long afterward by people who were not there."],["a history book by a historian about the Civil War","The historian was not there. It was written later."],["a chapter in a social studies book about the Pilgrims","It was written long after the Pilgrims arrived."]];
+function poolSources(R){var mc=[],sa=[];
+  mc.push(MC(R,"What is a <b>primary source</b>?","A first-hand record made at the time by someone who was there",["An account written later by someone who was not there","A textbook about the past","A guess about what happened"],"A primary source is created at the time of the event by someone who was there."));
+  mc.push(MC(R,"What is a <b>secondary source</b>?","An account made later by someone who was not there",["A diary written during the event","An object made during the time period","A photograph taken at the time"],"A secondary source is created after the event by someone who was not there."));
+  R.sample(PRIM,5).forEach(function(p){mc.push(MC(R,"Is <b>"+p[0]+"</b> a primary source or a secondary source?","Primary source",["Secondary source"],p[1],{key:"p"+p[0]}))});
+  R.sample(SECO,5).forEach(function(p){mc.push(MC(R,"Is <b>"+p[0]+"</b> a primary source or a secondary source?","Secondary source",["Primary source"],p[1],{key:"s"+p[0]}))});
+  mc.push(MC(R,"Which of these is a <b>primary source</b>?",R.pick(PRIM)[0].replace(/^./,function(c){return c.toUpperCase()}),R.sample(SECO,3).map(function(x){return x[0].replace(/^./,function(c){return c.toUpperCase()})}),"Primary sources were made at the time. The others were made later.",{key:"whichprim"}));
+  mc.push(MC(R,"Which of these is a <b>secondary source</b>?",R.pick(SECO)[0].replace(/^./,function(c){return c.toUpperCase()}),R.sample(PRIM,3).map(function(x){return x[0].replace(/^./,function(c){return c.toUpperCase()})}),"Secondary sources were made later by people who were not there.",{key:"whichsec"}));
+  mc.push(MC(R,"A historian wants to know what school was like in 1900. Which source is <b>primary</b>?","A student's diary from 1900",["A movie about schools made last year","A textbook about the 1900s","An encyclopedia article about education"],"A diary written in 1900 was made at the time."));
+  mc.push(MC(R,"Why do historians check many different sources?","To get a more complete and accurate picture of the past",["Because one source is always wrong","Because primary sources are never true","So they never need to write anything"],"Using many sources helps historians compare evidence and avoid mistakes or bias."));
+  mc.push(MC(R,"Which tool helps a historian put events in the right order?","A timeline (chronology)",["A recipe","A thermometer","A compass"],"A timeline shows chronology, the order events happened."));
+  mc.push(MC(R,"Where would a historian go to find old letters, maps and records stored safely?","An archive",["A gas station","A playground","A supermarket"],"An archive collects and stores historical records."));
+  mc.push(MC(R,"A tool used long ago by a farmer is found in the ground. This object is an ______.","artifact",["archive","interpretation","oral history"],"An artifact is an object made by humans, such as a tool or clothing."));
+  var p=R.pick(PRIM),s=R.pick(SECO);
+  sa.push(SA("What is the difference between a primary source and a secondary source?",[["first","original","firsthand","during","at the time","there","witness","made by someone who"],["later","after","not there","wasn't","about","retell","secondhand","second-hand","did not","didn't"]],"A primary source is made at the time by someone who was there. A secondary source is made later by someone who was not there."));
+  sa.push(SA("Give one example of a primary source and one example of a secondary source.",[["diary","letter","photo","photograph","artifact","interview","journal","newspaper","speech","map","video","recording","painting","certificate","tool","coin"],["textbook","encyclopedia","biography","documentary","website","article","book","movie","report"]],"Primary: a diary, letter, photograph or artifact. Secondary: a textbook, encyclopedia or documentary."));
+  sa.push(SA("Is <b>"+p[0]+"</b> a primary or a secondary source? Explain.",[["primary"],["first","there","wrote","made","created","time","during","witness","original","saw","by"]],"It is a primary source. "+p[1],2,{key:"sap"+p[0]}));
+  sa.push(SA("Is <b>"+s[0]+"</b> a primary or a secondary source? Explain.",[["secondary"],["later","after","not there","wasn't","about","retell","did not","didn't","not alive","other sources","long"]],"It is a secondary source. "+s[1],2,{key:"sas"+s[0]}));
+  sa.push(SA("What does a historian do? What do historians use to learn about the past?",[["study","research","learn","write","investigat","question","find out","explain"],["evidence","sources","artifact","document","record","letters","diaries"]],"A historian studies and writes about the past. Historians use evidence such as primary and secondary sources, artifacts and records."));
+  sa.push(SA("Why do historians use many different sources?",[["different","compare","more","complete","accurate","check","full","picture","bias","view","perspective","point of view","agree"]],"Using many sources lets historians compare evidence, check for bias and get a more complete and accurate picture of the past."));
+  sa.push(SA("How can an artifact help a historian learn about the past?",[["object","tool","made","used","clue","evidence","show","learn","how people lived","life"]],"An artifact is evidence of how people lived. It shows what tools, clothing or objects they made and used."));
+  sa.push(SA("Why is chronology important to historians?",[["order","sequence","timeline"],["understand","events","what happened","cause","before","after","first","then"]],"Chronology puts events in the order they happened, so historians can understand what caused what.",1));
+  sa.push(SA("Why is oral history important?",[["pass","tell","told","stor","spoken","word","elders","generation","remember","talk","no writing"]],"Oral history passes stories and knowledge from person to person by speaking. It keeps history alive, especially when there are no written records."));
+  sa.push(SA("How can two historians have different interpretations of the same evidence?",[["different","view","opinion","perspective","explain","think","see","meaning","interpret"]],"An interpretation is an explanation of what evidence means. Two historians can look at the same evidence and explain its meaning in different ways."));
+  return{mc:mc,sa:sa}}
+
+/* ======= MIGRATION ======= */
+function poolMigration(R){var mc=[],sa=[];
+  mc.push(MC(R,"From which continent did the first Americans migrate?","Asia",["Europe","Africa","Australia"],"The first Americans came from Asia."));
+  mc.push(MC(R,"The first Americans migrated to which continent?","North America",["Europe","Antarctica","Africa"],"They traveled from Asia to North America and then spread south."));
+  mc.push(MC(R,"What was <b>Beringia</b>?","A land bridge that connected Asia and North America",["A mountain range in Alaska","A river in Canada","A kind of boat"],"Beringia was a strip of land that connected Asia and North America."));
+  mc.push(MC(R,"Why was the Beringia land bridge above the water during the Ice Age?","Much of Earth's water was frozen in glaciers, so sea level was lower",["Earth's oceans were drained by people","Volcanoes built it in one night","The oceans were warmer"],"Water locked in ice sheets lowered sea level and exposed the land."));
+  mc.push(MC(R,"What happened to the land bridge when the Ice Age ended and the glaciers melted?","It was covered by rising sea water",["It became a mountain","It grew bigger","It turned into a desert"],"Melting ice raised sea level and covered the land bridge."));
+  mc.push(MC(R,"Which was one route the first Americans may have taken?","Walking across the land bridge and then south through an ice-free corridor",["Sailing across the Atlantic Ocean in steel ships","Flying across the Pacific Ocean","Driving across Canada"],"One route was across Beringia and south between the glaciers (the ice-free corridor)."));
+  mc.push(MC(R,"Which route involved traveling by boat along the Pacific Coast?","The coastal route",["The ice-free corridor","The Great Plains route","The Mississippi route"],"Some people may have traveled by boat along the coast."));
+  mc.push(MC(R,"The <b>ice-free corridor</b> was ______.","a gap between glaciers that people could walk through",["a river made of ice","a tunnel under the ocean","a frozen sea route for boats only"],"It was a path between huge sheets of ice."));
+  mc.push(MC(R,"Why did early people follow herds of animals?","They needed food, and hunting animals gave them food and clothing",["They wanted to build cities","They were looking for oil","They wanted to find a school"],"The first Americans were hunters who followed animals such as mammoths and bison."));
+  mc.push(MC(R,"Which animal did Ice Age hunters hunt for food?","Woolly mammoth",["Dinosaur","Dodo bird","Blue whale"],"Early people hunted large animals such as the woolly mammoth."));
+  mc.push(MC(R,"The first Americans' trip from Asia to North America is an example of ______.","migration",["archive","chronology","interpretation"],"Migration is the movement of people from one place to another to live."));
+  mc.push(MC(R,"Which of these did the first Americans do to survive?","Hunt animals and gather wild plants",["Buy food at stores","Grow crops with machines","Fly planes to find food"],"They were hunter-gatherers."));
+  mc.push(MC(R,"Which statement about the migration routes is true?","Scientists use evidence to study the routes, and they still discuss exactly how and when people came",["Everyone knows the exact day people arrived","There was only one possible route, with no debate","The routes were written down by the first Americans"],"Historians and scientists use artifacts and other evidence, and they still debate the details."));
+  mc.push(MC(R,"Today the land that once connected Asia and Alaska is ______.","under water (the Bering Strait)",["a desert","a mountain range","a forest"],"Rising seas covered the land bridge. The water there is now called the Bering Strait."));
+  mc.push(MC(R,"Which kind of evidence do scientists use to learn about the first Americans?","Artifacts such as stone tools",["Newspapers from that time","Photographs","Their emails"],"The first Americans left artifacts, such as stone tools and spear points."));
+  sa.push(SA("Explain the different migration routes the first Americans took to get to America.",[["land bridge","beringia","bering","walk","on foot","asia","siberia"],["boat","coast","water","sea","ocean","kelp"],["ice","corridor","glacier"]],"Some people walked across the Beringia land bridge from Asia to Alaska, then south through an ice-free corridor between glaciers. Others may have traveled by boat along the Pacific Coast.",2));
+  sa.push(SA("Why was it possible to walk from Asia to North America during the Ice Age?",[["sea level","water low","lower","ocean low","glacier","ice","frozen"],["land","bridge","walk","dry","exposed","beringia"]],"Much of Earth's water was frozen in huge glaciers, so sea level dropped. That showed the Beringia land bridge between Asia and North America."));
+  sa.push(SA("Why did the first Americans migrate (move)?",[["food","animal","hunt","follow","herd","mammoth","resources","game","bison"]],"They followed herds of animals, such as mammoths and bison, to get food."));
+  sa.push(SA("What was Beringia, and where was it?",[["land","bridge","connect","strip"],["asia","siberia","alaska","north america","america"]],"Beringia was a land bridge that connected Asia (Siberia) and North America (Alaska).",2));
+  sa.push(SA("What happened to the land bridge when the Ice Age ended?",[["flood","water","sea level","rose","covered","ocean","melt","underwater","sank","disappear"]],"The glaciers melted, sea level rose, and the water covered the land bridge."));
+  sa.push(SA("Describe the coastal route the first Americans may have used.",[["boat","water","ocean","coast","sea","shore","canoe","pacific"]],"People may have traveled by boat along the Pacific Coast, from Asia to North America and then south."));
+  sa.push(SA("What was the ice-free corridor?",[["gap","space","path","way","route","between","opening","land"],["glacier","ice"]],"The ice-free corridor was a path between huge sheets of ice (glaciers) that people could walk through to go south.",2));
+  return{mc:mc,sa:sa}}
+
+/* ======= CLIMATE AND NATURAL RESOURCES ======= */
+var ENV={
+ grasslands:{n:"grasslands",desc:"wide, flat land covered with grass and very few trees",resources:"buffalo (bison) and grass",life:"hunted buffalo, were nomadic, and lived in tepees that could be moved",clothes:"buffalo hides",home:"tepees made of poles and buffalo hides",food:"buffalo",keys:[["buffalo","bison"],["nomad","move","follow","tepee","tipi","hunt","hides"]]},
+ desert:{n:"desert",desc:"hot, dry land with very little rain",resources:"clay, stone, and water from rivers",life:"farmed corn, beans and squash, and built homes from adobe (clay) and stone",clothes:"light clothing made of cotton and woven plants",home:"adobe homes made from clay and stone",food:"corn, beans and squash (farming near rivers)",keys:[["farm","corn","beans","squash","crops","irrigat"],["adobe","clay","pueblo","stone","mud","dry","hot","water"]]},
+ mountains:{n:"mountains",desc:"steep land that is cool or cold, with forests and fast streams",resources:"wood, deer and elk, fish in the streams, roots and berries",life:"hunted, fished and gathered plants, and built shelters from wood and bark",clothes:"deerskin clothing and woven plant fibers",home:"shelters made of wood, bark and mats",food:"deer and elk, salmon, roots and berries",keys:[["hunt","fish","salmon","gather","deer","elk","berries","roots"],["wood","bark","shelter","hides","warm","cold","forest"]]},
+ Arctic:{n:"Arctic",desc:"extremely cold land covered in snow and ice most of the year, with almost no trees",resources:"seals, whales, fish and caribou",life:"hunted seals, whales and caribou, wore warm fur clothing, and traveled by kayak and dog sled",clothes:"warm parkas made of fur and animal skins",home:"homes made of snow (igloos), sod and whale bone",food:"seals, whales, fish and caribou",keys:[["hunt","seal","whale","fish","caribou"],["fur","skin","parka","igloo","snow","sled","kayak","warm","cold","ice"]]}};
+var ENVK=Object.keys(ENV);
+function poolClimate(R){var mc=[],sa=[];
+  function cap(s){return s.replace(/^./,function(c){return c.toUpperCase()})}
+  ENVK.forEach(function(k){var e=ENV[k],others=ENVK.filter(function(x){return x!==k});
+    mc.push(MC(R,"Which environment is "+e.desc+"?",cap(e.n),others.map(function(x){return cap(ENV[x].n)}),"The "+e.n+" is "+e.desc+".",{key:"desc"+k}));
+    mc.push(MC(R,"Which natural resources were most important to the first Americans of the <b>"+e.n+"</b>?",cap(e.resources),others.map(function(x){return cap(ENV[x].resources)}),"In the "+e.n+", the important resources were "+e.resources+".",{key:"res"+k}));
+    mc.push(MC(R,"How did the first Americans of the <b>"+e.n+"</b> get their food?",cap(e.food),others.map(function(x){return cap(ENV[x].food)}),"People used what their environment gave them: "+e.food+".",{key:"food"+k}));
+    mc.push(MC(R,"Which homes were most common in the <b>"+e.n+"</b>?",cap(e.home),others.map(function(x){return cap(ENV[x].home)}),"People built homes from the materials around them: "+e.home+".",{key:"home"+k}));
+    mc.push(MC(R,"Which clothing would the first Americans of the <b>"+e.n+"</b> be most likely to wear?",cap(e.clothes),others.map(function(x){return cap(ENV[x].clothes)}),"Climate and resources decided clothing: "+e.clothes+".",{key:"clo"+k}));
+    mc.push(MC(R,"Which sentence best describes how people lived in the <b>"+e.n+"</b>?","They "+e.life,others.map(function(x){return "They "+ENV[x].life}),"In the "+e.n+", people "+e.life+".",{key:"life"+k}))});
+  mc.push(MC(R,"Why were the first Americans of the Great Plains <b>nomadic</b>?","They followed the buffalo herds that they depended on for food",["They did not like their homes","They had no tools","They wanted to leave the continent"],"Nomadic people move from place to place to follow food. Plains people followed the buffalo."));
+  mc.push(MC(R,"Why did people in the desert build homes of clay and stone (adobe)?","Clay and stone were available there and kept the homes cool in the heat",["There was too much snow","There were no stones","Wood was everywhere"],"They used the natural resources around them."));
+  mc.push(MC(R,"Why did people in the Arctic wear clothing made of fur and animal skins?","It kept them warm in the extreme cold",["It was cheap to buy","It kept them cool","Cloth was not invented"],"The climate decided what clothing they needed."));
+  mc.push(MC(R,"People who lived in the Arctic got most of their food by ______.","hunting sea animals and caribou",["farming corn","growing wheat","picking oranges"],"It is too cold to farm in the Arctic."));
+  mc.push(MC(R,"Why could people in the grasslands <b>not</b> rely on wood for their homes?","There were very few trees",["Wood was too expensive","They didn't like wood","Wood is not a natural resource"],"The grasslands have few trees, so people used poles and hides."));
+  mc.push(MC(R,"What does <b>adapt</b> mean when we talk about the first Americans?","To change their way of life to survive in their environment",["To stay the same in every place","To build cities","To travel to a different continent"],"People adapted to their climate and resources."));
+  var e1=ENV[R.pick(ENVK)],e2=ENV[R.pick(ENVK.filter(function(x){return ENV[x]!==e1}))];
+  ENVK.forEach(function(k){var e=ENV[k];sa.push(SA("How did the climate and natural resources of the <b>"+e.n+"</b> affect the lives of the first Americans who settled there?",e.keys,cap(e.n)+": "+e.desc+". Natural resources: "+e.resources+". People "+e.life+".",2,{key:"saenv"+k}))});
+  sa.push(SA("What does <b>nomadic</b> mean? Which environment's people were nomadic and why?",[["move","moving","travel","place to place","follow"],["buffalo","bison","food","grassland","plains","animals"]],"Nomadic means moving from place to place to follow sources of food. People of the grasslands followed the buffalo herds.",2));
+  sa.push(SA("Compare how people lived in the <b>"+e1.n+"</b> and in the <b>"+e2.n+"</b>. Give one difference.",[e1.keys[0].concat(e1.keys[1]),e2.keys[0].concat(e2.keys[1])],"In the "+e1.n+" people "+e1.life+". In the "+e2.n+" people "+e2.life+".",2,{key:"cmp"+e1.n+e2.n}));
+  sa.push(SA("Why did different groups of first Americans live in different ways?",[["environment","climate","land","resources","weather","place","where"],["different","food","homes","clothing","adapt","survive","use"]],"Each group lived in a different environment with its own climate and natural resources, so they found different food and made different homes and clothing."));
+  return{mc:mc,sa:sa}}
+
+/* ======= AMERICAN INDIAN CULTURAL REGIONS ======= */
+var REG={
+ "Northwest Coast":{env:"a rainy coast with thick forests, rivers and the ocean",food:"salmon, other fish, whales and shellfish",shelter:"large cedar plank houses",other:"carved totem poles and canoes made from cedar logs",keys:["salmon","fish","whale","cedar","plank","totem","canoe","rain","ocean","coast"]},
+ "Plateau":{env:"dry land between mountain ranges, with rivers such as the Columbia River",food:"salmon, roots and berries",shelter:"pit houses and mat-covered lodges",other:"gathering roots and berries along the Columbia River",keys:["salmon","fish","roots","berries","pit","mat","river","columbia"]},
+ "California Intermountain":{env:"mild valleys, dry basins and mountains",food:"acorns, seeds, small animals and fish",shelter:"shelters of brush and bark",other:"acorns pounded into flour as a main food",keys:["acorn","seeds","basket","gather","brush","bark","basin","flour"]},
+ "Great Plains":{env:"wide, flat grasslands",food:"buffalo (bison)",shelter:"tepees that could be moved",other:"a nomadic way of life that followed the buffalo herds",keys:["buffalo","bison","tepee","tipi","nomad","grass","horse","flat"]},
+ "Southwest":{nofood:1,env:"hot, dry desert with mesas and canyons",food:"corn, beans and squash grown by farming",shelter:"adobe (clay) pueblos and cliff homes",other:"pottery and irrigation to farm in the desert",keys:["corn","beans","squash","farm","adobe","pueblo","desert","mesa","clay","pottery","dry"]},
+ "Eastern Woodlands":{nofood:1,env:"forests with four seasons, lakes and rivers",food:"farming (corn, beans and squash) and hunting deer",shelter:"longhouses and wigwams",other:"canoes made of birch bark",keys:["forest","wood","longhouse","wigwam","deer","birch","canoe","farm","corn","lake"]},
+ "Southeast":{nofood:1,env:"warm, humid land with rivers and swamps",food:"farming (corn, beans and squash), fishing and hunting",shelter:"houses with thatched (grass) roofs",other:"huge earth mounds built for ceremonies",keys:["warm","humid","hot","mound","thatch","farm","corn","swamp","river","fish"]}};
+var REGK=Object.keys(REG);
+function poolRegions(R){var mc=[],sa=[];
+  function cap(s){return s.replace(/^./,function(c){return c.toUpperCase()})}
+  REGK.forEach(function(k){var r=REG[k],others=REGK.filter(function(x){return x!==k});
+    mc.push(MC(R,"Which cultural region has "+r.env+"?",k,R.sample(others,3),"The "+k+" region has "+r.env+".",{key:"renv"+k}));
+    mc.push(MC(R,"The first Americans of the <b>"+k+"</b> region lived in ______.",cap(r.shelter),others.map(function(x){return cap(REG[x].shelter)}),"In the "+k+" region, people lived in "+r.shelter+".",{key:"rsh"+k}));
+    if(!r.nofood)mc.push(MC(R,"Which foods were most important in the <b>"+k+"</b> region?",cap(r.food),others.filter(function(x){return !REG[x].nofood}).map(function(x){return cap(REG[x].food)}),"People in the "+k+" region relied on "+r.food+".",{key:"rfood"+k}));
+    mc.push(MC(R,"Which cultural region is known for "+r.other+"?",k,R.sample(others,3),"That is the "+k+" region: "+r.other+".",{key:"roth"+k}))});
+  mc.push(MC(R,"What is a <b>cultural region</b>?","An area where people developed similar ways of life, customs and beliefs",["A place where only one family lived","A kind of museum","A map of the oceans"],"A cultural region is an area of the world where people develop similar ways of life."));
+  mc.push(MC(R,"Which of these is <b>not</b> one of the cultural regions on the map?","Arctic Ocean Coast",["Great Plains","Southwest","Eastern Woodlands"],"The map shows the Northwest Coast, Plateau, California Intermountain, Great Plains, Southwest, Eastern Woodlands and Southeast."));
+  mc.push(MC(R,"Which two regions were most alike because people farmed corn, beans and squash?","Southwest and Southeast",["Great Plains and Northwest Coast","Plateau and Great Plains","Northwest Coast and Southwest"],"Both the Southwest and the Southeast relied on farming corn, beans and squash."));
+  mc.push(MC(R,"Which two regions relied heavily on <b>salmon</b>?","Northwest Coast and Plateau",["Great Plains and Southwest","Southeast and Great Plains","Southwest and California Intermountain"],"Salmon from the rivers and ocean fed the people of the Northwest Coast and the Plateau."));
+  mc.push(MC(R,"How was life on the Great Plains different from life in the Southwest?","Plains people were nomadic buffalo hunters; Southwest people farmed and lived in pueblos",["Plains people farmed and lived in pueblos; Southwest people hunted buffalo","There were no differences","Both were nomadic buffalo hunters"],"Environment decided how people lived: grassland buffalo hunting versus desert farming."));
+  mc.push(MC(R,"How was life on the Northwest Coast different from life on the Great Plains?","Northwest Coast people fished and lived in cedar plank houses; Plains people hunted buffalo and lived in tepees",["Northwest Coast people farmed in the desert; Plains people fished","Both lived in tepees","Both lived in plank houses"],"They lived in different environments with different resources."));
+  REGK.forEach(function(k){var r=REG[k];sa.push(SA("Describe the <b>"+k+"</b> cultural region: its environment and how the first Americans there lived.",[r.keys],k+" region: "+r.env+". Food: "+r.food+". Homes: "+r.shelter+".",1,{key:"sareg"+k}))});
+  var a=R.pick(REGK),b=R.pick(REGK.filter(function(x){return x!==a})),ra=REG[a],rb=REG[b];
+  sa.push(SA("Contrast the <b>"+a+"</b> region and the <b>"+b+"</b> region. How were they different?",[ra.keys,rb.keys],a+": "+ra.env+"; food: "+ra.food+"; homes: "+ra.shelter+". "+b+": "+rb.env+"; food: "+rb.food+"; homes: "+rb.shelter+".",2,{key:"con"+a+b}));
+  var c=R.pick(REGK.filter(function(x){return x!==a&&x!==b})),d=R.pick(REGK.filter(function(x){return x!==a&&x!==b&&x!==c})),rc=REG[c],rd=REG[d];
+  sa.push(SA("Contrast the <b>"+c+"</b> region and the <b>"+d+"</b> region. How were they different?",[rc.keys,rd.keys],c+": "+rc.env+"; food: "+rc.food+"; homes: "+rc.shelter+". "+d+": "+rd.env+"; food: "+rd.food+"; homes: "+rd.shelter+".",2,{key:"con"+c+d}));
+  sa.push(SA("What is a cultural region? Name two of the cultural regions.",[["area","region","place","part"],REGK.map(function(x){return x.toLowerCase()}).concat(["northwest","plains","southwest","woodlands","southeast","plateau","california"])],"A cultural region is an area where people develop similar ways of life, customs and beliefs. Examples: Northwest Coast, Plateau, California Intermountain, Great Plains, Southwest, Eastern Woodlands, Southeast.",2));
+  sa.push(SA("Why did the first Americans in different regions have different ways of life?",[["environment","climate","land","resources","weather","place","where"],["different","food","homes","clothing","adapt","survive","use"]],"Each region has a different environment, climate and natural resources, so people found different foods and built different homes."));
+  return{mc:mc,sa:sa}}
+
+var TOPICS=[
+ {id:"vocab",name:"Vocabulary",desc:"The 12 Unit 1 test words and the Lesson 3 words, from history to nomadic.",pool:poolVocab},
+ {id:"sources",name:"Primary and Secondary Sources",desc:"Sort sources, and learn what historians do.",pool:poolSources},
+ {id:"migration",name:"Migration Routes of the First Americans",desc:"Beringia, the ice-free corridor and the coastal route.",pool:poolMigration},
+ {id:"climate",name:"Climate and Natural Resources",desc:"Grasslands, desert, mountains and the Arctic.",pool:poolClimate},
+ {id:"regions",name:"American Indian Cultural Regions",desc:"Compare and contrast the seven regions on the map.",pool:poolRegions},
+ {id:"mixed",name:"Mixed Review: All of Unit 1",desc:"Questions from every topic.",pool:null}];
+function topicById(id){return TOPICS.filter(function(t){return t.id===id})[0]}
+function build(t,R){
+  if(t.id==="mixed"){var all=TOPICS.filter(function(x){return x.pool}).map(function(x){return x.pool(R)}),mc=[],sa=[];
+    all.forEach(function(p){mc=mc.concat(R.sample(p.mc,2));sa=sa.concat(R.sample(p.sa,1))});
+    mc=R.sample(mc,12);sa=R.sample(sa,6);mc.forEach(function(q){q.part="Part A: Multiple choice"});sa.forEach(function(q){q.part="Part B: Short answer"});return mc.concat(sa)}
+  var p=t.pool(R),m=R.sample(p.mc,8),s=R.sample(p.sa,4);
+  m.forEach(function(q){q.part="Part A: Multiple choice"});s.forEach(function(q){q.part="Part B: Short answer"});return m.concat(s)}
+function topicById(id){return TOPICS.filter(function(t){return t.id===id})[0]}
+TOPICS.forEach(function(t){t.gen=function(R){return build(t,R)}});
+
+/* ---------- seeds, history, state ---------- */
+var app=document.getElementById("app");
+var S={view:"home",topic:null,seed:0,Q:[],i:0,res:[],picks:[],U:null};
+var NCAND=20;
+function genSet(t,seed){var key=t.id+"_"+seed,pk=lsGet("ss_pick",{});
+  if(pk[key]!==undefined)return t.gen(RNG(seed*31+pk[key]));
+  var avoid={},h=lsGet("ss_hist",{})[t.id]||[];h.forEach(function(p){avoid[p]=1});
+  var best=0,bs=1e9,bq=null;
+  for(var k=0;k<NCAND;k++){var Q=t.gen(RNG(seed*31+k)),sc=0;Q.forEach(function(q){if(avoid[q.plain])sc++});
+    if(sc<bs){bs=sc;best=k;bq=Q;if(sc===0)break}}
+  var ks=Object.keys(pk);if(ks.length>80){ks.slice(0,ks.length-60).forEach(function(x){delete pk[x]})}
+  pk[key]=best;lsSet("ss_pick",pk);return bq}
+function rememberSet(t,Q){var h=lsGet("ss_hist",{}),a=h[t.id]||[];
+  Q.forEach(function(q){if(a.indexOf(q.plain)<0)a.push(q.plain)});
+  if(a.length>120)a=a.slice(a.length-120);h[t.id]=a;lsSet("ss_hist",h)}
+function seedFor(id){var m=lsGet("ss_seeds",{});if(!m[id]){m[id]=Math.floor(Math.random()*1e9)+1;lsSet("ss_seeds",m)}return m[id]}
+function newSeed(id){var m=lsGet("ss_seeds",{});m[id]=Math.floor(Math.random()*1e9)+1;lsSet("ss_seeds",m);return m[id]}
+function newU(){return{choice:null,text:"",checked:false,ok:false,overridden:false}}
+function lastFor(t){var l=MPE.log().filter(function(r){return r.test==="Social Studies: Unit 1 Test"&&r.section===t.name});var r=l[l.length-1];
+  return r?"Last on this device: "+r.score+" of "+r.total+" ("+Math.round(r.score/r.total*100)+"%)"+(r.child?" by "+r.child:""):""}
+
+/* ---------- screens ---------- */
+function home(){S.view="home";S.topic=null;
+  app.innerHTML='<div class="row"><a class="btn ghost" href="../" style="text-decoration:none">&larr; Spelling</a><a class="btn ghost" href="../../scores/" style="text-decoration:none">My Scores</a></div>'+
+   '<div><div class="tag">Levin &middot; 5th grade</div><h1>Social Studies: Unit 1 Test</h1></div>'+
+   '<p class="small" style="margin:-6px 0 0">Practice for the Unit 1 Test: What is History? (vocabulary and skills 1 to 4). Each set has multiple choice and short answer questions. Tap <b>New questions</b> any time for a fresh set. The facts for migration, climate and cultural regions come from commonly taught 5th-grade content, so check them against your class notes.</p>'+
+   '<div class="topics">'+TOPICS.map(function(t){var n=genSet(t,seedFor(t.id)).length;
+    return '<section class="card topic"><h2>'+esc(t.name)+'</h2><p>'+esc(t.desc)+'</p><p>'+n+' questions</p><p class="last">'+esc(lastFor(t))+'</p><div class="row"><button class="btn" data-go="'+t.id+'">Start</button><button class="btn ghost" data-new="'+t.id+'">New questions</button></div></section>'}).join("")+'</div>';
+  app.querySelectorAll("[data-go]").forEach(function(b){b.onclick=function(){start(b.dataset.go,seedFor(b.dataset.go))}});
+  app.querySelectorAll("[data-new]").forEach(function(b){b.onclick=function(){newSeed(b.dataset.new);home()}})}
+
+function mpeOpts(t){return{key:t.id,
+  getState:function(){if(S.view==="test"&&S.topic&&S.i<S.Q.length)return{label:"question "+(S.i+1)+" of "+S.Q.length,topic:t.id,seed:S.seed,i:S.i,res:S.res,picks:S.picks};return null},
+  resume:function(st){var tp=topicById(st.topic);if(!tp)return;S.topic=tp;S.seed=st.seed;
+    S.Q=genSet(tp,st.seed);S.i=st.i;S.res=st.res||[];S.picks=st.picks||[];S.view="test";S.U=newU();renderQ()},
+  exit:function(){home()}}}
+function start(id,seed){var t=topicById(id);S.topic=t;S.seed=seed;MPE.begin(mpeOpts(t));
+  S.Q=genSet(t,seed);rememberSet(t,S.Q);S.i=0;S.res=[];S.picks=[];S.view="test";S.U=newU();renderQ()}
+
+function renderQ(){var q=S.Q[S.i],U=S.U,n=S.Q.length,html='<div class="row" style="justify-content:space-between"><button class="btn ghost" id="quit">Home</button><span class="tag">Question '+(S.i+1)+' of '+n+'</span></div><div class="bar"><i style="width:'+Math.round(S.i/n*100)+'%"></i></div><div><div class="tag">'+esc(S.topic.name)+' &middot; '+esc(q.part||"")+'</div></div>';
+  html+='<section class="card" id="qcard"><div class="stem">'+q.q+'</div>';
+  if(q.t==="mc"){
+    html+='<div class="opts">'+q.opts.map(function(o,j){var c="opt";if(U.checked){if(j===q.a)c+=" right";else if(j===U.choice)c+=" wrong"}else if(j===U.choice)c+=" sel";
+      return '<button class="'+c+'" data-o="'+j+'"'+(U.checked?" disabled":"")+'><b>'+"ABCD"[j]+'</b><span>'+o+'</span></button>'}).join("")+'</div>'}
+  else{html+='<p class="small">Write your answer in a sentence. Use the social studies words you learned.</p><textarea id="ans" rows="3" placeholder="Type your answer here..."'+(U.checked?" disabled":"")+'></textarea>'}
+  if(U.checked){html+='<div class="fb '+(U.ok?"good":"bad")+'">'+(U.ok?(U.overridden?"Counted as correct.":"Correct!"):"Not quite.")+'<span>'+(q.t==="sa"?'<b>Model answer:</b> '+esc(q.model):q.exp)+'</span>'+(!U.ok&&q.t==="sa"?'<button class="btn ghost" id="right" style="margin-top:8px">My answer was right too</button>':'')+'</div>'}
+  html+='<div class="row" style="margin-top:14px">'+(U.checked?'<button class="btn" id="next">'+(S.i+1>=n?"See my score":"Next")+'</button>':'<button class="btn" id="check"'+((q.t==="mc"?U.choice!==null:U.text.trim().length>0)?"":" disabled")+'>Check</button>')+'</div></section>';
+  app.innerHTML=html;
+  document.getElementById("quit").onclick=function(){if(confirm("Go back home? Use the yellow Save button first if you want to continue later."))home()};
+  app.querySelectorAll("[data-o]").forEach(function(b){b.onclick=function(){U.choice=+b.dataset.o;renderQ()}});
+  var ta=document.getElementById("ans");if(ta){ta.value=U.text;ta.oninput=function(){U.text=ta.value;var c=document.getElementById("check");if(c)c.disabled=!U.text.trim()};if(!U.checked)ta.focus()}
+  var ck=document.getElementById("check");if(ck)ck.onclick=function(){U.checked=true;U.ok=q.t==="mc"?U.choice===q.a:gradeSA(q,U.text);renderQ();window.scrollTo(0,document.body.scrollHeight)};
+  var rt=document.getElementById("right");if(rt)rt.onclick=function(){U.ok=true;U.overridden=true;renderQ()};
+  var nx=document.getElementById("next");if(nx)nx.onclick=function(){S.res[S.i]=U.ok?1:0;S.picks[S.i]={sel:q.t==="mc"?U.choice:null,given:q.t==="sa"?U.text:"",ok:U.ok};S.i++;MPE.autosave();
+    if(S.i>=S.Q.length)return results();S.U=newU();renderQ();window.scrollTo(0,0)}}
+
+function results(){S.view="results";var n=S.Q.length,sc=S.res.reduce(function(a,b){return a+b},0),pct=Math.round(sc/n*100);
+  MPE.finish({test:"Social Studies: Unit 1 Test",section:S.topic.name,score:sc,total:n});
+  var rows=S.Q.map(function(q,i){var pk=S.picks[i]||{};return MPE.reviewItem(q,{ok:S.res[i]===1,sel:pk.sel,given:pk.given||"(no answer)"},i,{LT:["A","B","C","D"],correct:function(x){return x.model},alwaysCorrect:true,sec:q.part})}).join("");
+  var msg=pct===100?"Perfect score!":pct>=90?"Excellent work!":pct>=70?"Good job. A little more practice.":"Keep practicing. Review the answers below, then try again.";
+  app.innerHTML='<section class="card"><div class="tag">'+esc(S.topic.name)+'</div><div class="score">'+sc+' / '+n+' &middot; '+pct+'%</div><h2>'+msg+'</h2>'+
+   '<div class="row"><button class="btn" id="new">New questions</button><button class="btn ghost" id="again">Try these again</button><button class="btn ghost" id="hm">Home</button></div></section>'+
+   '<h3>Review of your answers</h3><p class="small">Green is the correct answer. Red is what you picked. Short answers show the model answer.</p><div class="review">'+rows+'</div>';
+  document.getElementById("new").onclick=function(){start(S.topic.id,newSeed(S.topic.id))};
+  document.getElementById("again").onclick=function(){start(S.topic.id,S.seed)};
+  document.getElementById("hm").onclick=home}
+
+window.__ss={TOPICS:TOPICS,RNG:RNG,genSet:genSet,gradeSA:gradeSA,state:function(){return S},topicById:topicById};
+home();
+})();
+</script>
+</body>
+</html>
