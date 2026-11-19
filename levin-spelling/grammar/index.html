@@ -13,10 +13,13 @@
   --tile:#e3ebfd; --mark:#fff0b3; --shadow:0 2px 0 rgba(19,32,67,.12);
   --display:"Fredoka","Trebuchet MS",system-ui,sans-serif; --body:"Nunito",system-ui,-apple-system,"Segoe UI",sans-serif;
 }
-@media (prefers-color-scheme: dark){:root{
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
   --bg:#0f1730; --surface:#18234a; --ink:#eaf0ff; --muted:#a1aed3; --line:#2c3a6b;
   --accent:#7d9bff; --accent-ink:#0f1730; --gold:#ffc23d; --good:#5fd394; --good-bg:#12382a; --bad:#ff8892; --bad-bg:#3d1b24;
-  --tile:#25336a; --mark:#5a4a12; --shadow:0 2px 0 rgba(0,0,0,.4); color-scheme:dark}}
+  --tile:#25336a; --mark:#5a4a12; --shadow:0 2px 0 rgba(0,0,0,.4); color-scheme:dark}}:root[data-theme="dark"]{
+  --bg:#0f1730; --surface:#18234a; --ink:#eaf0ff; --muted:#a1aed3; --line:#2c3a6b;
+  --accent:#7d9bff; --accent-ink:#0f1730; --gold:#ffc23d; --good:#5fd394; --good-bg:#12382a; --bad:#ff8892; --bad-bg:#3d1b24;
+  --tile:#25336a; --mark:#5a4a12; --shadow:0 2px 0 rgba(0,0,0,.4); color-scheme:dark}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:18px;line-height:1.45;padding:20px 16px 90px}
 main{max-width:760px;margin:0 auto;display:flex;flex-direction:column;gap:16px}
@@ -74,7 +77,7 @@ textarea{width:100%;min-height:200px;border:2px solid var(--line);border-radius:
 .check .y{color:var(--good)}.check .n{color:var(--bad)}
 .small{font-size:.9rem;color:var(--muted);font-weight:600}
 </style>
-</head>
+<script src="../../mpe-theme.js"></script></head>
 <body>
 <main id="app"></main>
 <script src="../../mpe-track.js"></script>

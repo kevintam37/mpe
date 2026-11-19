@@ -5,7 +5,7 @@
 <title>Story Studio</title>
 <style>
 :root{--bg:#FBF7EC;--ink:#26304A;--card:#fff;--line:#E4DCC9;--indigo:#2B3A67;--coral:#FF6B4A;--teal:#2A9D8F;--onind:#fff;--tr:#dbeafe;--dl:#dcfce7;--se:#fde7c8}
-@media(prefers-color-scheme:dark){:root{--bg:#1D2233;--ink:#F1ECDD;--card:#262B40;--line:#3A4159;--indigo:#F4C95D;--onind:#1D2233;--tr:#1e3a6e;--dl:#1d4d36;--se:#6b4a1c}}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#1D2233;--ink:#F1ECDD;--card:#262B40;--line:#3A4159;--indigo:#F4C95D;--onind:#1D2233;--tr:#1e3a6e;--dl:#1d4d36;--se:#6b4a1c}}:root[data-theme="dark"]{--bg:#1D2233;--ink:#F1ECDD;--card:#262B40;--line:#3A4159;--indigo:#F4C95D;--onind:#1D2233;--tr:#1e3a6e;--dl:#1d4d36;--se:#6b4a1c}
 *{box-sizing:border-box}html,body{margin:0}
 body{background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;line-height:1.5}
 .wrap{max-width:720px;margin:0 auto;padding:18px 14px 50px}
@@ -55,7 +55,7 @@ mark.tr{background:var(--tr)}mark.dl{background:var(--dl)}mark.se{background:var
 .fb{margin-top:10px;font-weight:600;line-height:1.5}.good{color:var(--teal)}.bad{color:var(--coral)}
 details summary{cursor:pointer;font-weight:800;color:var(--indigo)}
 @media print{body *{visibility:hidden}#printme,#printme *{visibility:visible}#printme{position:absolute;left:0;top:0;width:100%}}
-</style></head><body>
+</style><script src="../../mpe-theme.js"></script></head><body>
 <div class="wrap" id="app"></div>
 <script src="../../mpe-track.js"></script>
 <script>

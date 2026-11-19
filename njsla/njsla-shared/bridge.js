@@ -260,7 +260,7 @@ var SFX={
 };
 function sfxRate(name,gap){if(!S)return false;S.sf=S.sf||{};if((S.f||0)-(S.sf[name]||-99)<gap)return false;S.sf[name]=S.f||0;return true}
 function unlock(){}
-function isDark(){try{return window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches}catch(e){return false}}
+function isDark(){try{var t=document.documentElement.getAttribute('data-theme');if(t==='dark')return true;if(t==='light')return false;return window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches}catch(e){return false}}
 function off(){return lsGet(MODE_KEY)==='0'}
 function chosen(){return lsGet(GAME_KEY)==='bridge'}
 function active(){return!off()&&chosen()}

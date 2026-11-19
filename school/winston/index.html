@@ -5,7 +5,7 @@
 <title>Winston: Reading Practice</title>
 <style>
 :root{--bg:#FBF7EC;--ink:#26304A;--card:#fff;--line:#E4DCC9;--indigo:#2B3A67;--coral:#FF6B4A;--teal:#2A9D8F;padding-top:env(safe-area-inset-top,0);padding-bottom:env(safe-area-inset-bottom,0)}
-@media(prefers-color-scheme:dark){:root{--bg:#1D2233;--ink:#F1ECDD;--card:#262B40;--line:#3A4159;--indigo:#F4C95D}}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#1D2233;--ink:#F1ECDD;--card:#262B40;--line:#3A4159;--indigo:#F4C95D}}:root[data-theme="dark"]{--bg:#1D2233;--ink:#F1ECDD;--card:#262B40;--line:#3A4159;--indigo:#F4C95D}
 *{box-sizing:border-box}html,body{margin:0}
 body{background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
 .wrap{max-width:640px;margin:0 auto;padding:20px 16px 40px}
@@ -35,7 +35,7 @@ input[type=text]{font:inherit;font-size:18px;padding:10px 12px;border-radius:10p
 textarea{font:inherit;font-size:15px;width:100%;min-height:110px;padding:10px;border-radius:10px;border:2px solid var(--line);background:var(--bg);color:var(--ink)}
 .f{display:flex;align-items:center;gap:10px;margin:9px 0;flex-wrap:wrap}
 .nb{margin-top:14px;width:100%;padding:13px;border:none;border-radius:12px;background:var(--indigo);color:#fff;font-weight:700;font-size:15px}
-@media(prefers-color-scheme:dark){.nb{color:#1D2233}}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .nb{color:#1D2233}}:root[data-theme="dark"] .nb{color:#1D2233}
 .nb.alt{background:var(--teal);color:#fff}.nb:disabled{opacity:.4}
 .nb.ghost{background:transparent;border:2px solid var(--line);color:var(--ink)}
 .fb{margin-top:12px;font-weight:600;font-size:14.5px;line-height:1.5}.good{color:var(--teal)}.bad{color:var(--coral)}
@@ -61,7 +61,7 @@ details.subj>summary small{display:block;font-weight:400;font-size:13px;color:va
 .pic.emo{font-size:30px;line-height:1.45}
 body.kid .qt{font-size:21px;line-height:1.4}body.kid .opt{font-size:20px;padding:15px 16px}body.kid .lt{font-size:22px}body.kid .pass{font-size:19px;line-height:1.7}body.kid .pass h4{font-size:18px}body.kid input[type=text]{font-size:24px;max-width:300px}
 body.kid .opts svg,body.kid .opts .ph{vertical-align:middle}
-</style></head><body class="kid">
+</style><script src="../../mpe-theme.js"></script></head><body class="kid">
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><pattern id="stripe" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="8" stroke="var(--indigo)" stroke-width="3"/></pattern></defs></svg>
 <div class="wrap">
 <a class="back" id="up" href="../../">← Study Practice</a>

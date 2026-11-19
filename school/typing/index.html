@@ -6,7 +6,7 @@
 <style>
 :root{--bg:#FBF7EC;--ink:#26304A;--card:#fff;--line:#E4DCC9;--indigo:#2B3A67;--coral:#FF6B4A;--teal:#2A9D8F;--onind:#fff;
 --f0:#e76f8a;--f1:#f4a340;--f2:#e9c46a;--f3:#2fb49f;--f4:#4c8df6;--f5:#9b6bd6;--f6:#e0605a;--f7:#8a8f9c}
-@media(prefers-color-scheme:dark){:root{--bg:#1D2233;--ink:#F1ECDD;--card:#262B40;--line:#3A4159;--indigo:#F4C95D;--onind:#1D2233}}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#1D2233;--ink:#F1ECDD;--card:#262B40;--line:#3A4159;--indigo:#F4C95D;--onind:#1D2233}}:root[data-theme="dark"]{--bg:#1D2233;--ink:#F1ECDD;--card:#262B40;--line:#3A4159;--indigo:#F4C95D;--onind:#1D2233}
 *{box-sizing:border-box}html,body{margin:0}
 body{background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
 .wrap{max-width:760px;margin:0 auto;padding:18px 14px 40px}
@@ -52,7 +52,7 @@ canvas{display:block;width:100%;border-radius:14px;background:#0b1030;touch-acti
 .flag{position:absolute;right:2px;top:0;font-size:22px;line-height:34px}
 .cd{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:72px;font-weight:900;color:var(--indigo);background:color-mix(in srgb,var(--card) 70%,transparent);border-radius:18px}
 .note{font-size:12.5px;opacity:.65;line-height:1.45;margin-top:18px}
-</style></head><body>
+</style><script src="../../mpe-theme.js"></script></head><body>
 <div class="wrap" id="app"></div>
 <script src="../../mpe-track.js"></script>
 <script>

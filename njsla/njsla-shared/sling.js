@@ -93,7 +93,7 @@ function css(){
    '.sling-hint.flash{color:var(--teal,#2A9D8F)}';
   document.head.appendChild(st);
 }
-function isDark(){try{return window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches}catch(e){return false}}
+function isDark(){try{var t=document.documentElement.getAttribute('data-theme');if(t==='dark')return true;if(t==='light')return false;return window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches}catch(e){return false}}
 
 function buildArena(){
   var st=document.getElementById('st');if(!st||!st.parentNode)return;

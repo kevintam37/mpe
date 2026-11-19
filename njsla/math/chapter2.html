@@ -5,7 +5,7 @@
 <title>Chapter 2 Number &amp; Operations in Base Ten</title>
 <style>
 :root{--bg:#FBF7EC;--ink:#26304A;--card:#fff;--line:#E4DCC9;--indigo:#2B3A67;--coral:#FF6B4A;--teal:#2A9D8F;padding-top:env(safe-area-inset-top,0);padding-bottom:env(safe-area-inset-bottom,0)}
-@media(prefers-color-scheme:dark){:root{--bg:#1D2233;--ink:#F1ECDD;--card:#262B40;--line:#3A4159;--indigo:#F4C95D}}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#1D2233;--ink:#F1ECDD;--card:#262B40;--line:#3A4159;--indigo:#F4C95D}}:root[data-theme="dark"]{--bg:#1D2233;--ink:#F1ECDD;--card:#262B40;--line:#3A4159;--indigo:#F4C95D}
 *{box-sizing:border-box}html,body{margin:0}
 body{background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
 .wrap{max-width:640px;margin:0 auto;padding:20px 16px 40px}
@@ -36,7 +36,7 @@ input[type=text]{width:140px}textarea{font:inherit;font-size:15px;width:100%;min
 .f{display:flex;align-items:center;gap:10px;margin:9px 0;flex-wrap:wrap;font-size:16px}
 table{border-collapse:collapse;width:100%;font-size:14px}td,th{border:1px solid var(--line);padding:8px 6px;text-align:center}
 .nb{margin-top:14px;width:100%;padding:13px;border:none;border-radius:12px;background:var(--indigo);color:#fff;font-weight:700;font-size:15px}
-@media(prefers-color-scheme:dark){.nb{color:#1D2233}}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .nb{color:#1D2233}}:root[data-theme="dark"] .nb{color:#1D2233}
 .nb.alt{background:var(--teal);color:#fff}.nb:disabled{opacity:.4}
 .nb.ghost{background:transparent;border:2px solid var(--line);color:var(--ink)}
 .fb{margin-top:12px;font-weight:600;font-size:14.5px;line-height:1.45}.good{color:var(--teal)}.bad{color:var(--coral)}
@@ -44,7 +44,7 @@ table{border-collapse:collapse;width:100%;font-size:14px}td,th{border:1px solid 
 .navwrap{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:12px}.navbox{width:28px;height:28px;border-radius:7px;border:2px solid var(--line);background:var(--card);color:var(--ink);font-size:11px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0}.navbox.cur{border-color:var(--indigo);box-shadow:0 0 0 2px var(--indigo) inset}.navbox.done{background:var(--line);color:var(--ink);opacity:.75}.navbox.done.ok{background:rgba(42,157,143,.28);border-color:var(--teal);opacity:1}.navbox.done.no{background:rgba(255,107,74,.28);border-color:var(--coral);opacity:1}.opt.miss{border-color:var(--teal);border-style:dashed}
 .revh{margin:22px 0 8px;font-size:16px;color:var(--indigo)}.rev{text-align:left}.ri{border:1px solid var(--line);border-left:6px solid var(--teal);border-radius:10px;padding:10px 12px;margin-bottom:8px;font-size:14px;line-height:1.45}.ri.nor{border-left-color:var(--coral)}.rh{font-weight:700}.mk{font-size:18px;font-weight:800}.okr .mk{color:var(--teal)}.nor .mk{color:var(--coral)}.rq{opacity:.7;margin:2px 0 4px}.rc{color:var(--teal)}
 .score{font-size:46px;font-weight:800;color:var(--indigo);text-align:center}.c{text-align:center}.small{font-size:13px;opacity:.7}
-</style></head><body><div class="wrap">
+</style><script src="../../mpe-theme.js"></script></head><body><div class="wrap">
 <h1>Chapter 2 Number &amp; Operations in Base Ten</h1><p class="sub" id="sub">Pick a lesson to practice</p>
 <div class="stage" id="st"></div>
 </div>
